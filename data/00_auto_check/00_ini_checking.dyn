@@ -1,0 +1,252 @@
+{
+  "Uuid": "e7f86b79-9e35-4815-88a5-b9cfc2d5cd27",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "00_auto_checking",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\ncheckRules = IN[0]\r\ntestPath = IN[1]\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n###############################################################\r\n# Main part\r\nout = healChecks.checkIBCCompliance(doc, checkRules)\r\nhealChecks.saveCheckingResults(out, testPath)\r\n\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "0b4e36552c0841abb6c686f53c238799",
+      "Inputs": [
+        {
+          "Id": "9b84ee179eb64b3683cdf0fe29643f12",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7f0d646f7d0e471fa791e9b92c1919ff",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "27405ca9938341dbbf3e4ba9dace0480",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\nelement = IN[0]\r\n\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\nout = []\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nhealBasics.rerunNodes()\r\n\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out\r\n\r\n\r\n\r\n\r\n\r\n",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "ab33bb219e344a67afa3bd58c7cac706",
+      "Inputs": [
+        {
+          "Id": "ddff1c189bef48aaa5b0d11abe173347",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "41caa8b59c6c4a2bb06b8ae0911fc856",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "IBC1020_2,IBC1207_1,IBC1207_3",
+      "Id": "1fd5bff113e6480b9073ea7c9e11031d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "21fac054353b47e89229acae1b4ecbe8",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\00_auto_check\\res\\",
+      "Id": "83839a08f7384277b495f7b3d9dfd69c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "531a295b617442fbb6d82d71eadf8e3c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "21fac054353b47e89229acae1b4ecbe8",
+      "End": "9b84ee179eb64b3683cdf0fe29643f12",
+      "Id": "1e51dc7beb524101b4632676aac89bd6"
+    },
+    {
+      "Start": "531a295b617442fbb6d82d71eadf8e3c",
+      "End": "7f0d646f7d0e471fa791e9b92c1919ff",
+      "Id": "ee4be064e11848528f4064785fc43bcb"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.10",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "0b4e36552c0841abb6c686f53c238799",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 313.37557575927,
+        "Y": 726.81824719643578
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "🧡　rerunNodes　🧡",
+        "Id": "ab33bb219e344a67afa3bd58c7cac706",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -25.668671359187954,
+        "Y": 570.35529410040033
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IBC Rules",
+        "Id": "1fd5bff113e6480b9073ea7c9e11031d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1.3158742667326919,
+        "Y": 697.81824719643578
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "ResultPath",
+        "Id": "83839a08f7384277b495f7b3d9dfd69c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1.3158742667326919,
+        "Y": 781.81824719643578
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "eabc55cc607b4508aff1d1af5361ae7a",
+        "Title": "Model Checking\r\n",
+        "Nodes": [
+          "0b4e36552c0841abb6c686f53c238799",
+          "ab33bb219e344a67afa3bd58c7cac706",
+          "1fd5bff113e6480b9073ea7c9e11031d",
+          "83839a08f7384277b495f7b3d9dfd69c"
+        ],
+        "Left": -35.668671359187954,
+        "Top": 473.66872693622122,
+        "Width": 483.70096353636842,
+        "Height": 391.20922175275189,
+        "FontSize": 36.0,
+        "InitialTop": 570.35529410040033,
+        "InitialHeight": 356.46295309603545,
+        "TextblockHeight": 86.68656716417911,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 257.58331413487934,
+    "Y": -325.32571137939669,
+    "Zoom": 0.89461611633549576
+  }
+}

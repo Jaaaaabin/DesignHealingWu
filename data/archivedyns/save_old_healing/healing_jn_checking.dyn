@@ -1,0 +1,1064 @@
+{
+  "Uuid": "fbc6d016-0cd7-4b3c-8fff-4142e5e2550b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "healing_jn_checking",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# plotting\r\n#import pandas as pd\r\n#import numpy as np\r\n#import matplotlib.pyplot as plt\r\n#import matplotlib as mpl\r\n#from matplotlib import cm\r\n#from matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator\r\n#mpl.rcParams['text.usetex'] = True\r\n#from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes\r\n#from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar\r\n#import scipy.stats as ss\r\n#from scipy.stats import norm\r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\"\"\"\r\nUnits displayed/assigned in Dynamo are feet. 1meter = 3.28084 foot\r\nmeter_to_foot: Converts a value from Revit's internal units to a given display unit.\r\nfoot_to_meter: Converts a value from a given display unit to Revit's internal units.\r\n\"\"\"\r\n\r\n\r\ndef meter_to_foot(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertFromInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\ndef foot_to_meter(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertToInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\n\"\"\"\r\nif a list is empty\r\n\"\"\"\r\n\r\n\r\ndef is_list_empty(list):\r\n    return not bool(list)\r\n\r\n\r\n\"\"\"\r\nflatten a list\r\n\"\"\"\r\n\r\ndef flatten(l):\r\n    return [item for sublist in l for item in sublist]\r\n\r\n\r\n\"\"\"\r\nExtract the space information\r\n\"all labelled as Room elements\"\r\n\"\"\"\r\n\r\n\r\ndef extractSpaceInfo(doc):\r\n    # Collect all the spaces\r\n    # spaces = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType().ToElements()\r\n    collector = FilteredElementCollector(doc)\r\n    spaces = collector.OfClass(SpatialElement).ToElements()\r\n    \r\n    # Collect the space Id\r\n    spaceId = [Element.Id.GetValue(ss) for ss in spaces]\r\n\r\n    # ss.Name doesn't work...\r\n    # might because: IronPython is getting some IL that it doesn't quite understand and therefore needs to be told how to retrieve the property. \r\n    # Collect the space name\r\n    spaceName = [Element.Name.GetValue(ss) for ss in spaces]\r\n\r\n    # Collect the space area\r\n    spaceArea = [ss.Area for ss in spaces]\r\n    spaceArea = [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.SquareMeters) for value in spaceArea]\r\n\r\n    # Collect the space height\r\n    # spaceHeight = [ss.LimitOffset for ss in spaces]\r\n    spaceHeight = [ss.UnboundedHeight for ss in spaces]\r\n    spaceHeight = [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) for value in spaceHeight]\r\n\r\n    # Collect the space width\r\n    spaceShell = [sp.ClosedShell.GetBoundingBox() for sp in spaces]\r\n    spaceWidth = [min((meter_to_foot(abs(sp_shl.Max.X - sp_shl.Min.X))),meter_to_foot(abs(sp_shl.Max.Y - sp_shl.Min.Y))) for sp_shl in spaceShell]\r\n    \r\n    return spaces, spaceId, spaceName, spaceArea, spaceHeight, spaceWidth\r\n\r\n\r\n\"\"\"\r\ncheckCompliance_1\r\ncheckCompliance_IBC1020_2\r\n- Width and capacity\r\n- The required capacity of corridors shall be determined as specified in Section 1005.1,\r\n- but the minimum width shall be not less than that specified in Table 1020.2.\r\nOCCUPANCY\t                                                                           MINIMUM WIDTH(inches)\r\nAny facility not listed in this table\t                                                   <44>\r\nAccess to and utilization of mechanical, plumbing or electrical systems or equipment\t    24\r\nWith an occupant load of less than 50\t                                                    36\r\nWithin a dwelling unit\t                                                                    36\r\nIn Group E with a corridor having an occupant load of 100 or more\t                        72\r\nIn corridors and areas serving stretcher traffic in ambulatory care facilities\t            72\r\nGroup I-2 in areas where required for bed movement\t                                        96\r\nFor SI: 1 inch = 25.4 mm.\r\n\"\"\"\r\n\r\n\r\ndef checkCompliance_IBC1020_2(doc):\r\n    spaces, spaceId, spaceName, spaceArea, spaceHeight, spaceWidth = extractSpaceInfo(doc)\r\n    checkContent = \"IBC1020_2\"\r\n    checkCompliance = True\r\n    failedComponents = []\r\n    failedDistance = []\r\n    corridor_min_width = 0.0254*44\r\n    compliance_limit = corridor_min_width\r\n\r\n    # track the average buffer distance \r\n    n_target = 0\r\n    min_pos_distance = 0\r\n\r\n    for ii in range(len(spaces)):\r\n\r\n        if \"Corridor\" in spaceName[ii]:\r\n            \r\n            buffer_distance = spaceWidth[ii] - compliance_limit\r\n            reason = [compliance_limit, spaceWidth[ii], buffer_distance]\r\n\r\n            # Record of the failures\r\n            if spaceWidth[ii]<compliance_limit:\r\n                checkCompliance = False\r\n                failedComponents.append(spaceId[ii])\r\n                failedDistance.append(reason)\r\n            \r\n            # Record of the succeed\r\n            min_pos_distance = buffer_distance if n_target == 0 else min(min_pos_distance, buffer_distance)\r\n            n_target+=1\r\n\r\n    if checkCompliance:\r\n        failedDistance.append([compliance_limit, 0, min_pos_distance])\r\n\r\n    return checkContent, checkCompliance, failedComponents, failedDistance\r\n\r\n\r\n\"\"\"\r\ncheckCompliance_2\r\ncheckCompliance_IBC1207_1\r\n- Minimum room widths\r\n- Habitable spaces, other than a kitchen, shall be not less than 7 feet (2134 mm) in any plan dimension.\r\n- Kitchens shall have a clear passageway of not less than 3 feet (914 mm) between counter fronts and appliances or counter fronts and walls.\r\n- P352\r\n\"\"\"\r\n\r\n\r\ndef checkCompliance_IBC1207_1(doc):\r\n    spaces, spaceId, spaceName, spaceArea, spaceHeight, spaceWidth = extractSpaceInfo(doc)\r\n    checkContent = \"IBC1207_1\"\r\n    checkCompliance = True\r\n    failedComponents = []\r\n    failedDistance = []\r\n    room_min_width = 2.134\r\n    compliance_limit = room_min_width\r\n\r\n    # track the average buffer distance \r\n    n_target = 0\r\n    min_pos_distance = 0\r\n\r\n    for ii in range(len(spaces)):\r\n\r\n        if \"Room\" in spaceName[ii]:\r\n\r\n            buffer_distance = spaceWidth[ii] - compliance_limit\r\n            reason = [compliance_limit, spaceWidth[ii], buffer_distance]\r\n            \r\n            # Record of the failures\r\n            if spaceWidth[ii]<compliance_limit:\r\n                checkCompliance = False\r\n                failedComponents.append(spaceId[ii])\r\n                failedDistance.append(reason)\r\n            \r\n            # Record of the succeed\r\n            min_pos_distance = buffer_distance if n_target == 0 else min(min_pos_distance, buffer_distance)\r\n            n_target+=1\r\n    \r\n    if checkCompliance:\r\n        failedDistance.append([compliance_limit, 0, min_pos_distance])\r\n        \r\n    return checkContent, checkCompliance, failedComponents, failedDistance\r\n\r\n\r\n\"\"\"\r\ncheckCompliance_3\r\n- checkCompliance_IBC1207_2\r\n- Minimum ceiling heights\r\n- Occupiable spaces, habitable spaces and corridors shall have a ceiling height of not less than 7 feet 6 inches (2286 mm) above the finished floor.\r\n- Bathrooms, toilet rooms, kitchens, storage rooms and laundry rooms shall have a ceiling height of not less than 7 feet (2134 mm) above the finished floor.\r\n- plus\r\n- Exceptions: 1. 2. 3. 4.\r\n- P352\r\n\"\"\"\r\n\r\n\r\ndef checkCompliance_IBC1207_2(doc):\r\n    spaces, spaceId, spaceName, spaceArea, spaceHeight, spaceWidth = extractSpaceInfo(doc)\r\n    checkContent = \"IBC1207_2\"\r\n    checkCompliance = True\r\n    failedComponents =[]\r\n    failedDistance = []\r\n    room_min_height = 2.286\r\n    compliance_limit = room_min_height\r\n    \r\n    # track the average buffer distance \r\n    n_target = 0\r\n    min_pos_distance = 0\r\n\r\n    for ii in range(len(spaces)):\r\n        if \"Room\" in spaceName[ii]:\r\n\r\n            buffer_distance = spaceHeight[ii] - compliance_limit           \r\n            reason = [compliance_limit, spaceHeight[ii], buffer_distance]\r\n\r\n            # Record of the failures\r\n            if spaceHeight[ii]<compliance_limit:\r\n                checkCompliance = False\r\n                failedComponents.append(spaceId[ii])\r\n                failedDistance.append(reason)\r\n            \r\n            # Record of the succeed\r\n            min_pos_distance = buffer_distance if n_target == 0 else min(min_pos_distance, buffer_distance)\r\n            n_target+=1\r\n    \r\n    if checkCompliance:\r\n        failedDistance.append([compliance_limit, 0, min_pos_distance])\r\n\r\n    return checkContent, checkCompliance, failedComponents, failedDistance\r\n\r\n\r\n\"\"\"\r\ncheckCompliance_4\r\ncheckCompliance_IBC1207_3\r\n- Room area\r\n- Every dwelling unit shall have not less than one room that shall have not less than 120 square feet (11.2 m2) of net floor area.\r\n- Other habitable rooms shall have a net floor area of not less than 70 square feet (6.5 m2).\r\n- plus\r\n- Exceptions: Kitchens are not required to be of a minimum floor area.\r\n- P352\r\n\"\"\"\r\n\r\n\r\ndef checkCompliance_IBC1207_3(doc):\r\n    spaces, spaceId, spaceName, spaceArea, spaceHeight, spaceWidth = extractSpaceInfo(doc)\r\n    checkContent = \"IBC1207_3\"\r\n    checkCompliance = True\r\n    failedComponents = []\r\n    failedDistance = []\r\n    room_min_area = 6.5\r\n    \r\n    room_least1_min_area = 11.2\r\n    \r\n    compliance_limit = room_min_area\r\n    \r\n    # track the average buffer distance \r\n    n_target = 0\r\n    min_pos_distance = 0\r\n\r\n    # filter to only room spaces\r\n    space_del_indices = []\r\n    for ii in range(len(spaces)):\r\n        if \"Room\" not in spaceName[ii]:\r\n            space_del_indices.append(ii)\r\n    spaces = [i for j, i in enumerate(spaces) if j not in space_del_indices]\r\n    spaceArea = [i for j, i in enumerate(spaceArea) if j not in space_del_indices]\r\n    spaceId = [i for j, i in enumerate(spaceId) if j not in space_del_indices]\r\n\r\n    # first checking part\r\n    for jj in range(len(spaces)):\r\n        \r\n        buffer_distance = spaceArea[jj] - compliance_limit          \r\n        reason = [compliance_limit, spaceArea[jj], buffer_distance]\r\n        \r\n        # Record of the failures\r\n        if spaceArea[jj] < compliance_limit:\r\n            checkCompliance = False            \r\n            failedComponents.append(spaceId[jj])\r\n            failedDistance.append(reason)\r\n        \r\n        # Record of the succeed\r\n        min_pos_distance = buffer_distance if n_target == 0 else min(min_pos_distance, buffer_distance)\r\n        n_target+=1\r\n    \r\n    if checkCompliance:\r\n        failedDistance.append([compliance_limit, 0, min_pos_distance])\r\n    \r\n    # second checking part\r\n    # temporarily ignore the second part of this rule\r\n\r\n    # if max(spaceArea) < room_least1_min_area:\r\n    #     checkCompliance = False\r\n    #     index_max = spaceArea.index(max(spaceArea))\r\n    #     failedComponents.append(spaceId[index_max])\r\n    #     reason = [room_least1_min_area, max(spaceArea), max(spaceArea) - room_least1_min_area]\r\n    #     failedDistance.append(reason)\r\n    \r\n    return checkContent, checkCompliance, failedComponents, failedDistance\r\n\r\n\r\n\"\"\"\r\nCentral processing of all checks \r\n\"\"\"\r\n\r\n\r\ndef checkCompliance_IBC(doc,checkRules):\r\n    res = []\r\n    if 'IBC1020_2' in checkRules:\r\n        res.append(checkCompliance_IBC1020_2(doc))\r\n    if 'IBC1207_1' in checkRules:\r\n        res.append(checkCompliance_IBC1207_1(doc))\r\n    if 'IBC1207_2' in checkRules:\r\n        res.append(checkCompliance_IBC1207_2(doc))\r\n    if 'IBC1207_3' in checkRules:\r\n        res.append(checkCompliance_IBC1207_3(doc))\r\n    return res\r\n\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Prepare the input\r\n###############################################################\r\ncheckModel = IN[0]\r\ncheckRules = IN[1]\r\n\r\n###############################################################\r\n# Record file into a .txt\r\n###############################################################\r\n# Get the current file path\r\nsaveDir = getFileDirectory()\r\n\r\n###############################################################\r\n# Transaction in Revit\r\n###############################################################\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW YOU CAN CODE -----------------------\r\n#--------------------------------------------------------------\r\n# Post process the checking results\r\nfailedRules = []\r\nfailedCompNumbers = []\r\nfailedPercent = []\r\n\r\n# Code Compliance Checking for the selected building rules\r\ncheckResults = []\r\nif checkModel:\r\n    checkResults = checkCompliance_IBC(doc,checkRules)\r\n\r\n    for result in checkResults:\r\n        # result = [checkContent, checkCompliance, failedComponents, failedDistance]\r\n        percent = 0.\r\n        failednumber = 0\r\n        failedRules.append(result[0])\r\n\r\n        # if failed on one rule\r\n        if not result[1]:\r\n            \r\n            # write the failed number(s)\r\n            failedCompNumbers.append(result[2])\r\n            \r\n            # take the average failure (buffer) distance\r\n            for failedcomponent in result[3]:           \r\n                percent += failedcomponent[2]/failedcomponent[0]\r\n            percent /= len(result[3])\r\n            failedPercent.append(percent)\r\n        \r\n        # if succeed on one rule\r\n        else:\r\n\r\n            # write the failed component numbers as an empty list: [] (amount =0)\r\n            failedCompNumbers.append([])\r\n            \r\n            # write the average buffer distance\r\n            for failedcomponent in result[3]:           \r\n                percent = failedcomponent[2]/failedcomponent[0]\r\n            failedPercent.append(percent)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW END THE CODE -----------------------\r\n#--------------------------------------------------------------\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Close and save the recording file\r\n\r\n###############################################################\r\n# Prepare the output \r\n###############################################################\r\n# OUT = checkResults\r\nOUT = failedRules,failedCompNumbers,failedPercent",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "64a4257bb428457cb18045f504226a7c",
+      "Inputs": [
+        {
+          "Id": "1d1f58867404468ea2312837a2e8b61b",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "83f034285cdb465cabb5c9dd133c08b2",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e8b9fc9e2d0a4b599277abc684b41b15",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nfrom xml.dom.minidom import Document\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport csv \r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# plotting\r\nimport pandas as pd\r\nimport numpy as np\r\nimport matplotlib.pyplot as plt\r\nimport matplotlib as mpl\r\nfrom matplotlib import cm\r\nfrom matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator\r\nmpl.rcParams['text.usetex'] = True\r\nfrom mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes\r\nfrom mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar\r\nimport scipy.stats as ss\r\nfrom scipy.stats import norm\r\nimport ast \r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\"\"\"\r\nExtract the directory for input extraction\r\n\"\"\"\r\n\r\n\r\ndef get_directory_extractoutput(nr_model):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    folderpath += ('res\\\\outputdata_'+str(nr_model))\r\n    return folderpath\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the rvt.\r\n\"\"\"\r\n\r\n\r\ndef get_projectname(doc):\r\n    projectname = Document.PathName.GetValue(doc)\r\n    return projectname\r\n\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Prepare the input\r\n###############################################################\r\ncheckCompliance = IN[0]\r\ncompliance_checking = UnwrapElement(IN[1])\r\n[\r\n    failedRules,\r\n    failedCompNumbers,\r\n    failedPercent,\r\n    ] = compliance_checking\r\n\r\n###############################################################\r\n# Record file into a .txt\r\n###############################################################\r\n# Get the current file path\r\nsaveDir = getFileDirectory()\r\n\r\n###############################################################\r\n# Transaction in Revit\r\n###############################################################\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW YOU CAN CODE -----------------------\r\n#--------------------------------------------------------------\r\n\r\n# Capture the Nr of the model\r\nnr_model_gp_id = Autodesk.Revit.DB.GlobalParametersManager.FindByName(\r\n    doc, 'nr_model')\r\nnr_model_gp_element = doc.GetElement(nr_model_gp_id)\r\nnr_model = int(nr_model_gp_element.GetValue().Value)\r\nsaveDir_extractoutput = get_directory_extractoutput(nr_model)\r\n\r\nif checkCompliance:\r\n\r\n    # Collect the checking results\r\n    summaryCheckResults = []\r\n    if len(failedRules) == 1:\r\n        summaryCheckResults = [[failedRules[0],len(failedCompNumbers[0]),failedPercent[0]]]\r\n    else:\r\n        for ii in range(len(failedRules)):\r\n            summaryCheckResults.append([failedRules[ii],len(failedCompNumbers[ii]),failedPercent[ii]])\r\n\r\n    # Convert the checking results to pandas Dataframe\r\n\r\n    summaryCheckResults_df = pd.DataFrame(summaryCheckResults, columns =['failedrules','failedcomponentnumbers','averagefailedpercent'])\r\n\r\n    # Convert to a single h5 file\r\n\r\n    summaryCheckResults_df.to_hdf(saveDir_extractoutput+'.h5', key = 'checking', mode = 'w')\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW END THE CODE -----------------------\r\n#--------------------------------------------------------------\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Close and save the recording file\r\n\r\n###############################################################\r\n# Prepare the output \r\n###############################################################\r\nOUT = str(saveDir_extractoutput+'.h5')",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "aaf34c4816c74d3eb2878a68bf264155",
+      "Inputs": [
+        {
+          "Id": "dfe8c829df6a45acab9763a598746177",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "30618a13e5a74bf788ba176da3aad2d3",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d1efd73693a4765a7762da9c01173f8",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# plotting\r\n#import pandas as pd\r\n#import numpy as np\r\n#import matplotlib.pyplot as plt\r\n#import matplotlib as mpl\r\n#from matplotlib import cm\r\n#from matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator\r\n#mpl.rcParams['text.usetex'] = True\r\n#from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes\r\n#from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar\r\n#import scipy.stats as ss\r\n#from scipy.stats import norm\r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\"\"\"\r\nExtract the space information\r\n\"all labelled as Room elements\"\r\n\"\"\"\r\n# init_data = [1, nb_smoke_vent, length_smoke_vent, init_comp, init_dist, init_comp_log, init_dist_log, init_comp_norm, init_dist_norm, init_comp_log_norm, init_dist_log_norm]\r\n# init_data = np.array([init_data])                \r\n# init_data = pd.DataFrame(init_data, columns=['index', 'number', 'length', 'incompliance', 'distance', 'incompliance-log', 'distance-log',\r\n#         'incompliance-norm', 'distance-norm', 'incompliance-log-norm', 'distance-log-norm'])\r\n\r\n\r\ndef extractSpaceInfo(doc,spaces=[]):\r\n    # Collect all the spaces\r\n    # spaces = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType().ToElements()\r\n    collector = FilteredElementCollector(doc)\r\n    spaces = collector.OfClass(SpatialElement).ToElements()\r\n    \r\n    # Collect the space Id\r\n    spaceId = [Element.Id.GetValue(ss) for ss in spaces]\r\n\r\n    # ss.Name doesn't work...\r\n    # might because: IronPython is getting some IL that it doesn't quite understand and therefore needs to be told how to retrieve the property. \r\n    # Collect the space name\r\n    spaceName = [Element.Name.GetValue(ss) for ss in spaces]\r\n\r\n    # Collect the space area\r\n    spaceArea = [ss.Area for ss in spaces]\r\n    spaceArea = [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.SquareMeters) for value in spaceArea]\r\n\r\n    # Collect the space height\r\n    # spaceHeight = [ss.LimitOffset for ss in spaces]\r\n    spaceHeight = [ss.UnboundedHeight for ss in spaces]\r\n    spaceHeight = [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) for value in spaceHeight]\r\n\r\n    # Collect the space width\r\n    spaceShell = [sp.ClosedShell.GetBoundingBox() for sp in spaces]\r\n    spaceWidth = [min((meter_to_foot(abs(sp_shl.Max.X - sp_shl.Min.X))),meter_to_foot(abs(sp_shl.Max.Y - sp_shl.Min.Y))) for sp_shl in spaceShell]\r\n    \r\n    return spaces, spaceId, spaceName, spaceArea, spaceHeight, spaceWidth\r\n\r\n\r\n\"\"\"\r\nUnits displayed/assigned in Dynamo are feet. 1meter = 3.28084 foot\r\nmeter_to_foot: Converts a value from Revit's internal units to a given display unit.\r\nfoot_to_meter: Converts a value from a given display unit to Revit's internal units.\r\n\"\"\"\r\n\r\n\r\ndef meter_to_foot(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertFromInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\ndef foot_to_meter(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertToInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\n\"\"\"\r\nGet the boundaries of a room / a list of rooms\r\n\"\"\"\r\n\r\n\r\ndef getRoomBoundaries(item):\r\n\tdoc = item.Document\r\n\tcalculator = SpatialElementGeometryCalculator(doc)\r\n\toptions = Autodesk.Revit.DB.SpatialElementBoundaryOptions()\r\n\t\r\n    # Get boundary location from area computation settings\r\n\tboundloc = Autodesk.Revit.DB.AreaVolumeSettings.GetAreaVolumeSettings(doc).GetSpatialElementBoundaryLocation(SpatialElementType.Room)\r\n\toptions.SpatialElementBoundaryLocation = boundloc\r\n\r\n    # Get boundary segments\r\n\telements, curves = [],[]\r\n\ttry:\r\n\t\tfor boundarylist in item.GetBoundarySegments(options):\r\n\t\t\tfor boundary in boundarylist:\r\n\t\t\t\telements.append(doc.GetElement(boundary.ElementId))\r\n                curves.append(boundary.GetCurve().ToProtoType())\r\n\texcept: pass\r\n\treturn elements\r\n\r\n\r\n\"\"\"\r\nGet the Icollection of a set of elements\r\n\"\"\"\r\n\r\n\r\ndef getIcollection(elements):\r\n    elementsId = [Element.Id.GetValue(elem) for elem in elements]\r\n    elements_Icollection = List[ElementId](elementsId)\r\n    return elements_Icollection\r\n\r\n\r\n\"\"\"\r\nGet the Model Lines from a set of elements\r\n\"\"\"\r\n\r\n\r\ndef filterSeparationLines(doc,elemsets):\r\n    elemsets_Icollection = getIcollection(elemsets)\r\n    collector_lines = FilteredElementCollector(doc,elemsets_Icollection).OfCategory(\r\n        BuiltInCategory.OST_RoomSeparationLines).WhereElementIsNotElementType().ToElements()\r\n    collector_lines_Icollection = getIcollection(collector_lines)\r\n    if len(collector_lines_Icollection) > 0:\r\n        collector_others = FilteredElementCollector(doc,elemsets_Icollection).Excluding(\r\n        collector_lines_Icollection).WhereElementIsNotElementType().ToElements()\r\n    else:\r\n        collector_others = elemsets\r\n    return collector_lines,collector_others\r\n\r\n\"\"\"\r\nGet the openings from a set of elements(OST_Walls)\r\n\"\"\"\r\n\r\n\r\ndef filterOpenings(doc,elemsets):\r\n    elemsets_Icollection = getIcollection(elemsets)\r\n    collector_doors = FilteredElementCollector(doc,elemsets_Icollection).OfCategory(\r\n        BuiltInCategory.OST_Doors).WhereElementIsNotElementType().ToElements()\r\n    collector_doors_Icollection = getIcollection(collector_doors)\r\n    if len(collector_doors_Icollection) > 0:\r\n        collector_windows = FilteredElementCollector(doc,elemsets_Icollection).Excluding(\r\n        collector_doors_Icollection).WhereElementIsNotElementType().ToElements()\r\n    else:\r\n        collector_windows = elemsets\r\n    return collector_doors,collector_windows\r\n\r\n\r\n\"\"\"\r\nGet inserted elements of an element\r\n\"\"\"\r\n\r\n\r\ndef getInsertedElements(item):\r\n    doc = item.Document\r\n\r\n    # Get inserted segments\r\n    elements = []\r\n    for ops in item.FindInserts(True,False,False,False):\r\n        # bool addRectOpenings; bool includeShadows; bool includeEmbeddedWalls; bool includeSharedEmbeddedInserts.\r\n        elements.append(doc.GetElement(ops))\r\n    \r\n    return elements\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Prepare the input\r\n###############################################################\r\nanalyzeModel = IN[0]\r\nspaces_Fordoors = UnwrapElement(IN[1])\r\ndoors_Fromspaces = UnwrapElement(IN[2])\r\n\r\n###############################################################\r\n# Record file into a .txt\r\n###############################################################\r\n# Get the current file path\r\nsaveDir = getFileDirectory()\r\n\r\n###############################################################\r\n# Transaction in Revit\r\n###############################################################\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW YOU CAN CODE -----------------------\r\n#--------------------------------------------------------------\r\nsummary_topo_SpaceDoor = []\r\nsummary_sema_Space = []\r\nsummary_sema_Wall = []\r\nsummary_topo_SpaceSeparation = []\r\nsummary_topo_SpaceBoundary = []\r\nsummary_sema_Door = []\r\nsummary_sema_Window = []\r\nsummary_topo_WallDoor = []\r\nsummary_topo_WallWindow =[]\r\n\r\nif analyzeModel:\r\n    \r\n    # Select all the spaces\r\n    collector = FilteredElementCollector(doc)\r\n    allSpaces = collector.OfClass(SpatialElement).ToElements()\r\n\r\n    # Select all the walls\r\n    allWalls = FilteredElementCollector(doc,).OfCategory(\r\n            BuiltInCategory.OST_Walls).WhereElementIsNotElementType().ToElements()\r\n\r\n    # Select all the doors\r\n    allDoors = FilteredElementCollector(doc,).OfCategory(\r\n            BuiltInCategory.OST_Doors).WhereElementIsNotElementType().ToElements()\r\n\r\n    # Select all the windows\r\n    allWindows = FilteredElementCollector(doc,).OfCategory(\r\n            BuiltInCategory.OST_Windows).WhereElementIsNotElementType().ToElements()\r\n\r\n    # Summary Topology: Spaces - Doors\r\n    # Summary Semantics: Spaces\r\n    # 'spacearea','spaceheight','spacewidth','spacelocation'\r\n\r\n    for jj in range(len(spaces_Fordoors)):\r\n        sps = spaces_Fordoors[jj]\r\n        sps_Id = Element.Id.GetValue(sps).IntegerValue\r\n        sps_Name = Element.Name.GetValue(sps)\r\n        sps_Area = UnitUtils.ConvertFromInternalUnits(sps.Area, UnitTypeId.SquareMeters)\r\n        sps_Height = UnitUtils.ConvertFromInternalUnits(sps.UnboundedHeight, UnitTypeId.Meters)\r\n        sps_Shell = sps.ClosedShell.GetBoundingBox()\r\n        sps_Width = min((meter_to_foot(abs(sps_Shell.Max.X - sps_Shell.Min.X))),meter_to_foot(abs(sps_Shell.Max.Y - sps_Shell.Min.Y)))\r\n        sps_Locx = UnitUtils.ConvertFromInternalUnits(sps.Location.Point.X, UnitTypeId.Meters)\r\n        sps_Locy = UnitUtils.ConvertFromInternalUnits(sps.Location.Point.Y, UnitTypeId.Meters)\r\n        sps_Locz = UnitUtils.ConvertFromInternalUnits(sps.Location.Point.Z, UnitTypeId.Meters)\r\n        summary_sema_Space.append([sps_Id, sps_Name, sps_Area, sps_Height, sps_Width, sps_Locx, sps_Locy, sps_Locz])\r\n        \r\n        sps_doors = doors_Fromspaces[jj]\r\n        for item in sps_doors:\r\n            sps_doors_Id = Element.Id.GetValue(item).IntegerValue\r\n            summary_topo_SpaceDoor.append([sps_Id,sps_doors_Id])\r\n\r\n    # Summary Semantics: Walls\r\n    # 'wallid','wallwidth','walllength'\r\n\r\n    for item in allWalls:\r\n        sps_walls_Id = Element.Id.GetValue(item).IntegerValue\r\n        sps_walls_Width = item.Width\r\n        sps_walls_Width = UnitUtils.ConvertFromInternalUnits(sps_walls_Width, UnitTypeId.Meters)\r\n        sps_WallLength = UnitUtils.ConvertFromInternalUnits(item.Location.Curve.Length, UnitTypeId.Meters)\r\n        summary_sema_Wall.append([sps_walls_Id, sps_walls_Width, sps_WallLength])\r\n\r\n    # Summary Topology: Spaces - Boundaries [SeparationLines, Walls]\r\n\r\n    for ii in range(len(allSpaces)):\r\n        sps = allSpaces[ii]\r\n        sps_Id = Element.Id.GetValue(sps).IntegerValue\r\n\r\n        # Select all the boundaries of the spaces\r\n        sps_boundaries = getRoomBoundaries(sps)\r\n\r\n        # Filter the boundaries into separation lines and walls\r\n        sps_separationlines, sps_walls = filterSeparationLines(doc,sps_boundaries)\r\n        \r\n        # Space - separation lines\r\n        for item in sps_separationlines:\r\n            sps_separationlines_Id = Element.Id.GetValue(item).IntegerValue\r\n            summary_topo_SpaceSeparation.append([sps_Id, sps_separationlines_Id])\r\n        \r\n        # Space - walls\r\n        for item in sps_walls:\r\n            sps_walls_Id = Element.Id.GetValue(item).IntegerValue\r\n            summary_topo_SpaceBoundary.append([sps_Id, sps_walls_Id])\r\n\r\n    # Summary Semantics: Doors\r\n    # 'doorid','doorlocx','doorlocy','doorlocz'\r\n\r\n    for item in allDoors:\r\n        wll_doors_Id = Element.Id.GetValue(item).IntegerValue\r\n        wll_doors_Locx = UnitUtils.ConvertFromInternalUnits(item.Location.Point.X, UnitTypeId.Meters)\r\n        wll_doors_Locy = UnitUtils.ConvertFromInternalUnits(item.Location.Point.Y, UnitTypeId.Meters)\r\n        wll_doors_Locz = UnitUtils.ConvertFromInternalUnits(item.Location.Point.Z, UnitTypeId.Meters)\r\n        summary_sema_Door.append([wll_doors_Id, wll_doors_Locx, wll_doors_Locy, wll_doors_Locz])\r\n\r\n    # Summary Semantics: Windows\r\n    # 'windowid','windowlocx','windowlocy','windowlocz'\r\n\r\n    for item in allWindows:\r\n        wll_windows_Id = Element.Id.GetValue(item).IntegerValue\r\n        wll_windows_Locx = UnitUtils.ConvertFromInternalUnits(item.Location.Point.X, UnitTypeId.Meters)\r\n        wll_windows_Locy = UnitUtils.ConvertFromInternalUnits(item.Location.Point.Y, UnitTypeId.Meters)\r\n        wll_windows_Locz = UnitUtils.ConvertFromInternalUnits(item.Location.Point.Z, UnitTypeId.Meters)\r\n        summary_sema_Window.append([wll_windows_Id, wll_windows_Locx, wll_windows_Locy, wll_windows_Locz])\r\n\r\n    # Summary Topology: Walls - Openings [doors, windows]\r\n\r\n    for ii in range(len(allWalls)):\r\n        wll = allWalls[ii]\r\n        wll_Id = Element.Id.GetValue(wll).IntegerValue\r\n\r\n        # Select all the openings of the walls\r\n        wll_openings = getInsertedElements(wll)\r\n\r\n        # Filter the openings into doors and windows\r\n        [wll_openings_doors, wll_openings_windows] = filterOpenings(doc,wll_openings) if len(wll_openings) > 0 else [[],[]]\r\n        \r\n        # Wall - doors\r\n        for item in wll_openings_doors:\r\n            wll_openings_doors_Id = Element.Id.GetValue(item).IntegerValue\r\n            summary_topo_WallDoor.append([wll_Id, wll_openings_doors_Id])\r\n\r\n        # Wall - windows\r\n        for item in wll_openings_windows:\r\n            wll_openings_windows_Id = Element.Id.GetValue(item).IntegerValue\r\n            summary_topo_WallWindow.append([wll_Id, wll_openings_windows_Id])\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW END THE CODE -----------------------\r\n#--------------------------------------------------------------\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Close and save the recording file\r\n\r\n###############################################################\r\n# Prepare the output \r\n###############################################################\r\nOUT = [\r\n    summary_sema_Space,\r\n    summary_sema_Wall,\r\n    summary_sema_Door,\r\n    summary_sema_Window,\r\n    summary_topo_SpaceDoor,\r\n    summary_topo_SpaceSeparation,\r\n    summary_topo_SpaceBoundary,\r\n    summary_topo_WallDoor,\r\n    summary_topo_WallWindow]",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "8eb1c7ed73784457b3bb1e239f04658f",
+      "Inputs": [
+        {
+          "Id": "4cbc7cff68ee457ba15e5b95e6bde6dd",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b56c0bd7e33e47bb9dd86c6a411774ba",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4c13a04f02704fabad2e7e08f693f906",
+          "Name": "IN[2]",
+          "Description": "Input #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b376ee8790664fe7bc05f4420b89d122",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.RevitPhases, DSRevitNodesUI",
+      "SelectedIndex": -1,
+      "SelectedString": "New Construction",
+      "NodeType": "ExtensionNode",
+      "Id": "04644cf59112415aa82f24a0eb8efcdb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "547bc13bcd3d4d33a56627857e2b2120",
+          "Name": "Phase",
+          "Description": "The selected Phase",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select an existing Revit Phase from the active document."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "17fade58-3be2-4ff9-86c8-503f5e4a1cba",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "b34c1afd16d8426b8702741054406952",
+      "Inputs": [
+        {
+          "Id": "3bf471f40d7e4888a60636f1d36a8ec3",
+          "Name": "room",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3538ea788f8744b9927fe58706ae95da",
+          "Name": "phase",
+          "Description": " If no phase is specified, the node will use the last phase in the project\n\nvar\nDefault value : null",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7108d9192eb44b1d8823ffed13ba9562",
+          "Name": "doors",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Retrieves all doors that are associated with a room (hosted in walls and roofs)."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 486,
+      "SelectedString": "OST_Rooms",
+      "NodeType": "ExtensionNode",
+      "Id": "2ecca8c8953d47008c94dfffad08a096",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "86fe5c67abf1417f8dfbc06c8fe1189d",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.ElementsOfCategory, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "Id": "012be5f811d84d75907c8b1d64f890d1",
+      "Inputs": [
+        {
+          "Id": "0e215a15a3114467b0d00f61ba20f313",
+          "Name": "Category",
+          "Description": "The Category",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a0da5b75a5d64b4894bd6f00a2a0df4d",
+          "Name": "Elements",
+          "Description": "An element type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Get all elements of the specified category from the model."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "ce1046e7fd0d4a30840da9bc2991e21b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8f5453afb9b7497ea1ae18abad6f5747",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "IBC1020_2, IBC1207_1,IBC1207_2, IBC1207_3",
+      "Id": "daca8832219c4053a1e77ee344a5ddbc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cc1ca3db45c34107b19437f21000745a",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b06408f37389401098ddab27efbe2403",
+      "Inputs": [
+        {
+          "Id": "1050fac091134842a5570f07835baf44",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "93f78d3ec3be4df4a21d31114c3bcb59",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8c6d6ec03f6f47d4ae7a044f6c20f702",
+      "Inputs": [
+        {
+          "Id": "650eb265e834455d8230828183afbbb2",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6b35522ae4b04ccba1fb07edc114104c",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# plotting\r\nimport pandas as pd\r\nimport numpy as np\r\nimport matplotlib.pyplot as plt\r\nimport matplotlib as mpl\r\nfrom matplotlib import cm\r\nfrom matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator\r\nmpl.rcParams['text.usetex'] = True\r\nfrom mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes\r\nfrom mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar\r\nimport scipy.stats as ss\r\nfrom scipy.stats import norm\r\nimport ast \r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\r\n\"\"\"\r\nUnits displayed/assigned in Dynamo are feet. 1meter = 3.28084 foot\r\nmeter_to_foot: Converts a value from Revit's internal units to a given display unit.\r\nfoot_to_meter: Converts a value from a given display unit to Revit's internal units.\r\n\"\"\"\r\n\r\n\r\ndef meter_to_foot(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertFromInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\ndef foot_to_meter(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertToInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\r\n\"\"\"\r\nExtract the directory for input extraction\r\n\"\"\"\r\n\r\n\r\ndef get_directory_extractinput(nr_model):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    folderpath += ('res\\\\inputdata_'+str(nr_model))\r\n    return folderpath\r\n\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Prepare the input\r\n###############################################################\r\nsaveInput = IN[0]\r\n\r\n###############################################################\r\n# Record file into a .txt\r\n###############################################################\r\n# Get the current file path\r\nsaveDir = getFileDirectory()\r\n\r\n###############################################################\r\n# Transaction in Revit\r\n###############################################################\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW YOU CAN CODE -----------------------\r\n#--------------------------------------------------------------\r\n\r\n# Capture the Nr of the model\r\nnr_model_gp_id = Autodesk.Revit.DB.GlobalParametersManager.FindByName(\r\n    doc, 'nr_model')\r\nnr_model_gp_element = doc.GetElement(nr_model_gp_id)\r\nnr_model = int(nr_model_gp_element.GetValue().Value)\r\nsaveDir_extractinput = get_directory_extractinput(nr_model)\r\n\r\nif saveInput:\r\n    \r\n    # Select adjustable parameters (among the global parameters)\r\n\r\n    gp_ids = Autodesk.Revit.DB.GlobalParametersManager.GetAllGlobalParameters(doc)\r\n    gp_elements = [doc.GetElement(item) for item in gp_ids]\r\n    gp_names = [item.Name for item in gp_elements]\r\n\r\n    adj_gp_ids, adj_gp_elements, adj_gp_names, adj_gp_values = [], [], [], []\r\n    for name in gp_names:\r\n        if 'nr_model' in name:\r\n            continue\r\n        else:\r\n            adj_gp_id = Autodesk.Revit.DB.GlobalParametersManager.FindByName(\r\n                doc, name)\r\n            adj_gp_element = doc.GetElement(adj_gp_id)\r\n            adj_gp_value = meter_to_foot(adj_gp_element.GetValue().Value)\r\n            adj_gp_ids.append(adj_gp_id)\r\n            adj_gp_elements.append(adj_gp_element)\r\n            adj_gp_names.append(name)\r\n            adj_gp_values.append(adj_gp_value)\r\n\r\n    # Convert the inputparameters to to pandas dataframe (till now we only consider the geometric part)\r\n\r\n    geom_Input = pd.DataFrame([adj_gp_values], columns=adj_gp_names)\r\n    geom_Input.to_hdf(saveDir_extractinput+'.h5', key='geom_Input', mode='w')\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW END THE CODE -----------------------\r\n#--------------------------------------------------------------\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Close and save the recording file\r\n\r\n###############################################################\r\n# Prepare the output \r\n###############################################################\r\nOUT = str(saveDir_extractinput+'.h5')",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "b1e3a8a9713844bc8ae46df05be959c2",
+      "Inputs": [
+        {
+          "Id": "608ceb6e7fa14cc1b59ab8feab5f19b5",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7378cda09937484e92b00734079311d3",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "88000134984c48c9a5117ed9f980bb01",
+      "Inputs": [
+        {
+          "Id": "f10f90b48a9740a388ff1c1e48426229",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e638a84afb8e435b96f3979c2d40870b",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nfrom xml.dom.minidom import Document\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport csv \r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# plotting\r\nimport pandas as pd\r\nimport numpy as np\r\nimport matplotlib.pyplot as plt\r\nimport matplotlib as mpl\r\nfrom matplotlib import cm\r\nfrom matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator\r\nmpl.rcParams['text.usetex'] = True\r\nfrom mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes\r\nfrom mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar\r\nimport scipy.stats as ss\r\nfrom scipy.stats import norm\r\nimport ast \r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\"\"\"\r\nExtract the directory for input extraction\r\n\"\"\"\r\n\r\n\r\ndef get_directory_extractmodelanalysis(nr_model):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    folderpath += ('res\\\\modelanalysisdata_'+str(nr_model))\r\n    return folderpath\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the rvt.\r\n\"\"\"\r\n\r\n\r\ndef get_projectname(doc):\r\n    projectname = Document.PathName.GetValue(doc)\r\n    return projectname\r\n\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Prepare the input\r\n###############################################################\r\nanalyzeModel = IN[0]\r\nmodel_analyzing = UnwrapElement(IN[1])\r\n[\r\n    summary_sema_Space,\r\n    summary_sema_Wall,\r\n    summary_sema_Door,\r\n    summary_sema_Window,\r\n    summary_topo_SpaceDoor,\r\n    summary_topo_SpaceSeparation,\r\n    summary_topo_SpaceBoundary,\r\n    summary_topo_WallDoor,\r\n    summary_topo_WallWindow\r\n    ] = model_analyzing\r\n\r\n###############################################################\r\n# Record file into a .txt\r\n###############################################################\r\n# Get the current file path\r\nsaveDir = getFileDirectory()\r\n\r\n###############################################################\r\n# Transaction in Revit\r\n###############################################################\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW YOU CAN CODE -----------------------\r\n#--------------------------------------------------------------\r\n\r\n# Capture the Nr of the model\r\nnr_model_gp_id = Autodesk.Revit.DB.GlobalParametersManager.FindByName(\r\n        doc, 'nr_model')\r\nnr_model_gp_element = doc.GetElement(nr_model_gp_id)\r\nnr_model = int(nr_model_gp_element.GetValue().Value)\r\nsaveDir_extractmodelanalysis = get_directory_extractmodelanalysis(nr_model)\r\n\r\nif analyzeModel:\r\n\r\n    # Convert the semantics to pandas dataframe\r\n\r\n    sema_Space = pd.DataFrame(summary_sema_Space, columns =['spaceid','spacename','spacearea','spaceheight','spacewidth','spacelocx','spacelocy','spacelocz'])\r\n    sema_Wall = pd.DataFrame(summary_sema_Wall, columns =['wallid','wallwidth','walllength'])\r\n    sema_Door = pd.DataFrame(summary_sema_Door, columns =['doorid','doorlocx','doorlocy','doorlocz'])\r\n    sema_Window = pd.DataFrame(summary_sema_Window, columns =['windowid','windowlocx','windowlocy','windowlocz'])\r\n\r\n    # Convert the topology to pandas dataframe\r\n\r\n    topo_SpaceDoor = pd.DataFrame(summary_topo_SpaceDoor, columns =['spaceid','doorid'])\r\n    topo_SpaceSeparation = pd.DataFrame(summary_topo_SpaceSeparation,columns=['spaceid','boundaryseplineid'])\r\n    topo_SpaceBoundary = pd.DataFrame(summary_topo_SpaceBoundary,columns=['spaceid','boundarywallid'])\r\n    topo_WallDoor = pd.DataFrame(summary_topo_WallDoor, columns=['wallid','doorid'])\r\n    topo_WallWindow = pd.DataFrame(summary_topo_WallWindow, columns=['wallid','windowid'])\r\n\r\n    # Convert to a single h5 file\r\n\r\n    sema_Space.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'sema_Space', mode = 'w')\r\n    sema_Wall.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'sema_Wall')\r\n    sema_Door.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'sema_Door')\r\n    sema_Window.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'sema_Window')\r\n    topo_SpaceDoor.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'topo_SpaceDoor')\r\n    topo_SpaceSeparation.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'topo_SpaceSeparation')\r\n    topo_SpaceBoundary.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'topo_SpaceBoundary')\r\n    topo_WallDoor.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'topo_WallDoor')\r\n    topo_WallWindow.to_hdf(saveDir_extractmodelanalysis+'.h5', key = 'topo_WallWindow')\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW END THE CODE -----------------------\r\n#--------------------------------------------------------------\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Close and save the recording file\r\n\r\n###############################################################\r\n# Prepare the output \r\n###############################################################\r\nOUT = str(saveDir_extractmodelanalysis+'.h5')",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "e222566b2c9c49c9a3ec8eef27442887",
+      "Inputs": [
+        {
+          "Id": "7b9f5c4065f54f81a3c0c226ad707258",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f6eea4f47ce6443c83ecf5a9e23f6fee",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "024bb5f2b4324ce08887a667f0968b62",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c5fb95c6cf5c4a30a877e738390ca4aa",
+      "Inputs": [
+        {
+          "Id": "b0077ad2fa774e7d9be5bbc77129b445",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "20889f56526247dba9a23a53f269ea30",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "1a391601f3b448ce8c1639977f3f9088",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "38927dc05615493ea9c254bdf109ceb8",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "deacf9e4c67345568fc660c9313d25e9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1be4df8bfaa543fcadad248b752ef8b2",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "archilab.Revit.Selection.Select.ByElementId@var",
+      "Id": "0bb209381d4949f2b23aa8575b8c1494",
+      "Inputs": [
+        {
+          "Id": "2e307d4017df4d3a99a9e200fe4e3c43",
+          "Name": "id",
+          "Description": "ElementId, String, Guid or Integer id of the element.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0cf955eeab874a24b36ce1a72f2570af",
+          "Name": "Element",
+          "Description": "Found element or null.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Select Element by Id\n\nSelect.ByElementId (id: var): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3341844;",
+      "Id": "ea87e3c9ef514db5aa7cb21f89772cfd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2b6d5e691d214edfbc9e98bf8bf26307",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Element.BoundingBox",
+      "Id": "b67c877cf5ac459e9555db5f812bc72f",
+      "Inputs": [
+        {
+          "Id": "e9f4d5482a1c453da4a01d7d4a2ac65d",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f26a8eae8b3c4abe9f03a61a97eae340",
+          "Name": "BoundingBox",
+          "Description": "BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get an Axis-aligned BoundingBox of the Element\n\nElement.BoundingBox: BoundingBox"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid",
+      "Id": "229e4d71c5b04f60813c8c84522bdd9b",
+      "Inputs": [
+        {
+          "Id": "8ce1a81a13d944d2a892b80513be060f",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "887fd4a997cf4e8396b18669d567c017",
+          "Name": "Cuboid",
+          "Description": "Returns cuboid representation of the bounding box.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the bounding box as a solid cuboid.\n\nBoundingBox.ToCuboid ( ): Cuboid"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e8b9fc9e2d0a4b599277abc684b41b15",
+      "End": "650eb265e834455d8230828183afbbb2",
+      "Id": "5d11ac8a540447418b2488b0f8ce368f"
+    },
+    {
+      "Start": "e8b9fc9e2d0a4b599277abc684b41b15",
+      "End": "30618a13e5a74bf788ba176da3aad2d3",
+      "Id": "7893e45e2dcb4f14acf2f0decceb55e6"
+    },
+    {
+      "Start": "6d1efd73693a4765a7762da9c01173f8",
+      "End": "1050fac091134842a5570f07835baf44",
+      "Id": "149e0a89af364323a38ddd6b98a22c2c"
+    },
+    {
+      "Start": "b376ee8790664fe7bc05f4420b89d122",
+      "End": "f6eea4f47ce6443c83ecf5a9e23f6fee",
+      "Id": "c883988d505e4039b7cd3fed5fff7a26"
+    },
+    {
+      "Start": "547bc13bcd3d4d33a56627857e2b2120",
+      "End": "3538ea788f8744b9927fe58706ae95da",
+      "Id": "a3c8de9b2254435d9cdfb893c36aacaa"
+    },
+    {
+      "Start": "7108d9192eb44b1d8823ffed13ba9562",
+      "End": "4c13a04f02704fabad2e7e08f693f906",
+      "Id": "e2117f10b0ca4b7ea54cbec5e2a3d189"
+    },
+    {
+      "Start": "86fe5c67abf1417f8dfbc06c8fe1189d",
+      "End": "0e215a15a3114467b0d00f61ba20f313",
+      "Id": "f2b4798ebecb4c23b8c60368429d50f7"
+    },
+    {
+      "Start": "a0da5b75a5d64b4894bd6f00a2a0df4d",
+      "End": "3bf471f40d7e4888a60636f1d36a8ec3",
+      "Id": "f35d021a98f449f09a4c6a1f448bbe7c"
+    },
+    {
+      "Start": "a0da5b75a5d64b4894bd6f00a2a0df4d",
+      "End": "b56c0bd7e33e47bb9dd86c6a411774ba",
+      "Id": "457af3a568ee4356bc488d3ebc53dc20"
+    },
+    {
+      "Start": "8f5453afb9b7497ea1ae18abad6f5747",
+      "End": "1d1f58867404468ea2312837a2e8b61b",
+      "Id": "13b8e7a5d40f40de9d097ad352797025"
+    },
+    {
+      "Start": "8f5453afb9b7497ea1ae18abad6f5747",
+      "End": "dfe8c829df6a45acab9763a598746177",
+      "Id": "5a1285ec81b5494c93711600c4fe826f"
+    },
+    {
+      "Start": "cc1ca3db45c34107b19437f21000745a",
+      "End": "83f034285cdb465cabb5c9dd133c08b2",
+      "Id": "949c547a0ad448139f7d067402b76964"
+    },
+    {
+      "Start": "7378cda09937484e92b00734079311d3",
+      "End": "f10f90b48a9740a388ff1c1e48426229",
+      "Id": "df1c4f27f25748fc9ce9dbd17070f272"
+    },
+    {
+      "Start": "024bb5f2b4324ce08887a667f0968b62",
+      "End": "b0077ad2fa774e7d9be5bbc77129b445",
+      "Id": "ca53d543f87d4fdeaca0f45466b164ba"
+    },
+    {
+      "Start": "38927dc05615493ea9c254bdf109ceb8",
+      "End": "4cbc7cff68ee457ba15e5b95e6bde6dd",
+      "Id": "56a005432a96477cbd31db3635e22bee"
+    },
+    {
+      "Start": "38927dc05615493ea9c254bdf109ceb8",
+      "End": "7b9f5c4065f54f81a3c0c226ad707258",
+      "Id": "4559cac5a0594bba8c2c5d3bd4f80589"
+    },
+    {
+      "Start": "1be4df8bfaa543fcadad248b752ef8b2",
+      "End": "608ceb6e7fa14cc1b59ab8feab5f19b5",
+      "Id": "0858c0648b254724a3ad1261744507f3"
+    },
+    {
+      "Start": "0cf955eeab874a24b36ce1a72f2570af",
+      "End": "e9f4d5482a1c453da4a01d7d4a2ac65d",
+      "Id": "4c4a582227454bb587e308bd3708ccc2"
+    },
+    {
+      "Start": "2b6d5e691d214edfbc9e98bf8bf26307",
+      "End": "2e307d4017df4d3a99a9e200fe4e3c43",
+      "Id": "3a139fb8a1dc408c9083ee1dc731dc87"
+    },
+    {
+      "Start": "f26a8eae8b3c4abe9f03a61a97eae340",
+      "End": "8ce1a81a13d944d2a892b80513be060f",
+      "Id": "a449a49431024aefad5b310a2ab2dc2b"
+    }
+  ],
+  "Dependencies": [
+    "17fade58-3be2-4ff9-86c8-503f5e4a1cba"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.3.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "b34c1afd16d8426b8702741054406952"
+      ]
+    },
+    {
+      "Name": "archi-lab.net",
+      "Version": "2022.210.1022",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "0bb209381d4949f2b23aa8575b8c1494"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.10",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -18.128791809082031,
+      "EyeY": 30.118497848510742,
+      "EyeZ": 15.975988388061523,
+      "LookX": 21.74481201171875,
+      "LookY": -25.918367385864258,
+      "LookZ": -19.765724182128906,
+      "UpX": -0.15119460225105286,
+      "UpY": 0.98095256090164185,
+      "UpZ": -0.12195252627134323
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "132_checkCompliance",
+        "Id": "64a4257bb428457cb18045f504226a7c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3254.503911511375,
+        "Y": -477.52662969369214
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "133_saveCheckingResults",
+        "Id": "aaf34c4816c74d3eb2878a68bf264155",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2685.4424326938238,
+        "Y": -487.4852889063136
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "134_analyzeModel",
+        "Id": "8eb1c7ed73784457b3bb1e239f04658f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2660.34497298498,
+        "Y": -152.31783393524617
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Select Phase",
+        "Id": "04644cf59112415aa82f24a0eb8efcdb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3262.0505180446421,
+        "Y": -111.77005191150442
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Room.Doors",
+        "Id": "b34c1afd16d8426b8702741054406952",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2980.4788431138936,
+        "Y": -111.63539801191587
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "2ecca8c8953d47008c94dfffad08a096",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3261.713847897116,
+        "Y": -198.50439163862632
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "All Elements of Category",
+        "Id": "012be5f811d84d75907c8b1d64f890d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2983.6155521070668,
+        "Y": -196.54172606652969
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "checkCompliance",
+        "Id": "ce1046e7fd0d4a30840da9bc2991e21b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3509.4443720559839,
+        "Y": -514.51039219692825
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "checkRules",
+        "Id": "daca8832219c4053a1e77ee344a5ddbc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3511.4608555409432,
+        "Y": -449.95095851588468
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "b06408f37389401098ddab27efbe2403",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2161.8189551097607,
+        "Y": -449.31411736483483
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "8c6d6ec03f6f47d4ae7a044f6c20f702",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -1859.8433026641039,
+        "Y": -539.835842453879
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "131_savectInput",
+        "Id": "b1e3a8a9713844bc8ae46df05be959c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2648.1358906883615,
+        "Y": -721.18324389661279
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "88000134984c48c9a5117ed9f980bb01",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2155.6966706404619,
+        "Y": -717.60271518379909
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "135_saveModelanalysis",
+        "Id": "e222566b2c9c49c9a3ec8eef27442887",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2410.7684478417486,
+        "Y": -153.94831712513144
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "c5fb95c6cf5c4a30a877e738390ca4aa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -2166.5261975673334,
+        "Y": -147.82507625170359
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "analyzeModel",
+        "Id": "1a391601f3b448ce8c1639977f3f9088",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3507.1311221928072,
+        "Y": -339.60409096210265
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "saveInput",
+        "Id": "deacf9e4c67345568fc660c9313d25e9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3503.762074228669,
+        "Y": -687.49129225627428
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Select.ByElementId",
+        "Id": "0bb209381d4949f2b23aa8575b8c1494",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3524.6549498798067,
+        "Y": 75.140618880351326
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "ea87e3c9ef514db5aa7cb21f89772cfd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3740.8273235319489,
+        "Y": 79.613428716723149
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Element.BoundingBox",
+        "Id": "b67c877cf5ac459e9555db5f812bc72f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3306.5401494717876,
+        "Y": 75.755345203683817
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BoundingBox.ToCuboid",
+        "Id": "229e4d71c5b04f60813c8c84522bdd9b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3024.4578593754854,
+        "Y": 82.0782035310612
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "bded5111b3d84bdcad5d2c0874bdb978",
+        "Title": "Process - F : Analyze Model\r\n",
+        "Nodes": [
+          "b34c1afd16d8426b8702741054406952",
+          "04644cf59112415aa82f24a0eb8efcdb",
+          "8eb1c7ed73784457b3bb1e239f04658f",
+          "012be5f811d84d75907c8b1d64f890d1",
+          "2ecca8c8953d47008c94dfffad08a096",
+          "e222566b2c9c49c9a3ec8eef27442887"
+        ],
+        "Left": -3272.0505180446421,
+        "Top": -323.84767522071587,
+        "Width": 1073.311920949162,
+        "Height": 331.0928742237254,
+        "FontSize": 48.0,
+        "InitialTop": -198.50439163862632,
+        "InitialHeight": 231.86899362671045,
+        "TextblockHeight": 115.34328358208955,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "6f55b607dddd4dfd881130c136c58496",
+        "Title": "Process - G : Save Input and Output\r\n",
+        "Nodes": [
+          "64a4257bb428457cb18045f504226a7c",
+          "aaf34c4816c74d3eb2878a68bf264155"
+        ],
+        "Left": -3264.503911511375,
+        "Top": -612.8285724884031,
+        "Width": 803.98685195187954,
+        "Height": 264.92880846635273,
+        "FontSize": 48.0,
+        "InitialTop": -487.4852889063136,
+        "InitialHeight": 154.95865921262146,
+        "TextblockHeight": 115.34328358208955,
+        "Background": "#FFFFC999"
+      }
+    ],
+    "X": 3648.2899624910424,
+    "Y": 477.75335903787231,
+    "Zoom": 0.921886344901794
+  }
+}

@@ -1,0 +1,1283 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Delete Mark Values from MEP Content",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 6,
+      "SelectedString": "OST_DuctTerminal",
+      "NodeType": "ExtensionNode",
+      "Id": "ee2acf6934dd45688cc2172f046ba977",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "27c71a54655e4b9c9de4593a0b44c627",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Element.SetParameterByName@string,var",
+      "Id": "8ebb0c7a9f6f43cbb28f63d334707964",
+      "Inputs": [
+        {
+          "Id": "9bd1883d152643d49d25bae92e707483",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "75516fc606944a31aa0060a6d3031599",
+          "Name": "parameterName",
+          "Description": "The name of the parameter to set.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7552d6cfbdf34366b44e9f72634cd298",
+          "Name": "value",
+          "Description": "The value.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0215169250854fac9ee93cefeda84fbf",
+          "Name": "Element",
+          "Description": "Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Set one of the element's parameters.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Mark",
+      "Id": "b70b2ad920854e4fb4236b11920c4aab",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a0c36414ead6411dad03285bdc07cebc",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "",
+      "Id": "88598273d3bb4971b898756122a833c4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c700a2846040407f9e644b7def1636d9",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.ElementsOfCategory, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "Id": "fafbc77f9d6d4bc58cc9fc7599f3a9c2",
+      "Inputs": [
+        {
+          "Id": "56cd0a34e2d64a7aa008eb132b80d489",
+          "Name": "Category",
+          "Description": "The Category",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c163616536254a8ab1e243baddb410dc",
+          "Name": "Elements",
+          "Description": "An element type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Get all elements of the specified category from the model."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 299,
+      "SelectedString": "OST_MechanicalEquipment",
+      "NodeType": "ExtensionNode",
+      "Id": "07fad3e0055e476aacfe9287f4f45e67",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b3c7579bad824106b3961dedc94d1d84",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 181,
+      "SelectedString": "OST_DuctCurves",
+      "NodeType": "ExtensionNode",
+      "Id": "29970442ed3b4d4d847c79481631f477",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0ae89dbcd00d4f14a76f83921a1fd44c",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 171,
+      "SelectedString": "OST_DuctFitting",
+      "NodeType": "ExtensionNode",
+      "Id": "0b9b014ede184de8801bf4a5eace9a13",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f655b5ec48194887bd5519b67dc6803f",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "7afe976c833e48c9b6e59bcf675b65f0",
+      "Inputs": [
+        {
+          "Id": "ce79fa33a36e4c40bc7ff2f0f9840c62",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "136ddc9877444a0393f83aa2103520b5",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aea544546b0d4214bf952bbf5e1e7f9d",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "25b2148ba9234dbe868b3362d4a1f154",
+          "Name": "item3",
+          "Description": "Item Index #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6899f417b76f4f1c840a38bf37f1b05b",
+          "Name": "item4",
+          "Description": "Item Index #4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9d87ba222b3a432a9fb088cc5a7cdd87",
+          "Name": "item5",
+          "Description": "Item Index #5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "56060a76b7fb44c0b3ef7ac47992426e",
+          "Name": "item6",
+          "Description": "Item Index #6",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5a621a0ee1144537a4b5af67dcc304e5",
+          "Name": "item7",
+          "Description": "Item Index #7",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eed60f1703894f5888d96612b838b84b",
+          "Name": "item8",
+          "Description": "Item Index #8",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "903ddf453676439c9bb7ac1f6ab5f65f",
+          "Name": "item9",
+          "Description": "Item Index #9",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3be6247f30d94da6822f98ec408e31c3",
+          "Name": "item10",
+          "Description": "Item Index #10",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "482bc097224a44c2b3f627b27b4bc5cc",
+          "Name": "item11",
+          "Description": "Item Index #11",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "82f03818ce5a4bc68abd77a5e7ed1536",
+          "Name": "item12",
+          "Description": "Item Index #12",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9ba876247f04402a842f47cd0b17e0e1",
+          "Name": "item13",
+          "Description": "Item Index #13",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bdf4c31d59734643861d4bdba817ac04",
+          "Name": "item14",
+          "Description": "Item Index #14",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "273dd24359ad4933b159839efc70e393",
+          "Name": "item15",
+          "Description": "Item Index #15",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "328b21a00e774365a895583993946aee",
+          "Name": "item16",
+          "Description": "Item Index #16",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fc9d0d32742a4b809a2093716f66c81e",
+          "Name": "item17",
+          "Description": "Item Index #17",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0aec9af49c0343e1b3520bd094ee1e68",
+          "Name": "item18",
+          "Description": "Item Index #18",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5d37ffe080d04583b9ea7f16f30cc02d",
+          "Name": "item19",
+          "Description": "Item Index #19",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d84ed51faddb4c4ca3949ff7da42d688",
+          "Name": "item20",
+          "Description": "Item Index #20",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4edafccad10640f89e9f22d4869bc5f5",
+          "Name": "list",
+          "Description": "A list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 174,
+      "SelectedString": "OST_DuctInsulations",
+      "NodeType": "ExtensionNode",
+      "Id": "186ba189defe4028bbc7f8bfb92a090c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "938a483bb59b4b1f84c475c91a387391",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 176,
+      "SelectedString": "OST_DuctLinings",
+      "NodeType": "ExtensionNode",
+      "Id": "396b87e64e3048b48173367885b0f982",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1c99a5f61c58491687db64785d9a7bb0",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 177,
+      "SelectedString": "OST_PlaceHolderDucts",
+      "NodeType": "ExtensionNode",
+      "Id": "7bf6d9277ea9470489d2bac3fb1f057e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2b4eb194b8e841e3ae22b8e5e09c867e",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 350,
+      "SelectedString": "OST_PlaceHolderPipes",
+      "NodeType": "ExtensionNode",
+      "Id": "f87af5227eea46d786ec3d79ce0ce15b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "657c548c2d464ae6b2a81b7503a8f6b1",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 353,
+      "SelectedString": "OST_PipeCurves",
+      "NodeType": "ExtensionNode",
+      "Id": "32e80a594cd045a6aa1a9cb7f8cc9f6d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c4714a09426f486eafd40dc6fccd1fbe",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 349,
+      "SelectedString": "OST_PipeInsulations",
+      "NodeType": "ExtensionNode",
+      "Id": "c9f97334801c42c7b5a53f3832e260e0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3f9667f27c18428293ece7e8ec3ebbd7",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 346,
+      "SelectedString": "OST_PipeFitting",
+      "NodeType": "ExtensionNode",
+      "Id": "dc84b7bd66cf44e29246596e5d8bd29d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0d0f192b842d4882a143013843f09e49",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 366,
+      "SelectedString": "OST_PlumbingFixtures",
+      "NodeType": "ExtensionNode",
+      "Id": "39dd0ddef2fe478eae76bbf6a26aa5e6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "36b7d98ef02545e3adcc475f94310b47",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 186,
+      "SelectedString": "OST_ElectricalEquipment",
+      "NodeType": "ExtensionNode",
+      "Id": "2cf578f6ccc1472c96b193eccaa20906",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ad493a240b1f4acaab18cd51e3acfb91",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 190,
+      "SelectedString": "OST_ElectricalFixtures",
+      "NodeType": "ExtensionNode",
+      "Id": "4345ec46b55f414287e5f24ce3449557",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "913872651b5b4017bbf02848d8d68cce",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 126,
+      "SelectedString": "OST_CommunicationDevices",
+      "NodeType": "ExtensionNode",
+      "Id": "542b2aeab2b247f7a17b32286d81888f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d60fec84a20b43b7833de92d93ad3c6f",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 128,
+      "SelectedString": "OST_ConduitFitting",
+      "NodeType": "ExtensionNode",
+      "Id": "3b053bfb08204aa998a00df979cb7613",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4541212b91ce4cc8b881b0602449dceb",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 130,
+      "SelectedString": "OST_ConduitRun",
+      "NodeType": "ExtensionNode",
+      "Id": "79f72cd3f34e43cda0ca9808f43e04a8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "29b35f0df2d2488cb6b5f0e8dc847b0f",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 132,
+      "SelectedString": "OST_Conduit",
+      "NodeType": "ExtensionNode",
+      "Id": "fac6708815f34323b0a1dff64e708b50",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bb2e1ec81b5045a68ef203521fb7ea76",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 632,
+      "SelectedString": "OST_Wire",
+      "NodeType": "ExtensionNode",
+      "Id": "f4cf6d5191a74588b95e9f252c32dc47",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b6fc5b2b08474d169e73cf1b2c835f50",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 253,
+      "SelectedString": "OST_LightingFixtures",
+      "NodeType": "ExtensionNode",
+      "Id": "07cd5e15154245d9b29def0fcc887bf0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a4ce3b78ecf54bae99c4a10e2f2f5a5d",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 251,
+      "SelectedString": "OST_LightingDevices",
+      "NodeType": "ExtensionNode",
+      "Id": "9312df898ec3418c9516b14bf4c1dd70",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f461c78bff8a4de9891eedaae02adf4e",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
+      "Id": "3a61ca8be22e487a9bea8ae8dc8425ec",
+      "Inputs": [
+        {
+          "Id": "ac23bc454fd7453483d09927bbb26127",
+          "Name": "list",
+          "Description": "List to flatten.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "526c8e0892b8462b9b3adae7eee208c2",
+          "Name": "amt",
+          "Description": "Layers of nesting to remove.\n\nint\nDefault value : -1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7b34d5daea9d4e4781432a40b7fdfc23",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amt: int = -1): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "27c71a54655e4b9c9de4593a0b44c627",
+      "End": "ce79fa33a36e4c40bc7ff2f0f9840c62",
+      "Id": "f5a4ad88f7334fc4bd21cfec35e34cae"
+    },
+    {
+      "Start": "a0c36414ead6411dad03285bdc07cebc",
+      "End": "75516fc606944a31aa0060a6d3031599",
+      "Id": "6b5d26f542bd411199778ff15146d3e4"
+    },
+    {
+      "Start": "c700a2846040407f9e644b7def1636d9",
+      "End": "7552d6cfbdf34366b44e9f72634cd298",
+      "Id": "464eb05b54b34f9ead473ea41668fdc8"
+    },
+    {
+      "Start": "c163616536254a8ab1e243baddb410dc",
+      "End": "ac23bc454fd7453483d09927bbb26127",
+      "Id": "7946bc060b594db9854ff4a0bfc5b38a"
+    },
+    {
+      "Start": "b3c7579bad824106b3961dedc94d1d84",
+      "End": "903ddf453676439c9bb7ac1f6ab5f65f",
+      "Id": "36cf5e6eff88437b833af98fd2675407"
+    },
+    {
+      "Start": "0ae89dbcd00d4f14a76f83921a1fd44c",
+      "End": "9d87ba222b3a432a9fb088cc5a7cdd87",
+      "Id": "d5b4d3cb78744249b55214beb0936d57"
+    },
+    {
+      "Start": "f655b5ec48194887bd5519b67dc6803f",
+      "End": "136ddc9877444a0393f83aa2103520b5",
+      "Id": "f1be5de3e55a4419b43334ff6cfcb965"
+    },
+    {
+      "Start": "4edafccad10640f89e9f22d4869bc5f5",
+      "End": "56cd0a34e2d64a7aa008eb132b80d489",
+      "Id": "a3737fa11ea84dee850be8c2c22a4130"
+    },
+    {
+      "Start": "938a483bb59b4b1f84c475c91a387391",
+      "End": "aea544546b0d4214bf952bbf5e1e7f9d",
+      "Id": "81b168f0f0ad4363814f850204377963"
+    },
+    {
+      "Start": "1c99a5f61c58491687db64785d9a7bb0",
+      "End": "25b2148ba9234dbe868b3362d4a1f154",
+      "Id": "7f37022ef45d4ee68b796d8ab622da89"
+    },
+    {
+      "Start": "2b4eb194b8e841e3ae22b8e5e09c867e",
+      "End": "6899f417b76f4f1c840a38bf37f1b05b",
+      "Id": "2215bd32ddc14e1584db2e5b31a0b544"
+    },
+    {
+      "Start": "657c548c2d464ae6b2a81b7503a8f6b1",
+      "End": "eed60f1703894f5888d96612b838b84b",
+      "Id": "cb56de7422c44aa9a87766a76fc12c9b"
+    },
+    {
+      "Start": "c4714a09426f486eafd40dc6fccd1fbe",
+      "End": "d84ed51faddb4c4ca3949ff7da42d688",
+      "Id": "3939bcacbebe4f0dbc512da5bb28857b"
+    },
+    {
+      "Start": "3f9667f27c18428293ece7e8ec3ebbd7",
+      "End": "5a621a0ee1144537a4b5af67dcc304e5",
+      "Id": "e80d66cb4e0744f586ec38f8932f1b06"
+    },
+    {
+      "Start": "0d0f192b842d4882a143013843f09e49",
+      "End": "56060a76b7fb44c0b3ef7ac47992426e",
+      "Id": "1e30e1b1e7094c6292c956fb5ddc6e08"
+    },
+    {
+      "Start": "36b7d98ef02545e3adcc475f94310b47",
+      "End": "3be6247f30d94da6822f98ec408e31c3",
+      "Id": "3894f398a4ad46d9b148183e844f95e8"
+    },
+    {
+      "Start": "ad493a240b1f4acaab18cd51e3acfb91",
+      "End": "482bc097224a44c2b3f627b27b4bc5cc",
+      "Id": "8c4f2b34a1e34b9fb63a8147098afcbc"
+    },
+    {
+      "Start": "913872651b5b4017bbf02848d8d68cce",
+      "End": "82f03818ce5a4bc68abd77a5e7ed1536",
+      "Id": "76e65319172a475d9c7eb7db2efd8fd7"
+    },
+    {
+      "Start": "d60fec84a20b43b7833de92d93ad3c6f",
+      "End": "9ba876247f04402a842f47cd0b17e0e1",
+      "Id": "2ebd7cac026e4e469a07c8b29c1bdd77"
+    },
+    {
+      "Start": "4541212b91ce4cc8b881b0602449dceb",
+      "End": "bdf4c31d59734643861d4bdba817ac04",
+      "Id": "ac70f723f51144449c3e33b778d7a7ad"
+    },
+    {
+      "Start": "29b35f0df2d2488cb6b5f0e8dc847b0f",
+      "End": "273dd24359ad4933b159839efc70e393",
+      "Id": "2ce58facfaf247f292e8caeae7bb130d"
+    },
+    {
+      "Start": "bb2e1ec81b5045a68ef203521fb7ea76",
+      "End": "328b21a00e774365a895583993946aee",
+      "Id": "c1af3d0f6fd44c74a242417443714c71"
+    },
+    {
+      "Start": "b6fc5b2b08474d169e73cf1b2c835f50",
+      "End": "fc9d0d32742a4b809a2093716f66c81e",
+      "Id": "02e5b2a08ff04f09b4d65fb4e8c05799"
+    },
+    {
+      "Start": "a4ce3b78ecf54bae99c4a10e2f2f5a5d",
+      "End": "0aec9af49c0343e1b3520bd094ee1e68",
+      "Id": "327d0b2b9aac4f9db932e42adc127054"
+    },
+    {
+      "Start": "f461c78bff8a4de9891eedaae02adf4e",
+      "End": "5d37ffe080d04583b9ea7f16f30cc02d",
+      "Id": "daa338b1920a49aba3c016d923033fa0"
+    },
+    {
+      "Start": "7b34d5daea9d4e4781432a40b7fdfc23",
+      "End": "9bd1883d152643d49d25bae92e707483",
+      "Id": "0d77483d44884c6ea5c8710981490d1a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7464",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "ee2acf6934dd45688cc2172f046ba977",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -175.910224226187,
+        "Y": -44.2715218377355
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Element.SetParameterByName",
+        "Id": "8ebb0c7a9f6f43cbb28f63d334707964",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1319.14739256254,
+        "Y": 96.1379795235161
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "b70b2ad920854e4fb4236b11920c4aab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 915.257674353953,
+        "Y": 127.530713717688
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "88598273d3bb4971b898756122a833c4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 914.457674353953,
+        "Y": 193.130713717688
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "All Elements of Category",
+        "Id": "fafbc77f9d6d4bc58cc9fc7599f3a9c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 811.334411525882,
+        "Y": 54.5493395470881
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "07fad3e0055e476aacfe9287f4f45e67",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -171.84408148265,
+        "Y": 503.572168832395
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "29970442ed3b4d4d847c79481631f477",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -173.426461204491,
+        "Y": 395.917022511582
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "0b9b014ede184de8801bf4a5eace9a13",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -177.979875916524,
+        "Y": 53.6297342176211
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Create",
+        "Id": "7afe976c833e48c9b6e59bcf675b65f0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 625.195484476335,
+        "Y": -49.8870286886877
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "186ba189defe4028bbc7f8bfb92a090c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -176.429791545739,
+        "Y": 139.518892300002
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "396b87e64e3048b48173367885b0f982",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -174.825087768619,
+        "Y": 223.956522516959
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "7bf6d9277ea9470489d2bac3fb1f057e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -174.983206257771,
+        "Y": 311.529204820699
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "f87af5227eea46d786ec3d79ce0ce15b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 60.8720040203099,
+        "Y": 315.356221910329
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "32e80a594cd045a6aa1a9cb7f8cc9f6d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 67.2978370223867,
+        "Y": 402.234926882994
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "c9f97334801c42c7b5a53f3832e260e0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 58.9199534470444,
+        "Y": 128.490849120398
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "dc84b7bd66cf44e29246596e5d8bd29d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 56.8111287954316,
+        "Y": 53.5712129457655
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "39dd0ddef2fe478eae76bbf6a26aa5e6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 52.3740199248959,
+        "Y": -45.1559951847724
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "2cf578f6ccc1472c96b193eccaa20906",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 316.537605156993,
+        "Y": 516.987313228752
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "4345ec46b55f414287e5f24ce3449557",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 292.287925292695,
+        "Y": -49.0299967752455
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "542b2aeab2b247f7a17b32286d81888f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 292.886808365531,
+        "Y": -136.190666931544
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "3b053bfb08204aa998a00df979cb7613",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 296.50847363757,
+        "Y": 43.8249194552171
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "79f72cd3f34e43cda0ca9808f43e04a8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 312.42965828074,
+        "Y": 314.430192752184
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "fac6708815f34323b0a1dff64e708b50",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 316.977781492916,
+        "Y": 413.297578092056
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "f4cf6d5191a74588b95e9f252c32dc47",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 298.40264187702,
+        "Y": 131.831154009922
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "07cd5e15154245d9b29def0fcc887bf0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 304.662675735023,
+        "Y": 225.552416487805
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "9312df898ec3418c9516b14bf4c1dd70",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 316.920631408125,
+        "Y": 610.453052786101
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Flatten",
+        "Id": "3a61ca8be22e487a9bea8ae8dc8425ec",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1053.88013357201,
+        "Y": 43.7855507813786
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "905ad6de5ff948cb9885115c2e36e98f",
+        "Title": "Delete Mark Values from MEP Content",
+        "Nodes": [
+          "058bc6c2c34d496c9334a4b57bbb4c3c"
+        ],
+        "Left": -558.924543086861,
+        "Top": -48.556906380007007,
+        "Width": 289.0,
+        "Height": 515.0,
+        "FontSize": 48.0,
+        "InitialTop": 134.443093619993,
+        "InitialHeight": 140.0,
+        "TextblockHeight": 173.0,
+        "Background": "#FF848484"
+      },
+      {
+        "Id": "058bc6c2c34d496c9334a4b57bbb4c3c",
+        "Title": "CATEGORY:\r\nAdministration\r\n\r\nDESCRIPTION:\r\nThis workflow gets all elements from Revit MEP categories in the model, and sets their Mark parameter values to empty.\r\n\r\nMODEL PREPARATION:\r\n- None\r\n\r\nNOTE:\r\n - None\r\n\r\nAUTHORS:\r\n- Autodesk\r\n\r\nCopyright(c) 2017, Autodesk\r\n\r\nREQUIRED PACKAGES:\r\n- None",
+        "Nodes": [],
+        "Left": -548.924543086861,
+        "Top": 134.443093619993,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 349.714936164439,
+    "Y": 89.8674466309251,
+    "Zoom": 0.522061523122638
+  }
+}

@@ -1,0 +1,10 @@
+1.Open the initial design
+2.Choose correct IFC Export Setup
+3.Export the initial design to IFC, 			save rvt. ->...._withifc.rvt
+4.mh_createParameters.dyn, 						save rvt. ->..._initialized.rvt
+5.mh_extractFamilyTypes.dyn 					if no Type IfcGUID, means the Family Type is not used yet.
+6.mh_extractFamilyInstances.dyn
+7.mh_extractTopology.dyn				
+X.outside Dynamo to get GP variations in the semantic solution space.
+?.mh_modifySemantics.dyn
+

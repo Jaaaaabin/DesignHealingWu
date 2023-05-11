@@ -1,0 +1,449 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Add Levels Above Selected Level (Imperial)",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "c7e27765da5043c1a58b5c8ab0e1d90f",
+      "Name": "Number of New Levels to Create",
+      "Type": "number",
+      "Value": "5",
+      "MaximumValue": 100.0,
+      "MinimumValue": 1.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Outputs": [
+    {
+      "Id": "48f572deed814a9e8e61e55d5e65127b",
+      "Name": "New Levels",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Level.ByLevelAndOffset@Revit.Elements.Level,double",
+      "Id": "26c3d228962c4ca786dd05acefa4f259",
+      "Inputs": [
+        {
+          "Id": "40f7651019e041a3962e6f337fa93a0e",
+          "Name": "level",
+          "Description": "Level",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3d72c0a386c64b968b9f3d58e982b3c9",
+          "Name": "offset",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "81249db18eba4bbfbb1410edcd3bf8a6",
+          "Name": "Level",
+          "Description": "Level",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Revit Level given it's length offset from an existing level\n\nLevel.ByLevelAndOffset (level: Level, offset: double): Level"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "48f572deed814a9e8e61e55d5e65127b",
+      "Inputs": [
+        {
+          "Id": "ea1dceb27e96421190fb0814e31c43b9",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d5142711bd1d41afb9c032886a647fae",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Sequence, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8e1b82622a0548cfaa3bed65213e3f4f",
+      "Inputs": [
+        {
+          "Id": "87267da112e64ef5b7fe37d72f7e812f",
+          "Name": "start",
+          "Description": "Number or letter to start the sequence at\r\nDefault value: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8ade3b229b71437fa9164bbe85611995",
+          "Name": "amount",
+          "Description": "Amount of numbers in the sequence\r\nDefault value: 10",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "769dca82ad1a46aeb64967abeea95141",
+          "Name": "step",
+          "Description": "Space between numbers or letters\r\nDefault value: 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "475012008e724ed1aa455d3f070b9369",
+          "Name": "seq",
+          "Description": "New sequence",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Longest",
+      "Description": "Creates a sequence of numbers."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 5,
+      "MaximumValue": 100,
+      "MinimumValue": 1,
+      "StepValue": 1,
+      "Id": "c7e27765da5043c1a58b5c8ab0e1d90f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8ffc365afc094bd8860223b92314eee3",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Nodes.DSModelElementSelection, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [],
+      "Id": "496c8315c6b44f3fa1c07ee5382d5a1f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "41c5ea666ea54b79afee5d2af9038782",
+          "Name": "Element",
+          "Description": "The selected elements.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "UnitsUI.LengthFromString, UnitsUI",
+      "Value": 3.0480000000121916,
+      "NodeType": "ExtensionNode",
+      "Id": "d49d9f428de342b3a1719a19b4cf74e7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2bbcb44037cd4989b30ded3babb7c755",
+          "Name": "number (Feet)",
+          "Description": "number (Feet)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enter a length."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "81249db18eba4bbfbb1410edcd3bf8a6",
+      "End": "ea1dceb27e96421190fb0814e31c43b9",
+      "Id": "ca248586b8574fe5a0b7bcea81b2435f"
+    },
+    {
+      "Start": "475012008e724ed1aa455d3f070b9369",
+      "End": "3d72c0a386c64b968b9f3d58e982b3c9",
+      "Id": "3c992ea68b97460b98137e9c7741e4c9"
+    },
+    {
+      "Start": "8ffc365afc094bd8860223b92314eee3",
+      "End": "8ade3b229b71437fa9164bbe85611995",
+      "Id": "4f3d70ed321042c2a254a96d54e4ee8e"
+    },
+    {
+      "Start": "41c5ea666ea54b79afee5d2af9038782",
+      "End": "40f7651019e041a3962e6f337fa93a0e",
+      "Id": "9c793626cc4e493398f2d9e9cdb92852"
+    },
+    {
+      "Start": "2bbcb44037cd4989b30ded3babb7c755",
+      "End": "87267da112e64ef5b7fe37d72f7e812f",
+      "Id": "6ab4893ad74341fc86c2122f4f3f0fbe"
+    },
+    {
+      "Start": "2bbcb44037cd4989b30ded3babb7c755",
+      "End": "769dca82ad1a46aeb64967abeea95141",
+      "Id": "9fc49470bcf4478da606465290ed706a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7464",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Level.ByLevelAndOffset",
+        "Id": "26c3d228962c4ca786dd05acefa4f259",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1566.36948852152,
+        "Y": 1370.04718514548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "New Levels",
+        "Id": "48f572deed814a9e8e61e55d5e65127b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "X": 1816.04529242129,
+        "Y": 1369.51147418219
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Sequence",
+        "Id": "8e1b82622a0548cfaa3bed65213e3f4f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1295.22261034208,
+        "Y": 1418.56458095669
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number of New Levels to Create",
+        "Id": "c7e27765da5043c1a58b5c8ab0e1d90f",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 893.674212218162,
+        "Y": 1624.10362641273
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Select a Level",
+        "Id": "496c8315c6b44f3fa1c07ee5382d5a1f",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 892.152298027921,
+        "Y": 1373.09676940716
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Distance from Selected Level (Feet and Inches)",
+        "Id": "d49d9f428de342b3a1719a19b4cf74e7",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 900.164864833017,
+        "Y": 1494.9840708674
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "0b42e51d2fb945a1b0da1898b8f077df",
+        "Title": "Create new levels",
+        "Nodes": [
+          "26c3d228962c4ca786dd05acefa4f259"
+        ],
+        "Left": 1556.36948852152,
+        "Top": 1340.04718514548,
+        "Width": 205.0,
+        "Height": 149.0,
+        "FontSize": 14.0,
+        "InitialTop": 1370.04718514548,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 20.0,
+        "Background": "#FFFFAA45"
+      },
+      {
+        "Id": "2469da6e08f648fbb3fa64e555a75d48",
+        "Title": "OUTPUT",
+        "Nodes": [
+          "48f572deed814a9e8e61e55d5e65127b"
+        ],
+        "Left": 1806.04529242129,
+        "Top": 1339.51147418219,
+        "Width": 101.0,
+        "Height": 124.0,
+        "FontSize": 14.0,
+        "InitialTop": 1369.51147418219,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 20.0,
+        "Background": "#FFD8D8D8"
+      },
+      {
+        "Id": "8a91a85d0ec840e1bbcbd4afe804197c",
+        "Title": "Compute level elevations",
+        "Nodes": [
+          "8e1b82622a0548cfaa3bed65213e3f4f"
+        ],
+        "Left": 1285.22261034208,
+        "Top": 1388.56458095669,
+        "Width": 208.0,
+        "Height": 175.0,
+        "FontSize": 14.0,
+        "InitialTop": 1418.56458095669,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 20.0,
+        "Background": "#FFB5B5B5"
+      },
+      {
+        "Id": "7d6fdb42bf184f90886ee7f1a5ba2dd4",
+        "Title": "Add Levels Above Selected Level (Imperial)",
+        "Nodes": [
+          "3169c91b012d4e0ca39d4081d7406c70"
+        ],
+        "Left": 881.248392917255,
+        "Top": 564.000881206101,
+        "Width": 318.0,
+        "Height": 630.0,
+        "FontSize": 48.0,
+        "InitialTop": 804.000881206101,
+        "InitialHeight": 140.0,
+        "TextblockHeight": 230.0,
+        "Background": "#FF848484"
+      },
+      {
+        "Id": "b63b9e3199784127961c7468512e7bb4",
+        "Title": "INPUT",
+        "Nodes": [
+          "496c8315c6b44f3fa1c07ee5382d5a1f",
+          "c7e27765da5043c1a58b5c8ab0e1d90f",
+          "df5bc0541b904e6095d011161e2399a6"
+        ],
+        "Left": 880.40865521872,
+        "Top": 1290.24391002083,
+        "Width": 322.26555699944197,
+        "Height": 401.85971639189984,
+        "FontSize": 14.0,
+        "InitialTop": 1320.24391002083,
+        "InitialHeight": 448.85971639189984,
+        "TextblockHeight": 20.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "df5bc0541b904e6095d011161e2399a6",
+        "Title": "Select a level. The best way to select a level is to navigate to section/elevation view.",
+        "Nodes": [],
+        "Left": 890.40865521872,
+        "Top": 1320.24391002083,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "3169c91b012d4e0ca39d4081d7406c70",
+        "Title": "CATEGORY:\r\nModeling\r\n\r\nDESCRIPTION:\r\nCreate a series of levels above the selected level.\r\n\r\nMODEL PREPARATION:\r\n- None\r\n\r\nNOTE:\r\n- To ensure that the levels will not be deleted the\r\nnext time you run the graph, avoid saving the graph.\r\n- Newly created levels will assume default 3D extents; adjust length(s) as necessary.\r\n- Crop Region extents may affect the visibility of newly created Levels. If a new level or levels is not visible in the active view, turn off the Crop Region.\r\n\r\nAUTHORS:\r\n- Autodesk\r\n\r\nCopyright (c) 2017, Autodesk\r\n\r\nREQUIRED PACKAGES:\r\n- None",
+        "Nodes": [],
+        "Left": 891.248392917255,
+        "Top": 804.000881206101,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -791.259354110734,
+    "Y": -1259.37743995485,
+    "Zoom": 1.02265321678594
+  }
+}
