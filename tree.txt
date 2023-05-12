@@ -1,0 +1,206 @@
+Folder PATH listing for volume System
+Volume serial number is 3899-0219
+C:.
+³   .gitignore
+³   LICENSE
+³   main.py
+³   README.md
+³   tree.txt
+³   
+ÃÄÄÄarchive
+³   ÃÄÄÄarchivedyns
+³   ³   ³   00_ini_checking.dyn
+³   ³   ³   10_autoParametrizing.dyn
+³   ³   ³   11_delParameters.dyn
+³   ³   ³   21_extractTopologyObjectsParameters.dyn
+³   ³   ³   22_extractObjectsAndSpaces.dyn
+³   ³   ³   23_extractTopologyObjects.dyn
+³   ³   ³   24_extractTopologyObjectSpace.dyn
+³   ³   ³   
+³   ³   ÃÄÄÄsave_old
+³   ³   ³       calculateLongestExitDistance.dyn
+³   ³   ³       healing_jn_checking.dyn
+³   ³   ³       
+³   ³   ÀÄÄÄsave_old_healing
+³   ³       ³   healing_jn_adjusting.dyn
+³   ³       ³   healing_jn_checking.dyn
+³   ³       ³   healing_jn_modeling.dyn
+³   ³       ³   
+³   ³       ÀÄÄÄrule_examples
+³   ³           ³   1 Press Play for More Information about Dynamo Player.dyn
+³   ³           ³   Calculate Longest Exit Distance.dyn
+³   ³           ³   Calculate Room Occupancy Load.dyn
+³   ³           ³   Calculate Total Length of Selected Lines.dyn
+³   ³           ³   Delete Mark Values from MEP Content.dyn
+³   ³           ³   
+³   ³           ÀÄÄÄsave
+³   ³                   1 Press Play for More Information about Dynamo Player.dyn
+³   ³                   Add Levels Above Selected Level (Imperial).dyn
+³   ³                   Add Levels Above Selected Level (Metric).dyn
+³   ³                   Calculate Longest Exit Distance.dyn
+³   ³                   Calculate Room Occupancy Load.dyn
+³   ³                   Calculate Total Length of Selected Lines.dyn
+³   ³                   Delete Mark Values from MEP Content.dyn
+³   ³                   Samples.zip
+³   ³                   Select All Not Keynoted in the Active View.dyn
+³   ³                   Select All Taggable Elements Not Tagged in the Active View.dyn
+³   ³                   Update Sheet Names to Upper Case.dyn
+³   ³                   
+³   ÀÄÄÄarchivenodes
+³           autoCheck.dyf
+³           autoParametrize.dyf
+³           extract-OB-SP.dyf
+³           extract-Topology-OB-OB.dyf
+³           extract-Topology-OB-PA.dyf
+³           extract-Topology-OB-SP.dyf
+³           varyGPs.dyf
+³           
+ÃÄÄÄdata
+³   ³   control.rvt
+³   ³   ini_gps_varytest.csv
+³   ³   
+³   ÃÄÄÄdata_0_ini
+³   ÃÄÄÄdata_1_param
+³   ³   ³   Execute_autoParametrize.dyn
+³   ³   ³   Execute_delParameters.dyn
+³   ³   ³   
+³   ³   ÀÄÄÄres
+³   ³           ini-parametrized-testE1.rvt
+³   ³           ini-parametrized.rvt
+³   ³           
+³   ÃÄÄÄdata_2_topo
+³   ³   ³   31_collectData.py
+³   ³   ³   32_createNetworkx.py
+³   ³   ³   33_collectParameters.py
+³   ³   ³   34_duplicateModel.py
+³   ³   ³   Execute_extractTopology.dyn
+³   ³   ³   Execute_visualizeSelection.dyn
+³   ³   ³   summary_of_GPs.xlsx
+³   ³   ³   
+³   ³   ÀÄÄÄres
+³   ³       ³   collected_GPs.json
+³   ³       ³   collected_Instances_Door.json
+³   ³       ³   collected_Instances_Slab.json
+³   ³       ³   collected_Instances_Space.json
+³   ³       ³   collected_Instances_Wall.json
+³   ³       ³   collected_Instances_Window.json
+³   ³       ³   collected_topology_GP_host.txt
+³   ³       ³   collected_topology_GP_objects.txt
+³   ³       ³   collected_topology_space_doors.txt
+³   ³       ³   collected_topology_space_host.txt
+³   ³       ³   collected_topology_space_seplines.txt
+³   ³       ³   collected_topology_space_walls.txt
+³   ³       ³   collected_topology_wall_host.txt
+³   ³       ³   collected_topology_wall_inserts.txt
+³   ³       ³   collected_topology_wall_slabs.txt
+³   ³       ³   collected_topology_wall_walls.txt
+³   ³       ³   df_AssociatedGPs.csv
+³   ³       ³   df_Doors.csv
+³   ³       ³   df_Parameters.csv
+³   ³       ³   df_Slabs.csv
+³   ³       ³   df_Spaces.csv
+³   ³       ³   df_Walls.csv
+³   ³       ³   df_Windows.csv
+³   ³       ³   ini_gps.csv
+³   ³       ³   
+³   ³       ÃÄÄÄexcludeLinksViaExternalWalls_k1
+³   ³       ³       df_AssociatedGPs.csv
+³   ³       ³       df_FailureNeighbors.csv
+³   ³       ³       df_InitialFailures.csv
+³   ³       ³       
+³   ³       ÃÄÄÄexcludeLinksViaExternalWalls_k2
+³   ³       ÃÄÄÄincludeLinksViaExternalWalls_k1
+³   ³       ÀÄÄÄincludeLinksViaExternalWalls_k2
+³   ÀÄÄÄdata_3_sa
+³       ³   Execute_autoCheck.dyn
+³       ³   Execute_varyGPs.dyn
+³       ³   testnewchecking.py
+³       ³   
+³       ÃÄÄÄdups
+³       ³       1.rvt
+³       ³       10.rvt
+³       ³       11.rvt
+³       ³       12.rvt
+³       ³       13.rvt
+³       ³       14.rvt
+³       ³       15.rvt
+³       ³       2.rvt
+³       ³       3.rvt
+³       ³       4.rvt
+³       ³       5.rvt
+³       ³       6.rvt
+³       ³       7.rvt
+³       ³       8.rvt
+³       ³       9.rvt
+³       ³       
+³       ÃÄÄÄres
+³       ³       1.h5
+³       ³       10.h5
+³       ³       11.h5
+³       ³       12.h5
+³       ³       13.h5
+³       ³       14.h5
+³       ³       15.h5
+³       ³       2.h5
+³       ³       3.h5
+³       ³       4.h5
+³       ³       5.h5
+³       ³       6.h5
+³       ³       7.h5
+³       ³       8.h5
+³       ³       9.h5
+³       ³       
+³       ÀÄÄÄvary
+³               1.rvt
+³               10.rvt
+³               11.rvt
+³               12.rvt
+³               13.rvt
+³               14.rvt
+³               15.rvt
+³               2.rvt
+³               3.rvt
+³               4.rvt
+³               5.rvt
+³               6.rvt
+³               7.rvt
+³               8.rvt
+³               9.rvt
+³               
+ÃÄÄÄini
+³   ³   00_ini_checking.dyn
+³   ³   
+³   ÃÄÄÄmodel
+³   ³       ini.rvt
+³   ³       
+³   ÃÄÄÄpresteps
+³   ³       00_BLD225071_Automating_Occupancy_Handout.pdf
+³   ³       01_setSpaceFunctions.dyn
+³   ³       02_copyOccupantLoadFactors.dyn
+³   ³       setSpaceFunctions.xlsx
+³   ³       
+³   ÃÄÄÄres
+³   ³       0.h5
+³   ³       
+³   ÀÄÄÄrules
+³           1010_1_1.pdf
+³           1017.pdf
+³           1020.pdf
+³           1207_3.pdf
+³           706_4.pdf
+³           
+ÃÄÄÄsrc
+³       base_classes.py
+³       base_external_packages.py
+³       base_functions.py
+³       const_analysis.py
+³       const_ibcrule.py
+³       const_project.py
+³       funct_pca.py
+³       funct_plot.py
+³       funct_region.py
+³       funct_sensi.py
+³       main.py
+³       __init__.py
+³       
+ÀÄÄÄtests

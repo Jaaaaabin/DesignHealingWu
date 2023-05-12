@@ -11,110 +11,207 @@ Introduction for ModelHealer Project.
 ## Project Structure
 
 ModelHealer\
-├── archive\
-│   ├── archivedyns\
-│       ├── ...\
-│       └── ...\
-│
-│   └── archivenodes\
-│       ├── autoCheck.dyf\
-│       ├── autoParametrize.dyf\
-│       ├── extract-OB-SP.dyf\
-│       ├── extract-Topology-OB-OB.dyf\
-│       ├── extract-Topology-OB-PA.dyf\
-│       ├── extract-Topology-OB-SP.dyf\
-│       └── varyGPs.dyf
-├── dir2\
-│   ├── file21.ext
-│   ├── file22.ext
-│   └── file23.ext
-├── dir3
-│   ├── file21.ext
-│   ├── file22.ext
-│   └── file23.ext
-├── dir4
-│   ├── file21.ext
-│   ├── file22.ext
-│   └── file23.ext
-├── dir5
-│   ├── file21.ext
-│   ├── file22.ext
-│   └── file23.ext
-├── dir6
-│   ├── file21.ext
-│   ├── file22.ext
-│   └── file23.ext
-├── dir7
-│   ├── file21.ext
-│   ├── file22.ext
-│   └── file23.ext
-├── file_in_root.ext
-└── README.md
-
-% ├── archive
-% │   │ 
-% │   ├── <onestorey>                                 # all data for the one storey model
-% │   │    ├── log                                    # log files for dynamo scripts
-% │   │    ├── res                                    # temporary results
-% │   │    ├── planfloor                              # planfloor
-% │   │    ├── plansite                               # plansite
-% │   │    ├── 0_basemodel.rvt                        # zero model without modeling
-% │   │    ├── 0_variationData.txt                    # variation information in each iteration
-% │   │    ├── save.rvt                               # backup
-% │   │    ├── initial_design.rvt                     # initial design in .rvt (parametrized)
-% │   │    ├── 1_MODEL.dyn                            # .dyn that creates the initial design
-% │   │    ├── 1_CHECK.dyn                            # .dyn that execute code compliance checking
-% │   │    ├── 3_ADJUST.dyn                           # .dyn that adjust the model for healing
-% │   │
-% │ 
-% ├── src
-% │   │ 
-% │   ├── <godyn>/<onestorey>                         #........ codes for Dynamo scripts
-% │   │ 		├── 01_getFileDirectory.py           
-% │   │ 		├── 02_setGlobalParameters.py
-% │   │ 		├── 03_constraints2Storey.py
-% │   │ 		├── 04_constraints2Zones.py
-% │   │ 		├── 05_constraints2Spaces.py
-% │   │ 		├── 06_integrateConstraints.py
-% │   │ 		├── 07_createReferences.py
-% │   │ 		├── 08_createGeometry.py
-% │   │ 		├── 09_exitReferences.py
-% │   │ 		├── 10_createOpenings.py
-% │   │ 		├── .....py
-% │   │ 		├── 21_freshParameters.py
-% │   │ 		├── 31_savectInput.py
-% │   │ 		├── 32_checkCompliance.py
-% │   │ 		├── 33_saveCheckingResults.py
-% │   │ 		├── 34_analyzeModel.py
-% │   │
-% │   ├── <gorvt>/<HealingRVT>
-% │   │    ├── AutoDynaRunAdjustPlugin/bin/Debug/AutoDynaRunAdjustPlugin.dll      # Revit add-in for auto adjusting.
-% │   │    ├── AutoDynaRunCheckPlugin/bin/Debug/AutoDynaRunCheckPlugin.dll        # Revit add-in for auto checking.
-% │   │    ├── StartProcess/bin/Debug/StartProcess.exe                            # external executer for Revit launching and killing.
-% │   │    ├── ...
-% │   │ 
-% │   │ 
-% │   ├── <healing>/*
-% │   │    ├── __init__.py
-% │   │    ├── __main__.py
-% │   │    ├── base_classes.py                # define basic classes
-% │   │    ├── base_constants.py              # define basic constant variables
-% │   │    ├── base_functions.py              # define basic functions
-% │   │    ├── external_packages.py           # import external packages
-% │   │    ├── plot_functions.py              # define rendering functions
-% │   │    ├── sa_functions.py                # define sensitivity analysis functions
-% │   │    ├── yah_1.py                       # build project and complete the first sampling.
-% │   │    ├── yah_2.py                       # analyze the first sampling results and complete the SA.
-% │   │    ├── yah_3.py                       # analyze the first sampling results and complete the PCA.
-% │   │
-% │
-% ├── tests
-% │   ├── ...
-% │
-% ├── .gitignore
-% ├── main.py
-% ├── transfer.json
-% └── README.md
-
-
+|   .gitignore
+|   LICENSE
+|   main.py
+|   README.md
+|   tree.txt
+|
++---archive
+|   +---archivedyns
+|   |   |   00_ini_checking.dyn
+|   |   |   10_autoParametrizing.dyn
+|   |   |   11_delParameters.dyn
+|   |   |   21_extractTopologyObjectsParameters.dyn
+|   |   |   22_extractObjectsAndSpaces.dyn
+|   |   |   23_extractTopologyObjects.dyn
+|   |   |   24_extractTopologyObjectSpace.dyn
+|   |   |
+|   |   +---save_old
+|   |   |       calculateLongestExitDistance.dyn
+|   |   |       healing_jn_checking.dyn
+|   |   |
+|   |   \---save_old_healing
+|   |       |   healing_jn_adjusting.dyn
+|   |       |   healing_jn_checking.dyn
+|   |       |   healing_jn_modeling.dyn
+|   |       |
+|   |       \---rule_examples
+|   |           |   1 Press Play for More Information about Dynamo Player.dyn
+|   |           |   Calculate Longest Exit Distance.dyn
+|   |           |   Calculate Room Occupancy Load.dyn
+|   |           |   Calculate Total Length of Selected Lines.dyn
+|   |           |   Delete Mark Values from MEP Content.dyn
+|   |           |
+|   |           \---save
+|   |                   1 Press Play for More Information about Dynamo Player.dyn
+|   |                   Add Levels Above Selected Level (Imperial).dyn
+|   |                   Add Levels Above Selected Level (Metric).dyn
+|   |                   Calculate Longest Exit Distance.dyn
+|   |                   Calculate Room Occupancy Load.dyn
+|   |                   Calculate Total Length of Selected Lines.dyn
+|   |                   Delete Mark Values from MEP Content.dyn
+|   |                   Samples.zip
+|   |                   Select All Not Keynoted in the Active View.dyn
+|   |                   Select All Taggable Elements Not Tagged in the Active View.dyn
+|   |                   Update Sheet Names to Upper Case.dyn
+|   |
+|   \---archivenodes
+|           autoCheck.dyf
+|           autoParametrize.dyf
+|           extract-OB-SP.dyf
+|           extract-Topology-OB-OB.dyf
+|           extract-Topology-OB-PA.dyf
+|           extract-Topology-OB-SP.dyf
+|           varyGPs.dyf
+|
++---data
+|   |   control.rvt
+|   |   ini_gps_varytest.csv
+|   |
+|   +---data_0_ini
+|   +---data_1_param
+|   |   |   Execute_autoParametrize.dyn
+|   |   |   Execute_delParameters.dyn
+|   |   |
+|   |   \---res
+|   |           ini-parametrized-testE1.rvt
+|   |           ini-parametrized.rvt
+|   |
+|   +---data_2_topo
+|   |   |   31_collectData.py
+|   |   |   32_createNetworkx.py
+|   |   |   33_collectParameters.py
+|   |   |   34_duplicateModel.py
+|   |   |   Execute_extractTopology.dyn
+|   |   |   Execute_visualizeSelection.dyn
+|   |   |   summary_of_GPs.xlsx
+|   |   |
+|   |   \---res
+|   |       |   collected_GPs.json
+|   |       |   collected_Instances_Door.json
+|   |       |   collected_Instances_Slab.json
+|   |       |   collected_Instances_Space.json
+|   |       |   collected_Instances_Wall.json
+|   |       |   collected_Instances_Window.json
+|   |       |   collected_topology_GP_host.txt
+|   |       |   collected_topology_GP_objects.txt
+|   |       |   collected_topology_space_doors.txt
+|   |       |   collected_topology_space_host.txt
+|   |       |   collected_topology_space_seplines.txt
+|   |       |   collected_topology_space_walls.txt
+|   |       |   collected_topology_wall_host.txt
+|   |       |   collected_topology_wall_inserts.txt
+|   |       |   collected_topology_wall_slabs.txt
+|   |       |   collected_topology_wall_walls.txt
+|   |       |   df_AssociatedGPs.csv
+|   |       |   df_Doors.csv
+|   |       |   df_Parameters.csv
+|   |       |   df_Slabs.csv
+|   |       |   df_Spaces.csv
+|   |       |   df_Walls.csv
+|   |       |   df_Windows.csv
+|   |       |   ini_gps.csv
+|   |       |
+|   |       +---excludeLinksViaExternalWalls_k1
+|   |       |       df_AssociatedGPs.csv
+|   |       |       df_FailureNeighbors.csv
+|   |       |       df_InitialFailures.csv
+|   |       |
+|   |       +---excludeLinksViaExternalWalls_k2
+|   |       +---includeLinksViaExternalWalls_k1
+|   |       \---includeLinksViaExternalWalls_k2
+|   \---data_3_sa
+|       |   Execute_autoCheck.dyn
+|       |   Execute_varyGPs.dyn
+|       |   testnewchecking.py
+|       |
+|       +---dups
+|       |       1.rvt
+|       |       10.rvt
+|       |       11.rvt
+|       |       12.rvt
+|       |       13.rvt
+|       |       14.rvt
+|       |       15.rvt
+|       |       2.rvt
+|       |       3.rvt
+|       |       4.rvt
+|       |       5.rvt
+|       |       6.rvt
+|       |       7.rvt
+|       |       8.rvt
+|       |       9.rvt
+|       |
+|       +---res
+|       |       1.h5
+|       |       10.h5
+|       |       11.h5
+|       |       12.h5
+|       |       13.h5
+|       |       14.h5
+|       |       15.h5
+|       |       2.h5
+|       |       3.h5
+|       |       4.h5
+|       |       5.h5
+|       |       6.h5
+|       |       7.h5
+|       |       8.h5
+|       |       9.h5
+|       |
+|       \---vary
+|               1.rvt
+|               10.rvt
+|               11.rvt
+|               12.rvt
+|               13.rvt
+|               14.rvt
+|               15.rvt
+|               2.rvt
+|               3.rvt
+|               4.rvt
+|               5.rvt
+|               6.rvt
+|               7.rvt
+|               8.rvt
+|               9.rvt
+|
++---ini
+|   |   00_ini_checking.dyn
+|   |
+|   +---model
+|   |       ini.rvt
+|   |
+|   +---presteps
+|   |       00_BLD225071_Automating_Occupancy_Handout.pdf
+|   |       01_setSpaceFunctions.dyn
+|   |       02_copyOccupantLoadFactors.dyn
+|   |       setSpaceFunctions.xlsx
+|   |
+|   +---res
+|   |       0.h5
+|   |
+|   \---rules
+|           1010_1_1.pdf
+|           1017.pdf
+|           1020.pdf
+|           1207_3.pdf
+|           706_4.pdf
+|
++---src
+|       base_classes.py
+|       base_external_packages.py
+|       base_functions.py
+|       const_analysis.py
+|       const_ibcrule.py
+|       const_project.py
+|       funct_pca.py
+|       funct_plot.py
+|       funct_region.py
+|       funct_sensi.py
+|       main.py
+|       __init__.py
+|
+\---tests
 ## Packages
