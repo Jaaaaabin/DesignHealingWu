@@ -1,6 +1,0 @@
-Folder PATH listing for volume System
-Volume serial number is 00000054 3899:0219
-C:\DEV\PHD\MODELHEALER\-
-Invalid path - \DEV\PHD\MODELHEALER\-
-No subfolders exist 
-
