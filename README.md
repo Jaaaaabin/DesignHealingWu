@@ -1,9 +1,21 @@
 # ModelHealer Project
 
-$ tree
-.
-├── archive
+## Introduction
+
+Introduction for ModelHealer Project.
+
+## Author
+
+**By** Jiabin Wu at the [Chair of Computational Modeling and Simulation](https://www.cee.ed.tum.de/cms/home/), [Technical University of Munich](https://www.tum.de/)
+
+## Project Structure
+
+ModelHealer\
+├── archive\
 │   ├── archivedyns\
+│       ├── ...\
+│       └── ...\
+│
 │   └── archivenodes\
 │       ├── autoCheck.dyf\
 │       ├── autoParametrize.dyf\
@@ -103,3 +115,6 @@ $ tree
 % ├── main.py
 % ├── transfer.json
 % └── README.md
+
+
+## Packages
