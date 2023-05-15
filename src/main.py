@@ -1,11 +1,11 @@
 #
 # __main__.py
-# #
-# from dupdesign import dup
-# from genguid import gen
-# from varydesign import vary
-# from renewguid import renew
+# 
+
+from topoCollection import topoCollect
+from graphCreation import graphCreate
 
 if __name__ == "__main__":
     
-    print ('this is the main function.')
+    # topoCollect()
+    graphCreate()

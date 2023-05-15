@@ -1,7 +1,6 @@
-"""
-This is the principal module of the healing project.
-here you put your main functions.
-"""
+#
+# funct_sensi.py
+#
 
 # import packages
 from base_external_packages import *

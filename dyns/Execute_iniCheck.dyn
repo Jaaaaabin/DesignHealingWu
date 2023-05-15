@@ -2,7 +2,7 @@
   "Uuid": "e7f86b79-9e35-4815-88a5-b9cfc2d5cd27",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "00_auto_checking",
+  "Name": "Execute_iniCheck",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -105,7 +105,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\00_auto_check\\res\\",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\res\\",
       "Id": "83839a08f7384277b495f7b3d9dfd69c",
       "Inputs": [],
       "Outputs": [
@@ -237,7 +237,7 @@
         "Left": -35.668671359187954,
         "Top": 473.66872693622122,
         "Width": 483.70096353636842,
-        "Height": 391.20922175275189,
+        "Height": 382.77638593185634,
         "FontSize": 36.0,
         "InitialTop": 570.35529410040033,
         "InitialHeight": 356.46295309603545,

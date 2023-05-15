@@ -2,7 +2,7 @@
   "Uuid": "2dc1a11b-336f-4e95-a5df-29de888d6b16",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "20_extractTopology",
+  "Name": "Execute_extractTopology",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -172,7 +172,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\20_extract_data\\res\\",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\topo\\",
       "Id": "287a9bddfb9446d79330073c986f3f6f",
       "Inputs": [],
       "Outputs": [
@@ -706,191 +706,191 @@
     },
     "NodeViews": [
       {
+        "ShowGeometry": true,
+        "Name": "extract-Topology-OB-PA",
         "Id": "48cd49d3ebbe48a7ab24926109c69652",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "extract-Topology-OB-PA",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 758.8348674929714,
         "Y": -369.30955941983979
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "70fe747d2c474f30a1c9765244bd4d09",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 524.14830032879217,
         "Y": -343.30955941983979
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "c21db13a77854c36a61a41daf010835d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 521.543642801249,
         "Y": -169.05529158185081
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "6c68d7fbca4647f1a4e010b46b899f18",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 521.543642801249,
         "Y": -85.05529158185081
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "bc3fac74d4014fc18324089b540f10e0",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 521.543642801249,
         "Y": -1.0552915818508382
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "13cdb3f8141e4b9ebfbce3d4066e45d2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 521.543642801249,
         "Y": 82.944708418149162
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "cc245a3ac389446dbd9057598a1a7715",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 521.543642801249,
         "Y": 166.94470841814916
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "287a9bddfb9446d79330073c986f3f6f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 128.01975762258269,
-        "Y": 145.17893143779557
+        "X": 128.019757622583,
+        "Y": 145.178931437796
       },
       {
+        "ShowGeometry": true,
+        "Name": "extract-OB-SP",
         "Id": "412fa3ee10b04f7aafe5ac12a3f73096",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "extract-OB-SP",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 837.90185175647287,
         "Y": -79.05529158185081
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "44666a9691b3485fb9f77c4d53900021",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.19483543100921,
         "Y": 325.86405941526914
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "4bde87fbc22d4d018423f6a81927bdad",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.19483543100921,
         "Y": 424.8640594152692
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "dd76f17594d2445da06123275ce2ca18",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.19483543100921,
         "Y": 524.86405941526914
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "e0c5da0805d34883945ee38ec0d8f488",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.19483543100921,
         "Y": 623.86405941526914
       },
       {
+        "ShowGeometry": true,
+        "Name": "extract-Topology-OB-SP",
         "Id": "5ccbe633a4564d639984d4d05d944e7b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "extract-Topology-OB-SP",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 841.70229811757645,
         "Y": 409.86405941526914
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "12aa4a347aef44e286e8732fcd879db5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.74155118801229,
         "Y": 820.10212236615746
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "7a08a39f02a14b399d8ea38e2d3222b9",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.74155118801229,
         "Y": 920.10212236615746
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "6286c3c26b364adbb973059eb9557309",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.74155118801229,
         "Y": 1004.1021223661575
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "ac529fb88ff0497ab9564f05bdda2e66",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 523.74155118801229,
         "Y": 1088.1021223661573
       },
       {
+        "ShowGeometry": true,
+        "Name": "extract-Topology-OB-OB",
         "Id": "4d6c96d094a14cecb56567f89221e0c2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "extract-Topology-OB-OB",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 838.66692432234072,
         "Y": 893.10212236615746
@@ -976,8 +976,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": 240.43075951362357,
-    "Y": 341.34454867170393,
-    "Zoom": 0.628611816054265
+    "X": 118.14090456984016,
+    "Y": 199.63393149255353,
+    "Zoom": 1.3177702528614059
   }
 }
