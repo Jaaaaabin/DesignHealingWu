@@ -119,8 +119,8 @@ def graphCreate():
     attrs_gp = df_gp_instances.to_dict(orient = 'index')
 
     # include edges selectively.
-    all_df_edges_object = [df_edges_wall_h_walls, df_edges_wall_h_slabs] # df_edges_wall_h_inserts
-    all_df_edges_space = [df_edges_space_h_walls] #df_edges_space_h_doors
+    all_df_edges_object = [df_edges_wall_h_walls, df_edges_wall_h_slabs] # no doors/windows: df_edges_wall_h_inserts
+    all_df_edges_space = [df_edges_space_h_walls] # no doors/windwos df_edges_space_h_doors
     all_df_edges_parameter = [df_edges_parameter_h_objects]
     all_df_edges = all_df_edges_object + all_df_edges_space + all_df_edges_parameter
 
@@ -174,11 +174,16 @@ def graphCreate():
         dictGraphs[rule], dictFailureNeighbors[rule], dictAssociatedGPs[rule] = locate_failures_per_rule(
             G_all, dictFailures, rule,
             LABLE_ASSOCIATED_GP, LABEL_FAILURE_NEIGHBOR, LABEL_FAILURE_LOCATION,
-            level_neighbor=LEVEL_FAILURE_NEIGHBOR, set_exception=True)
+            level_neighbor=LEVEL_FAILURE_NEIGHBOR,
+            class_link = ['Element_Wall', 'Space'],
+            set_link_exception = [True, False],
+            link_exceptionname = ['isexternal','name'],
+            link_exception_value = [1, 'Corridor'],
+            )
         
         # plot the networkx.
-        plot_networkx_per_rule(
-            DIRS_DATA_TOPO, dictGraphs[rule], rule, nodesize_map_by_object_type, nodecolor_map_by_object_type)
+        # plot_networkx_per_rule(
+        #     DIRS_DATA_TOPO, dictGraphs[rule], rule, nodesize_map_by_object_type, nodecolor_map_by_object_type)
 
     # write to csv for the failure information.
     dfInitialFailures = pd.DataFrame(dict(
