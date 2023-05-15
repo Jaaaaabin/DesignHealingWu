@@ -1,0 +1,358 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Update Sheet Names to Upper Case",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "DSRevitNodesUI.ElementsOfType, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "Id": "9f29015bf4fa463da81cb202450ed4be",
+      "Inputs": [
+        {
+          "Id": "c298f8ec98114f848ee906850fe9c245",
+          "Name": "element type",
+          "Description": "An element type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "be766c8fef6047f08a6075222a68e2b7",
+          "Name": "elements",
+          "Description": "All elements in the active document of a given type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All elements in the active document of a given type."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.ElementTypes, DSRevitNodesUI",
+      "SelectedIndex": 343,
+      "SelectedString": "ViewSheet",
+      "NodeType": "ExtensionNode",
+      "Id": "88def293c23d4533bcf94421fb345c4f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5290b51c6f204b90b03a06fd90c9b7aa",
+          "Name": "Types",
+          "Description": "The selected Types",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All element subtypes."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Element.GetParameterValueByName@string",
+      "Id": "ac1c3be4081b4e768ac242f44a5eb0a9",
+      "Inputs": [
+        {
+          "Id": "1a2cd8dbd02640dfa2e88f718e94b30a",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ab97ccd6c61345cf8c1c7a15d43564d5",
+          "Name": "parameterName",
+          "Description": "The name of the parameter whose value you want to obtain.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "59210be621f248daaedf5f8c77fa1297",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the value of one of the element's parameters.\n\nElement.GetParameterValueByName (parameterName: string): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Element.SetParameterByName@string,var",
+      "Id": "d0d951f2791647c9857c5a8fd47c2916",
+      "Inputs": [
+        {
+          "Id": "def72b05ab204ab68e2ce6a3442192ff",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2c4fe4e7c3444c78bb39dd326c37144a",
+          "Name": "parameterName",
+          "Description": "The name of the parameter to set.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d65cb95d0665436583aaf6233a13a286",
+          "Name": "value",
+          "Description": "The value.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0110d05d415e403e8862b49c26226fc6",
+          "Name": "Element",
+          "Description": "Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Set one of the element's parameters.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Sheet Name\";",
+      "Id": "a1c1344bbff14ae99dbddac05ef97620",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "046bc216756147ffb3bd8ab02194165f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.ToUpper@string",
+      "Id": "64e52782c33b4817a91e04ea77dfe94f",
+      "Inputs": [
+        {
+          "Id": "ead11358b6264b05861990903ff84cfc",
+          "Name": "str",
+          "Description": "String to be made uppercase.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9da256528c6f4f4081982a68fab50e24",
+          "Name": "str",
+          "Description": "Uppercase string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the given string to all uppercase characters.\n\nString.ToUpper (str: string): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "be766c8fef6047f08a6075222a68e2b7",
+      "End": "1a2cd8dbd02640dfa2e88f718e94b30a",
+      "Id": "dc195613fcc94c6ab8393208545c2887"
+    },
+    {
+      "Start": "be766c8fef6047f08a6075222a68e2b7",
+      "End": "def72b05ab204ab68e2ce6a3442192ff",
+      "Id": "be78cadd28ee42acbc571e2465ee1139"
+    },
+    {
+      "Start": "5290b51c6f204b90b03a06fd90c9b7aa",
+      "End": "c298f8ec98114f848ee906850fe9c245",
+      "Id": "23f92acbdef043dbbc3d415209019bde"
+    },
+    {
+      "Start": "59210be621f248daaedf5f8c77fa1297",
+      "End": "ead11358b6264b05861990903ff84cfc",
+      "Id": "5c3e0e97fcb44c459bf92b09d024fc10"
+    },
+    {
+      "Start": "046bc216756147ffb3bd8ab02194165f",
+      "End": "ab97ccd6c61345cf8c1c7a15d43564d5",
+      "Id": "1650642b2ac24f2eae35e21c60981d7c"
+    },
+    {
+      "Start": "046bc216756147ffb3bd8ab02194165f",
+      "End": "2c4fe4e7c3444c78bb39dd326c37144a",
+      "Id": "efd5b7e05fa04b05a72ac352f6d3f8a5"
+    },
+    {
+      "Start": "9da256528c6f4f4081982a68fab50e24",
+      "End": "d65cb95d0665436583aaf6233a13a286",
+      "Id": "de49d893b2f64f0ca78f760b42d09034"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7464",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "All Elements of Type",
+        "Id": "9f29015bf4fa463da81cb202450ed4be",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 218.493891687767,
+        "Y": -19.9788245175919
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Element Types",
+        "Id": "88def293c23d4533bcf94421fb345c4f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 34.4979638959222,
+        "Y": -19.9788245175919
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Element.GetParameterValueByName",
+        "Id": "ac1c3be4081b4e768ac242f44a5eb0a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 517.500814441631,
+        "Y": -75.9572418143682
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Element.SetParameterByName",
+        "Id": "d0d951f2791647c9857c5a8fd47c2916",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 968.25179254546,
+        "Y": 165.678865546125
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a1c1344bbff14ae99dbddac05ef97620",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 270.176640986022,
+        "Y": 61.2908193167244
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.ToUpper",
+        "Id": "64e52782c33b4817a91e04ea77dfe94f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 814.455080476032,
+        "Y": 34.2643793165483
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "c9533a63b7d541a6b30aafea46acd311",
+        "Title": "Update Sheet Names to Upper Case",
+        "Nodes": [
+          "d452bd87c702403f9c976b9d6af3f648"
+        ],
+        "Left": 32.2768396965622,
+        "Top": -573.621575780373,
+        "Width": 296.0,
+        "Height": 500.99999999999994,
+        "FontSize": 48.0,
+        "InitialTop": -390.621575780373,
+        "InitialHeight": 140.0,
+        "TextblockHeight": 173.0,
+        "Background": "#FF848484"
+      },
+      {
+        "Id": "d452bd87c702403f9c976b9d6af3f648",
+        "Title": "CATEGORY:\r\nAdministration\r\n\r\nDESCRIPTION:\r\nThis workflow sets the names of all Sheets in the model to UPPER CASE. \r\n\r\nMODEL PREPARATION:\r\n- None\r\n\r\nNOTE:\r\n - None\r\n\r\nAUTHORS:\r\n- Autodesk\r\n\r\nCopyright(c) 2017, Autodesk\r\n\r\nREQUIRED PACKAGES:\r\n- None",
+        "Nodes": [],
+        "Left": 42.2768396965622,
+        "Top": -390.621575780373,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 74.1647498245798,
+    "Y": 388.624567855779,
+    "Zoom": 0.800325909369512
+  }
+}
