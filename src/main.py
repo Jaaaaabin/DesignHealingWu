@@ -7,5 +7,5 @@ from graphCreation import graphCreate
 
 if __name__ == "__main__":
     
-    topoCollect()
-    graphCreate()
+    # topoCollect()
+    # graphCreate()

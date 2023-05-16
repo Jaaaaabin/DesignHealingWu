@@ -1074,26 +1074,6 @@
       "Description": "Creates a string."
     },
     {
-      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\topo\\res_ini_perrule_failure.csv",
-      "Id": "bc5f352ef26e47b9b2dcf7da7e5c7f07",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "4932386eec29466b80dff6a061d000ca",
-          "Name": "",
-          "Description": "String",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a string."
-    },
-    {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\nimport healVisual\r\nimportlib.reload(healVisual)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\ncsvPath = IN[0]\r\n\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\nout = []\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nout = healBasics.readCSV(csvPath, skip_first_col=True, transpose=True, clear_list=True)\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out\r\n\r\n\r\n\r\n\r\n\r\n",
@@ -1128,7 +1108,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "IBC1207_3",
+      "InputValue": "IBC1020_2",
       "Id": "3b94a1a09c1b4981b8efb91929a7d019",
       "Inputs": [],
       "Outputs": [
@@ -2437,7 +2417,7 @@
         "Id": "98d476202ed247bd8bfff3b2593e4beb",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Excluded": true,
+        "Excluded": false,
         "X": -2421.2878594455842,
         "Y": 484.42053580243032
       },
@@ -2447,7 +2427,7 @@
         "Id": "a611d62f3a7b412e8a1323104f7b371e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Excluded": true,
+        "Excluded": false,
         "X": -2211.369939445075,
         "Y": 374.5083522109029
       },
@@ -2763,16 +2743,6 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "String",
-        "Id": "bc5f352ef26e47b9b2dcf7da7e5c7f07",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -1588.7852416162659,
-        "Y": 933.80049506465957
-      },
-      {
-        "ShowGeometry": true,
         "Name": "readCSV",
         "Id": "e276a78249264cbd9402430325ca204d",
         "IsSetAsInput": false,
@@ -3068,7 +3038,7 @@
         "Height": 310.43457165122891,
         "FontSize": 36.0,
         "InitialTop": 374.5083522109029,
-        "InitialHeight": 145.0,
+        "InitialHeight": 254.91218359152742,
         "TextblockHeight": 86.68656716417911,
         "Background": "#FFC1D676"
       },
@@ -3103,7 +3073,7 @@
         "Height": 592.701492537313,
         "FontSize": 36.0,
         "InitialTop": 1123.9919057159964,
-        "InitialHeight": 572.99999999999966,
+        "InitialHeight": 572.99999999999977,
         "TextblockHeight": 86.68656716417911,
         "Background": "#FFC1D676"
       },
@@ -3120,12 +3090,12 @@
           "02dbf6b75e29496781562d1fa4c1a57d"
         ],
         "Left": -2412.1318939844869,
-        "Top": 702.39960515843086,
+        "Top": 702.399605158431,
         "Width": 1572.4179104477612,
         "Height": 284.70149253731347,
         "FontSize": 36.0,
         "InitialTop": 799.08617232261008,
-        "InitialHeight": 265.00000000000006,
+        "InitialHeight": 265.0,
         "TextblockHeight": 86.68656716417911,
         "Background": "#FFC1D676"
       },
@@ -3147,7 +3117,7 @@
         "Height": 284.70149253731324,
         "FontSize": 36.0,
         "InitialTop": 1759.6824306888552,
-        "InitialHeight": 218.01492537313436,
+        "InitialHeight": 265.0,
         "TextblockHeight": 86.68656716417911,
         "Background": "#FFC1D676"
       },
@@ -3182,13 +3152,13 @@
         "Height": 592.70149253731643,
         "FontSize": 36.0,
         "InitialTop": 2064.8430738291418,
-        "InitialHeight": 526.01492537313709,
+        "InitialHeight": 573.00000000000318,
         "TextblockHeight": 86.68656716417911,
         "Background": "#FFC1D676"
       }
     ],
-    "X": 1774.5911225984644,
-    "Y": 219.98317025490883,
-    "Zoom": 0.67711915571151082
+    "X": 2478.4435440435618,
+    "Y": -685.52642324555234,
+    "Zoom": 0.79700811695970319
   }
 }

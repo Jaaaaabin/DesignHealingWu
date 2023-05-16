@@ -119,8 +119,8 @@ def graphCreate():
     attrs_gp = df_gp_instances.to_dict(orient = 'index')
 
     # include edges selectively.
-    all_df_edges_object = [df_edges_wall_h_walls, df_edges_wall_h_slabs] # no doors/windows: df_edges_wall_h_inserts
-    all_df_edges_space = [df_edges_space_h_walls] # no doors/windwos df_edges_space_h_doors
+    all_df_edges_object = [df_edges_wall_h_walls, df_edges_wall_h_slabs]        # no doors/windows: df_edges_wall_h_inserts
+    all_df_edges_space = [df_edges_space_h_walls]                               # no doors/windwos df_edges_space_h_doors
     all_df_edges_parameter = [df_edges_parameter_h_objects]
     all_df_edges = all_df_edges_object + all_df_edges_space + all_df_edges_parameter
 
