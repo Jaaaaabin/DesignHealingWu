@@ -13,18 +13,21 @@ FILE_INIT_RVT = DIRS_INIT + r'\model\ini.rvt'
 FILE_INIT_RVT = DIRS_INIT + r'\model\ini_param.rvt'
 FILE_INIT_RES = DIRS_INIT + r'\res\0.h5'
 
+# DIRS_DATA_TOPO = r'C:\dev\phd\enrichgraph\data\ini\res'
 DIRS_DATA_TOPO = DIRS_INIT + r'\topo'
-FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_Parameters.csv'
+FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_parameter.csv'
 
-FILE_RELATED_FL_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_Failures.csv'
-FILE_RELATED_NB_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_FailureNeighbors.csv'
-FILE_RELATED_GP_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_Parameters.csv'
-FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_Parameters.csv'
+FILE_RELATED_FL_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failure.csv'
+FILE_RELATED_NB_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureneighbor.csv'
+FILE_RELATED_GP_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_parameter.csv'
+FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter.csv'
 
-NAME_INSTANCE_COLLECTION = r'\collected_Instances_'
+NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter']
+NAME_INSTANCE_COLLECTION = r'\collected_instances_'
+
 NAME_TOPO_OBJECT = r'\collected_topology_wall_'
 NAME_TOPO_SPACE = r'\collected_topology_space_'
-NAME_TOPO_PARAMETER = r'\collected_topology_GP_'
+NAME_TOPO_PARAMETER = r'\collected_topology_parameter_'
 
 # directory: dynamo scripts
 DIRS_SCRIPT_DYN = DIRS_ZERO + r'\dyns'

@@ -7,8 +7,8 @@ from const_project import FILE_INIT_RES, DIRS_DATA_TOPO
 from const_project import NAME_TOPO_OBJECT, NAME_TOPO_SPACE, NAME_TOPO_PARAMETER
 from const_project import FILE_LIST_GP, FILE_RELATED_GP_PERRULE, FILE_RELATED_FL_PERRULE, FILE_RELATED_NB_PERRULE, FILE_RELATED_GP_INI
 
-from const_ibcrule import BUILDING_RULES
-from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
+from const_ibcrule import BUILDING_RULES, LEVEL_FAILURE_NEIGHBOR, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
+from const_ibcrule import CLASS_LINKAGE, EXCEPTION_LINKAGE, EXCEPTION_NAME_LINKAGE, EXCEPTION_VALUE_LINKAGE
 
 from funct_topo import *
 
@@ -100,10 +100,10 @@ def graphCreate():
 
     # Build networkx attributes
     # object attributes
-    df_doorinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_Doors.csv', index_col ='ifcguid')
-    df_windowinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_Windows.csv', index_col ='ifcguid')
-    df_wallinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_Walls.csv', index_col ='ifcguid')
-    df_slabinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_Slabs.csv', index_col ='ifcguid')
+    df_doorinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_door.csv', index_col ='ifcguid')
+    df_windowinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_window.csv', index_col ='ifcguid')
+    df_wallinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_wall.csv', index_col ='ifcguid')
+    df_slabinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_slab.csv', index_col ='ifcguid')
 
     attrs_door = df_doorinstances.to_dict(orient = 'index')
     attrs_window = df_windowinstances.to_dict(orient = 'index')
@@ -111,11 +111,11 @@ def graphCreate():
     attrs_slab = df_slabinstances.to_dict(orient = 'index')
 
     # space attributes
-    df_spaceinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_Spaces.csv', index_col ='ifcguid')
+    df_spaceinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_space.csv', index_col ='ifcguid')
     attrs_space = df_spaceinstances.to_dict(orient = 'index')
 
     # parameter-based attibutes
-    df_gp_instances = pd.read_csv(DIRS_DATA_TOPO+'\df_Parameters.csv', index_col ='name')
+    df_gp_instances = pd.read_csv(DIRS_DATA_TOPO+'\df_parameter.csv', index_col ='name')
     attrs_gp = df_gp_instances.to_dict(orient = 'index')
 
     # include edges selectively.
@@ -141,24 +141,24 @@ def graphCreate():
 
     # visualization of the failures.
     nodesize_map_by_object_type = {
-        'Element_Door':50,
-        'Element_Window':50,
-        'Element_Wall':50,
-        'Element_Slab':50,
-        'Space':150,
-        'Parameter_Global':30,
+        'door':50,
+        'window':50,
+        'wall':50,
+        'slab':50,
+        'space':150,
+        'parameter':30,
         LABEL_FAILURE_LOCATION:100,
         LABEL_FAILURE_NEIGHBOR:100,
         LABLE_ASSOCIATED_GP:30,
         }
 
     nodecolor_map_by_object_type = {
-        'Element_Door':'green',
-        'Element_Window':'skyblue',
-        'Element_Wall':'darkorange',
-        'Element_Slab':'yellow',
-        'Space':'navy',
-        'Parameter_Global':'grey',
+        'door':'green',
+        'window':'skyblue',
+        'wall':'darkorange',
+        'slab':'yellow',
+        'space':'navy',
+        'parameter':'grey',
         LABEL_FAILURE_LOCATION:'red',
         LABEL_FAILURE_NEIGHBOR:'brown',
         LABLE_ASSOCIATED_GP:'maroon',
@@ -175,15 +175,15 @@ def graphCreate():
             G_all, dictFailures, rule,
             LABLE_ASSOCIATED_GP, LABEL_FAILURE_NEIGHBOR, LABEL_FAILURE_LOCATION,
             level_neighbor=LEVEL_FAILURE_NEIGHBOR,
-            class_link = ['Element_Wall', 'Space'],
-            set_link_exception = [True, False],
-            link_exceptionname = ['isexternal','name'],
-            link_exception_value = [1, 'Corridor'],
+            class_link = CLASS_LINKAGE,
+            set_link_exception = EXCEPTION_LINKAGE,
+            link_exceptionname = EXCEPTION_NAME_LINKAGE,
+            link_exception_value = EXCEPTION_VALUE_LINKAGE,
             )
         
         # plot the networkx.
-        # plot_networkx_per_rule(
-        #     DIRS_DATA_TOPO, dictGraphs[rule], rule, nodesize_map_by_object_type, nodecolor_map_by_object_type)
+        plot_networkx_per_rule(
+            DIRS_DATA_TOPO, dictGraphs[rule], rule, nodesize_map_by_object_type, nodecolor_map_by_object_type)
 
     # write to csv for the failure information.
     dfInitialFailures = pd.DataFrame(dict(

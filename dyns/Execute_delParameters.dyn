@@ -2,7 +2,7 @@
   "Uuid": "01d8bf6b-bc9c-4dbb-af22-b76e9e275026",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "10_delParameters",
+  "Name": "Execute_delParameters",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -178,8 +178,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
       "Code": "null;",
+      "NodeType": "CodeBlockNode",
       "Id": "02c9cd1664de49709fd8bfb048d44a45",
       "Inputs": [],
       "Outputs": [
@@ -475,8 +475,8 @@
         "Background": "#FFFFC999"
       }
     ],
-    "X": 289.67942691467795,
-    "Y": 135.86701522159314,
-    "Zoom": 0.59405331560236529
+    "X": 202.4089858186295,
+    "Y": -131.2911670105982,
+    "Zoom": 1.0547836035484284
   }
 }

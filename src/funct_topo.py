@@ -174,10 +174,12 @@ def build_networkx_graph(all_df_edges, all_dict_attrs=[]):
 
 # to debug the sequential search.
 def knbrs_subgraph(
-        G, ini_starts, k=1, 
+        G,
+        ini_starts,
+        k=1, 
         classname = 'classification',
-        class_target = 'Parameter_Global',
-        class_link = ['Element_Wall'],
+        class_target = 'parameter',
+        class_link = ['wall'],
         set_link_exception = [False],
         link_exceptionname = ['isexternal'],
         link_exception_value = [1],
@@ -206,6 +208,8 @@ def knbrs_subgraph(
                     k_lst = lst[k_track]
                 elif len(lst) == 1:
                     k_lst = lst[0]
+            else:
+                print('the input data doest fit the assigned link level.')
         else:
             k_lst = lst
         return k_lst
@@ -285,10 +289,10 @@ def locate_failures_per_rule(
         G_ini, all_failures, rule,
         label_gps, label_neighbors, label_locations,
         level_neighbor=1,
-        class_link = ['Element_Wall'],
+        class_link=['wall'],
         set_link_exception=[False],
-        link_exceptionname = ['isexternal'],
-        link_exception_value = [1],):
+        link_exceptionname=['isexternal'],
+        link_exception_value=[1],):
     """
     locate the 
     - failure locations;
@@ -307,8 +311,8 @@ def locate_failures_per_rule(
     for failed_ifcuid in all_failure_locations:
         failure_neighbors, associated_gps = knbrs_subgraph(
             G, failed_ifcuid, k=level_neighbor,
-            classname= 'classification',
-            class_target='Parameter_Global',
+            classname = 'classification',
+            class_target ='parameter',
             class_link = class_link,
             set_link_exception = set_link_exception,
             link_exceptionname = link_exceptionname,

@@ -52,7 +52,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_GPs.json",
+      "InputValue": "collected_instances_parameter.json",
       "Id": "70fe747d2c474f30a1c9765244bd4d09",
       "Inputs": [],
       "Outputs": [
@@ -72,7 +72,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_Instances_Door.json",
+      "InputValue": "collected_instances_door.json",
       "Id": "c21db13a77854c36a61a41daf010835d",
       "Inputs": [],
       "Outputs": [
@@ -92,7 +92,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_Instances_Window.json",
+      "InputValue": "collected_instances_window.json",
       "Id": "6c68d7fbca4647f1a4e010b46b899f18",
       "Inputs": [],
       "Outputs": [
@@ -112,7 +112,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_Instances_Wall.json",
+      "InputValue": "collected_instances_wall.json",
       "Id": "bc3fac74d4014fc18324089b540f10e0",
       "Inputs": [],
       "Outputs": [
@@ -132,7 +132,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_Instances_Slab.json",
+      "InputValue": "collected_instances_slab.json",
       "Id": "13cdb3f8141e4b9ebfbce3d4066e45d2",
       "Inputs": [],
       "Outputs": [
@@ -152,7 +152,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_Instances_Space.json",
+      "InputValue": "collected_instances_space.json",
       "Id": "cc245a3ac389446dbd9057598a1a7715",
       "Inputs": [],
       "Outputs": [
@@ -172,7 +172,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\topo\\",
+      "InputValue": "C:\\dev\\phd\\enrichgraph\\data\\ini\\res\\",
       "Id": "287a9bddfb9446d79330073c986f3f6f",
       "Inputs": [],
       "Outputs": [
@@ -976,8 +976,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": 118.14090456984016,
-    "Y": 199.63393149255353,
-    "Zoom": 1.3177702528614059
+    "X": 99.601410543248619,
+    "Y": -32.904015060257336,
+    "Zoom": 0.79547177574129324
   }
 }
