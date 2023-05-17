@@ -22,6 +22,8 @@ FILE_RELATED_NB_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureneighbor.cs
 FILE_RELATED_GP_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_parameter.csv'
 FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter.csv'
 
+FILE_INI_GRAPH = DIRS_DATA_TOPO + r'\res_graph.txt'
+
 NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter']
 NAME_INSTANCE_COLLECTION = r'\collected_instances_'
 

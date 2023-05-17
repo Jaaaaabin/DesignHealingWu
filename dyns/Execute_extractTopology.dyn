@@ -172,7 +172,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\topo\\",
+      "InputValue": "C:\\dev\\phd\\enrichgraph\\data\\ini\\res\\",
       "Id": "287a9bddfb9446d79330073c986f3f6f",
       "Inputs": [],
       "Outputs": [
@@ -390,6 +390,15 @@
         },
         {
           "Id": "159ee76d17924f4894d7c9e54533eda9",
+          "Name": "topologySpaceWindowTXT",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9a0dbb5696e44dedba0f99be3d9c6458",
           "Name": "topologySpaceHostTXT",
           "Description": "var[]..[]",
           "UsingDefaultValue": false,
@@ -558,6 +567,46 @@
       ],
       "Replication": "Auto",
       "Description": "extract the topology between Objects"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\topo\\",
+      "Id": "39a4d1b1f47147008099093edacf388e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "95db76351d324b219281ec89815b6c8f",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "collected_topology_space_windows.txt",
+      "Id": "74e3f16c642c49d1b097fea9230c7b76",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1463a93274ee41b3bc90eb0b2e45e200",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
     }
   ],
   "Connectors": [
@@ -628,8 +677,8 @@
     },
     {
       "Start": "626d8edea461482e82c9c104b211f51e",
-      "End": "159ee76d17924f4894d7c9e54533eda9",
-      "Id": "96465fbdc0fc4e2fb4e103a684246a8d"
+      "End": "9a0dbb5696e44dedba0f99be3d9c6458",
+      "Id": "6b942f524da3431a9521b6b6715a985a"
     },
     {
       "Start": "f21b5d46b0734d3ebe98b6a5773238ec",
@@ -650,6 +699,11 @@
       "Start": "b01be7c8fa1041c19d50a85522edc26e",
       "End": "8e9ffc8c6ed94fcfacbd325ade315c36",
       "Id": "ea58b00ae1734b18a05fcce718bf0469"
+    },
+    {
+      "Start": "1463a93274ee41b3bc90eb0b2e45e200",
+      "End": "159ee76d17924f4894d7c9e54533eda9",
+      "Id": "422ea30d57ea489db761fdff9003250d"
     }
   ],
   "Dependencies": [
@@ -802,8 +856,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 523.19483543100921,
-        "Y": 325.86405941526914
+        "X": 522.52460788234328,
+        "Y": 315.14041863661373
       },
       {
         "ShowGeometry": true,
@@ -812,8 +866,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 523.19483543100921,
-        "Y": 424.8640594152692
+        "X": 522.52460788234328,
+        "Y": 414.14041863661379
       },
       {
         "ShowGeometry": true,
@@ -822,8 +876,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 523.19483543100921,
-        "Y": 524.86405941526914
+        "X": 520.51392523634547,
+        "Y": 490.01222688463872
       },
       {
         "ShowGeometry": true,
@@ -832,8 +886,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 523.19483543100921,
-        "Y": 623.86405941526914
+        "X": 519.84369768767931,
+        "Y": 654.024299105238
       },
       {
         "ShowGeometry": true,
@@ -842,8 +896,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 841.70229811757645,
-        "Y": 409.86405941526914
+        "X": 841.03207056891051,
+        "Y": 399.14041863661373
       },
       {
         "ShowGeometry": true,
@@ -894,6 +948,26 @@
         "Excluded": false,
         "X": 838.66692432234072,
         "Y": 893.10212236615746
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "39a4d1b1f47147008099093edacf388e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 144.58427157105109,
+        "Y": 279.76212237573668
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "74e3f16c642c49d1b097fea9230c7b76",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 522.43106324382484,
+        "Y": 573.01361645923987
       }
     ],
     "Annotations": [
@@ -945,12 +1019,12 @@
           "e0c5da0805d34883945ee38ec0d8f488",
           "5ccbe633a4564d639984d4d05d944e7b"
         ],
-        "Left": 513.19483543100921,
-        "Top": 272.87898478840344,
-        "Width": 663.04477611940308,
-        "Height": 434.044776119403,
+        "Left": 509.84369768767931,
+        "Top": 262.15534400974803,
+        "Width": 670.74061168720129,
+        "Height": 474.92865658802731,
         "FontSize": 36.0,
-        "InitialTop": 325.86405941526914,
+        "InitialTop": 315.14041863661373,
         "InitialHeight": 443.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
@@ -976,8 +1050,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": 34.346325040987949,
-    "Y": -95.439161678363064,
-    "Zoom": 1.0689174324059463
+    "X": 186.81964320688368,
+    "Y": 156.20588065838223,
+    "Zoom": 0.63646560458656531
   }
 }
