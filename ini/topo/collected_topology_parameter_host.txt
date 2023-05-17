@@ -60,7 +60,6 @@ D_ue_U1_OK_distance_sn21
 D_ue_U1_OK_distance_sn22
 D_ue_U1_OK_distance_sn23
 D_ue_U1_OK_distance_sn24
-D_ue_U1_OK_distance_sn25
 D_ue_E0_OK_distance_ew0
 D_ue_E0_OK_distance_ew1
 D_ue_E0_OK_distance_ew2
@@ -119,7 +118,6 @@ D_ue_E0_OK_distance_sn21
 D_ue_E0_OK_distance_sn22
 D_ue_E0_OK_distance_sn23
 D_ue_E0_OK_distance_sn24
-D_ue_E0_OK_distance_sn25
 D_ue_E1_OK_distance_ew0
 D_ue_E1_OK_distance_ew1
 D_ue_E1_OK_distance_ew2
@@ -179,4 +177,3 @@ D_ue_E1_OK_distance_sn22
 D_ue_E1_OK_distance_sn23
 D_ue_E1_OK_distance_sn24
 D_ue_E1_OK_distance_sn25
-D_ue_E1_OK_distance_sn26

@@ -172,7 +172,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\enrichgraph\\data\\ini\\res\\",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\topo\\",
       "Id": "287a9bddfb9446d79330073c986f3f6f",
       "Inputs": [],
       "Outputs": [
@@ -1025,7 +1025,7 @@
         "Height": 474.92865658802731,
         "FontSize": 36.0,
         "InitialTop": 315.14041863661373,
-        "InitialHeight": 443.0,
+        "InitialHeight": 483.88388046862428,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
       },
@@ -1050,8 +1050,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": 186.81964320688368,
-    "Y": 156.20588065838223,
-    "Zoom": 0.63646560458656531
+    "X": 103.03134543764349,
+    "Y": 61.191562034305321,
+    "Zoom": 0.99632795950492337
   }
 }

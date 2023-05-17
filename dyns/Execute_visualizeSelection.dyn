@@ -1108,7 +1108,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "IBC1207_3",
+      "InputValue": "IBC1020_2",
       "Id": "3b94a1a09c1b4981b8efb91929a7d019",
       "Inputs": [],
       "Outputs": [
@@ -3157,8 +3157,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 2928.8119206715951,
-    "Y": -1020.6499136660967,
-    "Zoom": 0.93575825329900453
+    "X": 3214.8114039615284,
+    "Y": -1136.8212865035737,
+    "Zoom": 1.0342195875355638
   }
 }

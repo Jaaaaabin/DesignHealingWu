@@ -20,7 +20,7 @@ FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_parameter.csv'
 FILE_RELATED_FL_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failure.csv'
 FILE_RELATED_NB_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureneighbor.csv'
 FILE_RELATED_GP_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_parameter.csv'
-FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter.csv'
+FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter_values.csv'
 
 FILE_INI_GRAPH = DIRS_DATA_TOPO + r'\res_graph.txt'
 

@@ -172,53 +172,56 @@ def build_networkx_graph(all_df_edges, all_dict_attrs=[]):
 
     return G_all
 
-# to debug the sequential search.
+
+def get_tempo_data(
+        lst, k_track, k):
+    """
+    get the temporary data at k_track
+    """
+
+    k_lst = []
+    if isinstance(lst, list):
+        if len(lst) == k:
+            if len(lst) > 1:
+                k_lst = lst[k_track]
+            elif len(lst) == 1:
+                k_lst = lst[0]
+        else:
+            print('the input data doest fit the assigned link level.')
+    else:
+        k_lst = lst
+    return k_lst
+
+
 def knbrs_subgraph(
         G,
         ini_starts,
+        set_link_exception,
+        class_link,
+        link_exceptionname,
+        link_exception_value,
+        classname='classification',
+        class_target='parameter',
         k=1, 
-        classname = 'classification',
-        class_target = 'parameter',
-        class_link = ['wall'],
-        set_link_exception = [False],
-        link_exceptionname = ['isexternal'],
-        link_exception_value = [1],
         ):
     """
     search neighbors of specified nodes within subgraphs of a graph.
     G: the whole Graph;
     ini_strats: starting points.
-    k: level of neighborhood;
-    classname: name of the attribute which is used as node class identity;
-    class_target: the class of the final targets that we search for;
     set_link_exception:
     class_link: the class(es) of the linking components;
     link_exceptionname:
     link_exception_value:
+    classname: name of the attribute which is used as node class identity;
+    class_target: the class of the final targets that we search for;
+    k: level of neighborhood;
     """
 
-    def get_tempo_data(lst, k_track, k):
-        """
-        get the temporary data at k_track
-        """
-        k_lst = []
-        if isinstance(lst, list):
-            if len(lst) == k:
-                if len(lst) > 1:
-                    k_lst = lst[k_track]
-                elif len(lst) == 1:
-                    k_lst = lst[0]
-            else:
-                print('the input data doest fit the assigned link level.')
-        else:
-            k_lst = lst
-        return k_lst
-    
     starts = ini_starts
     k_real = 1 # count the accumulated level.
     k_seg = 1 # control the propagation always as 1 for each neighbor search.
     
-    # search Element neighbors (initial excluded).
+    # search neighbors (initial ifc.).
     nbrs = []
 
     # track the linking class at current level of neighborhood.
@@ -235,30 +238,33 @@ def knbrs_subgraph(
 
         if isinstance(starts, list):
 
-            # if there are multiple input starting points for the current round:
+            # if
+            # there are multiple starting points as input for the current search round:
             for start in starts:
                 G_sub = nx.ego_graph(G, start, radius=k_seg, undirected=True)
                 G_sub_nodes = G_sub.nodes()
 
-                if k_set_link_exception:
+                if k_set_link_exception: ####
                     nbr = [n for n in G_sub._node if G_sub_nodes[n][classname] == k_class_link and G_sub_nodes[n][k_link_exceptionname]!=k_link_exception_value]
                 else:
                     nbr = [n for n in G_sub._node if G_sub_nodes[n][classname] == k_class_link]
                 nbrs = nbrs + nbr
         else:
             
-            # if there is only one single input start point for the current round:
+            # if
+            # there is only one single pointas input for the current search round:
             G_sub = nx.ego_graph(G, starts, radius=k_seg, undirected=True)
             G_sub_nodes = G_sub.nodes()
 
-            if k_set_link_exception:
+            if k_set_link_exception: ####
                 nbr = [n for n in G_sub._node if G_sub_nodes[n][classname] == k_class_link and G_sub_nodes[n][k_link_exceptionname]!=k_link_exception_value]
             else:
                 nbr = [n for n in G_sub._node if G_sub_nodes[n][classname] == k_class_link]
             nbrs = nbrs + nbr
 
         k_real += k_seg
-        starts = nbrs
+        ####
+        starts = nbr # if starts = nbrs: repeatedly use former element; if starts = nbr: only use the current neighbor(s) as the starting input for the next round; 
 
     # search associated Parameter neighbors.(initial included).
     gp_nbrs = []
@@ -286,13 +292,17 @@ def update_graph_nodes(G, nn, label):
 
 
 def locate_failures_per_rule(
-        G_ini, all_failures, rule,
-        label_gps, label_neighbors, label_locations,
-        level_neighbor=1,
-        class_link=['wall'],
-        set_link_exception=[False],
-        link_exceptionname=['isexternal'],
-        link_exception_value=[1],):
+        G_ini,
+        all_failures,
+        rule,
+        label_gps,
+        label_neighbors,
+        label_locations,
+        set_link_exception,
+        class_link,
+        link_exceptionname,
+        link_exception_value,
+        level_neighbor=1,):
     """
     locate the 
     - failure locations;
@@ -310,13 +320,13 @@ def locate_failures_per_rule(
     all_failure_neighbors, all_associated_gps= [],[]
     for failed_ifcuid in all_failure_locations:
         failure_neighbors, associated_gps = knbrs_subgraph(
-            G, failed_ifcuid, k=level_neighbor,
-            classname = 'classification',
-            class_target ='parameter',
-            class_link = class_link,
-            set_link_exception = set_link_exception,
-            link_exceptionname = link_exceptionname,
-            link_exception_value = link_exception_value,
+            G,
+            failed_ifcuid,
+            set_link_exception,
+            class_link,
+            link_exceptionname,
+            link_exception_value,
+            k=level_neighbor,
             )
     
         all_failure_neighbors += failure_neighbors
@@ -338,7 +348,11 @@ def locate_failures_per_rule(
 # https://www.kaggle.com/code/anand0427/network-graph-with-at-t-data-using-plotly/notebook
 
 def plot_networkx_per_rule(
-        path, G, rule, nodesize_map, nodecolor_map):
+        path,
+        rule,
+        G,
+        nodesize_map,
+        nodecolor_map):
     """
     plot the networkx graph with specified maps for node size and node color.
     """
@@ -351,7 +365,6 @@ def plot_networkx_per_rule(
 
     nx.draw_networkx(
         G,
-        # pos = nx.nx_agraph.graphviz_layout(G, prog="neato"), # doesnot work
         pos = nx.kamada_kawai_layout(G, scale=0.75),
         with_labels=False,
         node_size=G_nodes_sizes,
