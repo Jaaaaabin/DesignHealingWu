@@ -6,8 +6,8 @@
 from const_project import FILE_INIT_RES, DIRS_DATA_TOPO, FILE_INI_GRAPH
 from const_project import FILE_LIST_GP, FILE_RELATED_GP_PERRULE, FILE_RELATED_FL_PERRULE, FILE_RELATED_NB_PERRULE, FILE_RELATED_GP_INI
 
-from const_ibcrule import BUILDING_RULES, LEVEL_FAILURE_NEIGHBOR, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
-from const_ibcrule import CLASS_LINKAGE, EXCEPTION_LINKAGE, EXCEPTION_NAME_LINKAGE, EXCEPTION_VALUE_LINKAGE
+from const_ibcrule import BUILDING_RULES, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
+from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE, EXCEPTION_LINK_TYPES
 
 from funct_topo import *
 
@@ -60,23 +60,11 @@ def graphEnrich():
         'IBC1207_3': list(failuresIBC1207_3.loc[failuresIBC1207_3['checkCompliance'] == False, 'spaceIfcGUID'].iloc[:]),
     }
 
-    # # enrich per rule.
-    # for rule in BUILDING_RULES:
-        
-    #     # enrich the networkx with failure information.
-    #     dictGraphs[rule], dictFailureNeighbors[rule], dictAssociatedGPs[rule] = locate_failures_per_rule(
-    #         G_all, dictFailures, rule,
-    #         LABLE_ASSOCIATED_GP, LABEL_FAILURE_NEIGHBOR, LABEL_FAILURE_LOCATION,
-    #         level_neighbor=LEVEL_FAILURE_NEIGHBOR,
-    #         class_link = CLASS_LINKAGE,
-    #         set_link_exception = EXCEPTION_LINKAGE,
-    #         link_exceptionname = EXCEPTION_NAME_LINKAGE,
-    #         link_exception_value = EXCEPTION_VALUE_LINKAGE,
-    #         )
-        
-    #     # plot the networkx.
-    #     plot_networkx_per_rule(
-    #         DIRS_DATA_TOPO, dictGraphs[rule], rule, nodesize_map_by_object_type, nodecolor_map_by_object_type)
+    # specify the propagration rule.
+    
+
+    exception_class_linkage, exception_name_linkage, exception_value_linkage  = build_link_constraints(
+        EXCEPTION_LINK_TYPES, LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE)
 
     # enrich per rule.
     for rule in BUILDING_RULES:
@@ -89,13 +77,11 @@ def graphEnrich():
             LABLE_ASSOCIATED_GP,
             LABEL_FAILURE_NEIGHBOR,
             LABEL_FAILURE_LOCATION,
-            EXCEPTION_LINKAGE,
-            CLASS_LINKAGE,
-            EXCEPTION_NAME_LINKAGE,
-            EXCEPTION_VALUE_LINKAGE,
+            exception_class_linkage,
+            exception_name_linkage,
+            exception_value_linkage,
             LEVEL_FAILURE_NEIGHBOR,
             )
-        # to solve issue. k=2(17) has less GP then when k=1(18)
         
         # plot the networkx.
         plot_networkx_per_rule(
