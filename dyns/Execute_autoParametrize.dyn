@@ -2,7 +2,7 @@
   "Uuid": "01d8bf6b-bc9c-4dbb-af22-b76e9e275026",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "10_autoParametrizing",
+  "Name": "Execute_autoParametrize",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -300,15 +300,6 @@
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
-        },
-        {
-          "Id": "d9d1efc11d7345e6b3360381c987be36",
-          "Name": "item2",
-          "Description": "Item Index #2",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
         }
       ],
       "Outputs": [
@@ -361,11 +352,6 @@
       "Start": "c6f80bdcfe2c49d28f0a8000cba6a743",
       "End": "89b387784de54ff1b213b40aba03d326",
       "Id": "8e5f13a8cb57447b8041f17b51f6cbb4"
-    },
-    {
-      "Start": "82fcb55368454ebfb26293c898cb2395",
-      "End": "d9d1efc11d7345e6b3360381c987be36",
-      "Id": "ce5b2c3c41d84201bf7452f961a72173"
     },
     {
       "Start": "2df231d083c34b6aace13c18b2d9362d",
@@ -560,8 +546,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": -441.7460450536995,
-    "Y": -155.84815282157152,
-    "Zoom": 1.0004619005657112
+    "X": -66.607854911968559,
+    "Y": 144.587625762292,
+    "Zoom": 0.55178821158156066
   }
 }
