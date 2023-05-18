@@ -1,0 +1,631 @@
+{
+  "Uuid": "4eb5579e-5a50-470f-b454-934df2193507",
+  "IsCustomNode": true,
+  "Category": "Healing",
+  "Description": "",
+  "Name": "Healing-PlanExport",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "archilabUI.ViewTypesUi, archilabUI2022",
+      "SelectedIndex": 9,
+      "SelectedString": "FloorPlan",
+      "NodeType": "ExtensionNode",
+      "Id": "533762ce395d4de5b0dd50f0bf1b331c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6d22c22de5b64605b4b4b74704da7655",
+          "Name": "viewType",
+          "Description": "The selected viewType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available View Types."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "archilab.Revit.Views.Views.GetByType@string",
+      "Id": "f1ed783471c7498293efc5740aaa83f9",
+      "Inputs": [
+        {
+          "Id": "8c765e44b92f437e8da35d93938e4873",
+          "Name": "viewType",
+          "Description": "View type to retrieve all views for. If View Template selected, 3D View Templates will be excluded from returned View Templates (currently a Dynamo limitation).\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3a3604c4ddd942b8b2bf62088907ff8c",
+          "Name": "view",
+          "Description": "Views that match view type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get all views by type.\n\nViews.GetByType (viewType: string): Element[]"
+    },
+    {
+      "ConcreteType": "archilabUI.ExportRangeUi, archilabUI2022",
+      "SelectedIndex": 2,
+      "SelectedString": "VisibleRegionOfCurrentView",
+      "NodeType": "ExtensionNode",
+      "Id": "69ae5b3f10ba4c9a99c72cdf8a06f2ea",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1e2e8a21a6ab4aa0b3c1c30178973aa1",
+          "Name": "exportRange",
+          "Description": "The selected exportRange",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available Export Ranges from Revit project."
+    },
+    {
+      "ConcreteType": "archilabUI.ImageFileTypeUi, archilabUI2022",
+      "SelectedIndex": 4,
+      "SelectedString": "PNG",
+      "NodeType": "ExtensionNode",
+      "Id": "d492f4fca5eb49bc9e99597c099d9ee8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fc45db84ce2c43c6b980d6d5fbc07cb2",
+          "Name": "imageFileType",
+          "Description": "The selected imageFileType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available Image File Types from Revit project."
+    },
+    {
+      "ConcreteType": "archilabUI.ImageResolutionUi, archilabUI2022",
+      "SelectedIndex": 2,
+      "SelectedString": "DPI_600",
+      "NodeType": "ExtensionNode",
+      "Id": "fc925658d4334c8e83290cb5f8c7cd9a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "613828769bd0404bbf6f1d297de4db46",
+          "Name": "imageResolution",
+          "Description": "The selected imageResolution",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available Image Resolutions from Revit project."
+    },
+    {
+      "ConcreteType": "archilabUI.ZoomFitTypeUi, archilabUI2022",
+      "SelectedIndex": 1,
+      "SelectedString": "Zoom",
+      "NodeType": "ExtensionNode",
+      "Id": "1d06c82e57a446b88f7fa8b64fe6ebb8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "05a276f9a8e84ee5b2bba37e7edc8bbc",
+          "Name": "zoomFitType",
+          "Description": "The selected zoomFitType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available Zoom Fit Types from Revit project."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Code": "500;",
+      "NodeType": "CodeBlockNode",
+      "Id": "23f2e738265a486eb35691a6a33d951e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0649fdb7b54246d8b6f6774213e517c2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Code": "100;",
+      "NodeType": "CodeBlockNode",
+      "Id": "4303c2b403954276b1da0b982aba8310",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3224a0956ba949e8bd4afc8f8753493c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "97aef8b9-1081-423b-bff4-fbb468f692e7",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "c2955da1f2144afb808fde400ce530fc",
+      "Inputs": [
+        {
+          "Id": "f0d3ec5b46bd4f42ba3dc25f258ab063",
+          "Name": "_view",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aa580d178fb14b50a08e86b76dbfad38",
+          "Name": "_filePath",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "419a7eefd5cd4baa8d616de36194c91c",
+          "Name": "_exportRange",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6c49c0d54e584a48ba2d7b7457461f59",
+          "Name": "_imageFileType",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "58003940d5be47508cd9025228469ba2",
+          "Name": "_zoomFitType",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "16a88b55886f48c4906c9ca7001a8392",
+          "Name": "_pixelSize",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "08a487f1120a4956b76c87d932c671ee",
+          "Name": "_imageResolution",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ef6698b8dc6c4d57b600c2fe54c8cf9c",
+          "Name": "_zoomPercentage",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bb3b0315c755441099839805a1120c1c",
+          "Name": "_fitDirectionType",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f7bcc59b547e414fb5830c66148cc231",
+          "Name": "_runIt",
+          "Description": "bool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9ad25d6422f749afb34607afc65f4945",
+          "Name": "_view",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "This node will export a list of Views and save them as images (JPG, BMP etc)."
+    },
+    {
+      "ConcreteType": "archilabUI.FitDirectionTypeUi, archilabUI2022",
+      "SelectedIndex": 0,
+      "SelectedString": "Horizontal",
+      "NodeType": "ExtensionNode",
+      "Id": "8dfddb2385844406997f1e5d407dbdb8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "80fcf56887be44cbbc3cbdca0a88c97e",
+          "Name": "fitDirectionType",
+          "Description": "The selected fitDirectionType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available Fit Direction Types from Revit project."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "0a63f2e0487d42f08ddf3d2dada9eed7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cfffc0ff330d4d3b9bf483ffddb28319",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "imagePath",
+        "TypeName": "string",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "bcd9bd6fe4804d3899afc8fd67d9685c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6716c0e6b0194cb18f9702fcbef8a6b8",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "",
+      "Id": "52a81d425292402a8d519599becc67ce",
+      "Inputs": [
+        {
+          "Id": "f4a5be5aa18645c7aa7e54e9ff2b3701",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6d22c22de5b64605b4b4b74704da7655",
+      "End": "8c765e44b92f437e8da35d93938e4873",
+      "Id": "aa93c03716534d2781a4a0c87359590b"
+    },
+    {
+      "Start": "3a3604c4ddd942b8b2bf62088907ff8c",
+      "End": "f0d3ec5b46bd4f42ba3dc25f258ab063",
+      "Id": "b2c23ffd43d7476f8be31c8f320bfa61"
+    },
+    {
+      "Start": "1e2e8a21a6ab4aa0b3c1c30178973aa1",
+      "End": "419a7eefd5cd4baa8d616de36194c91c",
+      "Id": "40496a143c9a46abacba041df7a3849d"
+    },
+    {
+      "Start": "fc45db84ce2c43c6b980d6d5fbc07cb2",
+      "End": "6c49c0d54e584a48ba2d7b7457461f59",
+      "Id": "b171feab4fa54567a40d9844090767e6"
+    },
+    {
+      "Start": "613828769bd0404bbf6f1d297de4db46",
+      "End": "08a487f1120a4956b76c87d932c671ee",
+      "Id": "e330b31bf8104dff93bcbf984dce0acc"
+    },
+    {
+      "Start": "05a276f9a8e84ee5b2bba37e7edc8bbc",
+      "End": "58003940d5be47508cd9025228469ba2",
+      "Id": "8de017a48a3b4d54a86edd791cca19a5"
+    },
+    {
+      "Start": "0649fdb7b54246d8b6f6774213e517c2",
+      "End": "16a88b55886f48c4906c9ca7001a8392",
+      "Id": "20f5397111cd4d31a0a728f6a1aef3f4"
+    },
+    {
+      "Start": "3224a0956ba949e8bd4afc8f8753493c",
+      "End": "ef6698b8dc6c4d57b600c2fe54c8cf9c",
+      "Id": "72b929e3a40245d885fbf0a736c4b13a"
+    },
+    {
+      "Start": "9ad25d6422f749afb34607afc65f4945",
+      "End": "f4a5be5aa18645c7aa7e54e9ff2b3701",
+      "Id": "1c386012499046d4948ceeacd90fe951"
+    },
+    {
+      "Start": "80fcf56887be44cbbc3cbdca0a88c97e",
+      "End": "bb3b0315c755441099839805a1120c1c",
+      "Id": "17756648138041539a5809ef7349f488"
+    },
+    {
+      "Start": "cfffc0ff330d4d3b9bf483ffddb28319",
+      "End": "f7bcc59b547e414fb5830c66148cc231",
+      "Id": "d5efc93e392e42c3b7ea8ac82b6fbec9"
+    },
+    {
+      "Start": "6716c0e6b0194cb18f9702fcbef8a6b8",
+      "End": "aa580d178fb14b50a08e86b76dbfad38",
+      "Id": "5dcebce0192e49199b142b3a48abb3d3"
+    }
+  ],
+  "Dependencies": [
+    "97aef8b9-1081-423b-bff4-fbb468f692e7"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "archi-lab.net",
+      "Version": "2022.210.1022",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "533762ce395d4de5b0dd50f0bf1b331c",
+        "f1ed783471c7498293efc5740aaa83f9",
+        "69ae5b3f10ba4c9a99c72cdf8a06f2ea",
+        "d492f4fca5eb49bc9e99597c099d9ee8",
+        "fc925658d4334c8e83290cb5f8c7cd9a",
+        "1d06c82e57a446b88f7fa8b64fe6ebb8",
+        "c2955da1f2144afb808fde400ce530fc",
+        "8dfddb2385844406997f1e5d407dbdb8"
+      ]
+    }
+  ],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -4.4671249389648438,
+      "EyeY": 13.834698677062988,
+      "EyeZ": 3.5577273368835449,
+      "LookX": 8.0831441879272461,
+      "LookY": -9.6345682144165039,
+      "LookZ": -7.3474631309509277,
+      "UpX": -0.15119460225105286,
+      "UpY": 0.98095256090164185,
+      "UpZ": -0.12195252627134323
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "View Type",
+        "Id": "533762ce395d4de5b0dd50f0bf1b331c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 267.940298507463,
+        "Y": 328.11940298507466
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Views.GetByType",
+        "Id": "f1ed783471c7498293efc5740aaa83f9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 536.29850746268312,
+        "Y": 328.11940298507466
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Export Range",
+        "Id": "69ae5b3f10ba4c9a99c72cdf8a06f2ea",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 271.96994931685884,
+        "Y": 510.294765833221
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Image File Type",
+        "Id": "d492f4fca5eb49bc9e99597c099d9ee8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 605.49780222400273
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Image Resolution",
+        "Id": "fc925658d4334c8e83290cb5f8c7cd9a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 932.49780222400273
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Zoom Fit Type",
+        "Id": "1d06c82e57a446b88f7fa8b64fe6ebb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 714.49780222400273
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "23f2e738265a486eb35691a6a33d951e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 823.71113555733291
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4303c2b403954276b1da0b982aba8310",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 1040.7111355573329
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Export Image by View",
+        "Id": "c2955da1f2144afb808fde400ce530fc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1213.4328358208932,
+        "Y": 705.11940298507466
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Fit Direction Type",
+        "Id": "8dfddb2385844406997f1e5d407dbdb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 1149.4978022240027
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "0a63f2e0487d42f08ddf3d2dada9eed7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.99694594820858,
+        "Y": 1258.4978022240027
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "bcd9bd6fe4804d3899afc8fd67d9685c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 266.59872977602544,
+        "Y": 413.2913446203093
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "52a81d425292402a8d519599becc67ce",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1573.0648472091434,
+        "Y": 720.295609387875
+      }
+    ],
+    "Annotations": [],
+    "X": 311.77012532023195,
+    "Y": -200.10201911945558,
+    "Zoom": 1.0365353738494167
+  }
+}

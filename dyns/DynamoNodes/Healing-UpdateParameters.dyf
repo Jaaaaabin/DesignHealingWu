@@ -1,0 +1,711 @@
+{
+  "Uuid": "6939f0d6-f7fa-45b6-9fed-2f53e3638df5",
+  "IsCustomNode": true,
+  "Category": "Healing",
+  "Description": "",
+  "Name": "Healing-UpdateParameters",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nfrom wsgiref import validate\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# plotting\r\nimport pandas as pd\r\nimport numpy as np\r\nimport matplotlib.pyplot as plt\r\nimport matplotlib as mpl\r\nfrom matplotlib import cm\r\nfrom matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator\r\nmpl.rcParams['text.usetex'] = True\r\nfrom mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes\r\nfrom mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar\r\nimport scipy.stats as ss\r\nfrom scipy.stats import norm\r\nimport ast \r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo \r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import GlobalParametersManager\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\ndef get_directory_modelsaving(nr_model):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    folderpath += (\"test_\"+str(nr_model))\r\n    return folderpath\r\n\r\n\r\n\"\"\"\r\nUnits displayed/assigned in Dynamo are feet. 1meter = 3.28084 foot\r\nmeter_to_foot: Converts a value from Revit's internal units to a given display unit.\r\nfoot_to_meter: Converts a value from a given display unit to Revit's internal units.\r\n\"\"\"\r\n\r\n\r\ndef meter_to_foot(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertFromInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\ndef foot_to_meter(ori_value):\r\n    if isinstance(ori_value, list):\r\n        return [UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Meters) for value in ori_value]\r\n    return float(UnitUtils.ConvertToInternalUnits(ori_value, UnitTypeId.Meters))\r\n\r\n\r\n\"\"\"\r\nFresh global parameters / fresh a list of global parameters\r\ntill now, only for doubleparametervalues...\r\n\"\"\"\r\n\r\n\r\ndef fresh_GlobalParameter(doc,names,values):\r\n\r\n    # Fix the unit problem\r\n\r\n    values = foot_to_meter(values)\r\n    \r\n    # Update the parameter values\r\n\r\n    for ii in range(len(names)):\r\n        name = names[ii]\r\n        value = values[ii]\r\n        gp_id = Autodesk.Revit.DB.GlobalParametersManager.FindByName(doc, name)\r\n        gp_element = doc.GetElement(gp_id)\r\n        gp_value = gp_element.GetValue().Value\r\n        if abs(value - gp_value) < 0.0001:\r\n            continue\r\n        else:\r\n            gp_element.SetValue(DoubleParameterValue(value))\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n###############################################################\r\n# Prepare the input\r\n###############################################################\r\nnr_model = int(IN[0])\r\ncsvdata = IN[1]\r\n \r\n###############################################################\r\n# Record file into a .txt\r\n###############################################################\r\n# Get the current file path\r\nsaveDir = getFileDirectory()\r\n\r\nstdout_original = sys.stdout\r\nstdout_file = open(saveDir+\"log\\log31.txt\", 'w')\r\nsys.stdout = stdout_file\r\n\r\n###############################################################\r\n# Transaction in Revit\r\n###############################################################\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW YOU CAN CODE -----------------------\r\n#--------------------------------------------------------------\r\n\r\n# Update the Nr of the model\r\n\r\nnr_model_gp_id = Autodesk.Revit.DB.GlobalParametersManager.FindByName(\r\n        doc, 'nr_model')\r\nnr_model_gp_element = doc.GetElement(nr_model_gp_id)\r\nnr_model_gp_element.SetValue(IntegerParameterValue(nr_model))\r\n\r\n# Set all global parameters by csv values based on the variation number: nr_model\r\nnames = []\r\nvalues = []\r\n\r\nfor item in csvdata:\r\n    names.append(item[0])\r\n    values.append(item[nr_model])\r\n\r\nfresh_GlobalParameter(doc,names,values)\r\n\r\n#--------------------------------------------------------------\r\n#------------------ OK NOW END THE CODE -----------------------\r\n#--------------------------------------------------------------\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Close and save the recording file\r\nsys.stdout = stdout_original\r\nstdout_file.close()\r\n\r\n###############################################################\r\n# Prepare the output \r\n###############################################################\r\nOUT = get_directory_modelsaving(nr_model)",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "c1bccf0399b24c9f953b53309b105175",
+      "Inputs": [
+        {
+          "Id": "5953a1c0e2f24c8c89f7a49c8816cced",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a4b6b525d80b4cea8cfc944fd77fe38a",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "72bbc6a3b2ce4167bcade459c8e8c70c",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "saveInput",
+        "TypeName": "bool",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "d3a7f6fc92234cdab1ad9aa41365df3b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4f38e14ce6854ff4a1de58e4c13ddcd9",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "analyzeModel",
+        "TypeName": "bool",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "0696ad31f65042c88d7111599ee4b034",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "db9adb3324934bdca09c66b8eb9640ce",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "checkCompliance",
+        "TypeName": "bool",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "af2dc9ac72cd4c6f90b06a56acf0ddac",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ce1a70c5d7c0471fb3f2f570e7150fe6",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSOffice.Data.ImportCSV@string,bool",
+      "Id": "510c54d41b2f40a9a4309e1b6644b987",
+      "Inputs": [
+        {
+          "Id": "6d3b8de9883a4e7da90c2fb2ca244bca",
+          "Name": "filePath",
+          "Description": "CSV file to be converted into a list\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "00a5fda765234496b5111c8cc9ee27ce",
+          "Name": "transpose",
+          "Description": "Toggle to transpose the imported data\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cd8e40d445ba43c99c09f29f40ca46ec",
+          "Name": "list",
+          "Description": "List containing the items in the CSV file",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports data from a CSV (comma separated values) file, put the items into a list and transpose it if needed.\n\nData.ImportCSV (filePath: string, transpose: bool = false): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "checkRules",
+        "TypeName": "string",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "6db63e641014408c8b00c5fe742b6301",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8e38dffca11344deae4f6d0b3424531a",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Load the Libraries\r\n###############################################################\r\n# general libraries\r\nimport clr\r\nimport sys\r\n\r\n# identify the pathway\r\nimport io\r\nimport os\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# dynamo/revit-related libraries\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\n\r\n###############################################################\r\n# Customize functions\r\n###############################################################\r\n\r\n\r\n\"\"\"\r\nExtract the directory of the dyn.\r\n\"\"\"\r\n\r\ndef getFileDirectory(filename=\" \"):\r\n    dynscriptpath = Dynamo.Applications.DynamoRevit(\r\n    ).RevitDynamoModel.CurrentWorkspace.FileName\r\n    pathelement = dynscriptpath.split(\"\\\\\")[:-1]\r\n    folderpath = \"\"\r\n    for i in pathelement:\r\n        folderpath += (i + \"\\\\\")\r\n    if filename != \" \":\r\n        folderpath += (filename)\r\n    return folderpath\r\n\r\n\r\n###############################################################\r\n# Current doc/app/ui\r\n###############################################################\r\n\r\n# Get the Input\r\ninitialParameterFile = IN[0]\r\n\r\n# Export the file name with directory\r\nOUT = getFileDirectory(initialParameterFile)",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "46d8b63f5dee49eeae987f58ff72a31e",
+      "Inputs": [
+        {
+          "Id": "3fe4451644e4496aa4eb6714f8b29ad8",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b121fd8241b44241b6a70b913e793206",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "e1252710e6c54a0aa063b9c7f73e92c5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "08ad0bee145b452d85cf467d596ae3b6",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "varyParameterCSV",
+        "TypeName": "string",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "2fd5b45785b54dd29af64df1707adba8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c8050d25582f46b09fcece7f72a4c9ea",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "modelNumber",
+        "TypeName": "int",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "6cfdc6b485c947a082bbef6cbaaf31c9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6fd16afa01d34f2599b39eef63fd1924",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "checkRules: string",
+      "Id": "746fbc9250484b8a8bcc1a575920e088",
+      "Inputs": [
+        {
+          "Id": "5256d3563e524453afb9040b0c4ff51f",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "checkCompliance: bool",
+      "Id": "699aa101f3304d0a88a50258d1f3736e",
+      "Inputs": [
+        {
+          "Id": "f3eeab80088b4ea1858e49e5a740ec85",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "analyzeModel: bool",
+      "Id": "6cc48653d2184cf5817d81d52635add0",
+      "Inputs": [
+        {
+          "Id": "950e89159c494c2a9035d31f281debde",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "saveInput: bool",
+      "Id": "32192bf3411e4994ac0d6b43cffd6e77",
+      "Inputs": [
+        {
+          "Id": "36946e05bb8341819076b683ce908f6a",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "19ce6b9f-f4cf-4a3f-9788-1482e94528d6",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "6004129bfcc64c3eb23353313133e776",
+      "Inputs": [
+        {
+          "Id": "7da96a5f80fe425cabdc04cebf2a6ae1",
+          "Name": "filePath",
+          "Description": " File path to save to. File extension (*.rvt/*.rfa) will be automatically added.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2cf4f9750d30454c8c70661e7ba3f4c2",
+          "Name": "compactFile",
+          "Description": " Should the file be compacted?\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6ce0babe388f426fba8a4640599b1e74",
+          "Name": "saveAsCentral",
+          "Description": " Should the file be saved as a new central file? Will be ignored for non-workshared projects and families\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3e17cff2286f445b88178f69a363eb66",
+          "Name": "success",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Saves the active Revit document under the given name."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "72bbc6a3b2ce4167bcade459c8e8c70c",
+      "End": "7da96a5f80fe425cabdc04cebf2a6ae1",
+      "Id": "ba319ad942434a8e9ef95bceab1cbf7c"
+    },
+    {
+      "Start": "4f38e14ce6854ff4a1de58e4c13ddcd9",
+      "End": "36946e05bb8341819076b683ce908f6a",
+      "Id": "0716b4f0d804420a8b97230c4a311912"
+    },
+    {
+      "Start": "db9adb3324934bdca09c66b8eb9640ce",
+      "End": "950e89159c494c2a9035d31f281debde",
+      "Id": "cbecca4d17d1491a80a783420a42f5f1"
+    },
+    {
+      "Start": "ce1a70c5d7c0471fb3f2f570e7150fe6",
+      "End": "f3eeab80088b4ea1858e49e5a740ec85",
+      "Id": "e75824f88e184d98922179be5adbeaa9"
+    },
+    {
+      "Start": "cd8e40d445ba43c99c09f29f40ca46ec",
+      "End": "a4b6b525d80b4cea8cfc944fd77fe38a",
+      "Id": "a2ef96c1891642ad8c0792c2493489ef"
+    },
+    {
+      "Start": "8e38dffca11344deae4f6d0b3424531a",
+      "End": "5256d3563e524453afb9040b0c4ff51f",
+      "Id": "f23947fc8a7743318c1268a40835c1ca"
+    },
+    {
+      "Start": "b121fd8241b44241b6a70b913e793206",
+      "End": "6d3b8de9883a4e7da90c2fb2ca244bca",
+      "Id": "e40812ed21744b87afd21a592e7b1e42"
+    },
+    {
+      "Start": "08ad0bee145b452d85cf467d596ae3b6",
+      "End": "00a5fda765234496b5111c8cc9ee27ce",
+      "Id": "7e8df571189e40bc9dfbd188cf8d92ae"
+    },
+    {
+      "Start": "c8050d25582f46b09fcece7f72a4c9ea",
+      "End": "3fe4451644e4496aa4eb6714f8b29ad8",
+      "Id": "8b04225166fb489087d4ba3c3f788502"
+    },
+    {
+      "Start": "6fd16afa01d34f2599b39eef63fd1924",
+      "End": "5953a1c0e2f24c8c89f7a49c8816cced",
+      "Id": "4e4bf0fc3b9d4b6d88faa7332b55c5ed"
+    }
+  ],
+  "Dependencies": [
+    "19ce6b9f-f4cf-4a3f-9788-1482e94528d6"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.3.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "6004129bfcc64c3eb23353313133e776"
+      ]
+    }
+  ],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "121_freshParameters",
+        "Id": "c1bccf0399b24c9f953b53309b105175",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1616.2500505660805,
+        "Y": 587.01728793897507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "d3a7f6fc92234cdab1ad9aa41365df3b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1017.9809120835481,
+        "Y": 1066.6570461488398
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "0696ad31f65042c88d7111599ee4b034",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1004.9692956348638,
+        "Y": 981.69079727191775
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "af2dc9ac72cd4c6f90b06a56acf0ddac",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 988.87284468166513,
+        "Y": 893.67739995612169
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Data.ImportCSV",
+        "Id": "510c54d41b2f40a9a4309e1b6644b987",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1322.8172147451851,
+        "Y": 642.01728793897507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "6db63e641014408c8b00c5fe742b6301",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1000.6977678218375,
+        "Y": 801.81728705763135
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "01_getFileDirectory",
+        "Id": "46d8b63f5dee49eeae987f58ff72a31e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1045.8619908645878,
+        "Y": 595.01728793897507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "e1252710e6c54a0aa063b9c7f73e92c5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1045.8619908645878,
+        "Y": 715.01728793897507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "2fd5b45785b54dd29af64df1707adba8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 696.548558028767,
+        "Y": 595.01728793897507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "6cfdc6b485c947a082bbef6cbaaf31c9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1322.8172147451851,
+        "Y": 558.01728793897507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "746fbc9250484b8a8bcc1a575920e088",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1300.5783648367628,
+        "Y": 801.81728705763135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "699aa101f3304d0a88a50258d1f3736e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1313.8280685622622,
+        "Y": 893.67739995612169
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "6cc48653d2184cf5817d81d52635add0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1304.8498926497891,
+        "Y": 981.69079727191775
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "32192bf3411e4994ac0d6b43cffd6e77",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1293.5033001432496,
+        "Y": 1066.6570461488398
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Document.SaveAs",
+        "Id": "6004129bfcc64c3eb23353313133e776",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1906.1007968347374,
+        "Y": 587.01728793897507
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "17cccc6136d54d77b5669369ec02bce2",
+        "Title": "<Click here to edit the group title>",
+        "Nodes": [
+          "c1bccf0399b24c9f953b53309b105175",
+          "d3a7f6fc92234cdab1ad9aa41365df3b",
+          "0696ad31f65042c88d7111599ee4b034",
+          "af2dc9ac72cd4c6f90b06a56acf0ddac",
+          "510c54d41b2f40a9a4309e1b6644b987",
+          "6db63e641014408c8b00c5fe742b6301",
+          "46d8b63f5dee49eeae987f58ff72a31e",
+          "e1252710e6c54a0aa063b9c7f73e92c5",
+          "2fd5b45785b54dd29af64df1707adba8",
+          "6cfdc6b485c947a082bbef6cbaaf31c9",
+          "746fbc9250484b8a8bcc1a575920e088",
+          "699aa101f3304d0a88a50258d1f3736e",
+          "6cc48653d2184cf5817d81d52635add0",
+          "32192bf3411e4994ac0d6b43cffd6e77",
+          "6004129bfcc64c3eb23353313133e776"
+        ],
+        "Left": 686.548558028767,
+        "Top": 505.03221331210938,
+        "Width": 1474.5671641791048,
+        "Height": 629.63975820986457,
+        "FontSize": 36.0,
+        "InitialTop": 558.01728793897507,
+        "InitialHeight": 620.41939667312863,
+        "TextblockHeight": 42.985074626865675,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -407.70665804028204,
+    "Y": -132.12691562609984,
+    "Zoom": 0.78436932804482706
+  }
+}
