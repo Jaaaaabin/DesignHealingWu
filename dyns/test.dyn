@@ -1,0 +1,233 @@
+{
+  "Uuid": "84d74afb-79ff-4f2c-8267-0f74d0dbe3a2",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "test",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Views.View.ExportAsImage@string",
+      "Id": "c2833c37d33546a9a3a838c039e97017",
+      "Inputs": [
+        {
+          "Id": "e11bb93b9a5344beb3361ac8ef3c05c3",
+          "Name": "view",
+          "Description": "Revit.Elements.Views.View",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "adcb92dee21d41ce81f76eb25b6baecd",
+          "Name": "path",
+          "Description": "A valid path for the image.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "018e26101b994ed380404e32e697e76a",
+          "Name": "var",
+          "Description": "A Bitmap Image.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Export the view as an image to the given path - defaults to png, but you can override the file type but supplying a path with the appropriate extension.\n\nView.ExportAsImage (path: string): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Application.Document.Current",
+      "Id": "7649e6193d784846a915628bc88ac5b9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ca3f8e461cda4ab091741015b8e31741",
+          "Name": "Document",
+          "Description": "Document",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the current document\n\nDocument.Current: Document"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Application.Document.ActiveView",
+      "Id": "70a85cf3713e4d3cbcdaf6aeb38c316f",
+      "Inputs": [
+        {
+          "Id": "e6f69c7096d340fc80878d8d85850cef",
+          "Name": "document",
+          "Description": "Revit.Application.Document",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cca11e7c91c646759388f89a562a64c4",
+          "Name": "View",
+          "Description": "View",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the active view for the document\n\nDocument.ActiveView: View"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\ini\\model\\test.png",
+      "Id": "4214d51aea0a42a0871623d253158965",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "91ab3e0a11094644835c1645bd0bae8a",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ca3f8e461cda4ab091741015b8e31741",
+      "End": "e6f69c7096d340fc80878d8d85850cef",
+      "Id": "4e9103fbf2df4058b312a8e8789667df"
+    },
+    {
+      "Start": "cca11e7c91c646759388f89a562a64c4",
+      "End": "e11bb93b9a5344beb3361ac8ef3c05c3",
+      "Id": "25f51e747f864c3b94774ac0357db765"
+    },
+    {
+      "Start": "91ab3e0a11094644835c1645bd0bae8a",
+      "End": "adcb92dee21d41ce81f76eb25b6baecd",
+      "Id": "0a2929a2054c447aa1cfb36e1399ed95"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.10",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "View.ExportAsImage",
+        "Id": "c2833c37d33546a9a3a838c039e97017",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 603.45902969371184,
+        "Y": 364.86563724724272
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Document.Current",
+        "Id": "7649e6193d784846a915628bc88ac5b9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 136.83569840278852,
+        "Y": 271.76283097940535
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Document.ActiveView",
+        "Id": "70a85cf3713e4d3cbcdaf6aeb38c316f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 370.08942974607845,
+        "Y": 271.76283097940535
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "4214d51aea0a42a0871623d253158965",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 334.88017688180258,
+        "Y": 444.34907934892112
+      }
+    ],
+    "Annotations": [],
+    "X": -120.61734050675426,
+    "Y": -140.50036675143159,
+    "Zoom": 1.2484436539722303
+  }
+}
