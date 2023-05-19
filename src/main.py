@@ -8,6 +8,6 @@ from graphEnricher import graphEnrich
 
 if __name__ == "__main__":
     
-    topoCollect()
-    # graphCreate()
-    # graphEnrich()
+    # topoCollect()
+    graphCreate()
+    graphEnrich()

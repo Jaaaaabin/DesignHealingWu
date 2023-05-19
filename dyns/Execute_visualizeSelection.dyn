@@ -420,8 +420,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2891.6476756682655,
-        "Y": 1128.5139578293958
+        "X": -2843.2422909396746,
+        "Y": 1148.6828681329757
       },
       {
         "ShowGeometry": true,
@@ -429,9 +429,9 @@
         "Id": "a611d62f3a7b412e8a1323104f7b371e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -2681.7297556677563,
-        "Y": 1018.6017742378685
+        "Excluded": true,
+        "X": -2630.9041017027357,
+        "Y": 1149.2963130050643
       },
       {
         "ShowGeometry": true,
@@ -440,8 +440,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2448.4760243244727,
-        "Y": 1018.6017742378685
+        "X": -2397.6503703594522,
+        "Y": 1149.2963130050643
       },
       {
         "ShowGeometry": true,
@@ -450,8 +450,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2139.2819944737266,
-        "Y": 1018.6017742378685
+        "X": -2088.456340508706,
+        "Y": 1149.2963130050643
       },
       {
         "ShowGeometry": true,
@@ -460,8 +460,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2663.3737657696051,
-        "Y": 1342.647092338909
+        "X": -2643.2185833291555,
+        "Y": 1339.4063388272064
       },
       {
         "ShowGeometry": true,
@@ -470,8 +470,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2682.3723843261632,
-        "Y": 1436.1474922304317
+        "X": -2643.2185833291555,
+        "Y": 1438.4063388272064
       },
       {
         "ShowGeometry": true,
@@ -480,8 +480,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2852.9260045755755,
-        "Y": 1515.647092338909
+        "X": -2832.7708221351259,
+        "Y": 1512.4063388272064
       },
       {
         "ShowGeometry": true,
@@ -490,8 +490,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2344.1498851725905,
-        "Y": 1426.647092338909
+        "X": -2201.862728037187,
+        "Y": 1424.0079741705313
       },
       {
         "ShowGeometry": true,
@@ -500,8 +500,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2852.9260045755755,
-        "Y": 1599.647092338909
+        "X": -2832.7708221351259,
+        "Y": 1596.4063388272064
       },
       {
         "ShowGeometry": true,
@@ -510,8 +510,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2852.9260045755755,
-        "Y": 1683.647092338909
+        "X": -2832.7708221351259,
+        "Y": 1680.4063388272064
       },
       {
         "ShowGeometry": true,
@@ -520,8 +520,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -2663.3737657696051,
-        "Y": 1573.647092338909
+        "X": -2643.2185833291555,
+        "Y": 1570.4063388272064
       }
     ],
     "Annotations": [
@@ -534,13 +534,13 @@
           "9fae78c7d11b4496abd78d87d43d7819",
           "98d476202ed247bd8bfff3b2593e4beb"
         ],
-        "Left": -2901.6476756682655,
-        "Top": 921.91520707368943,
-        "Width": 933.55971104528521,
-        "Height": 310.43457165122879,
+        "Left": -2853.2422909396746,
+        "Top": 1051.9963009687967,
+        "Width": 935.97998028171492,
+        "Height": 201.13583293179,
         "FontSize": 36.0,
-        "InitialTop": 1018.6017742378685,
-        "InitialHeight": 254.91218359152731,
+        "InitialTop": 1148.6828681329757,
+        "InitialHeight": 145.61344487208862,
         "TextblockHeight": 86.68656716417911,
         "Background": "#FFC1D676"
       },
@@ -556,19 +556,19 @@
           "e5048cf05ff142d18c93b9dd973263bf",
           "3c38cf610d954047a66282f94a9f3960"
         ],
-        "Left": -2862.9260045755755,
-        "Top": 1289.6620177120433,
-        "Width": 853.31343283582078,
+        "Left": -2842.7708221351259,
+        "Top": 1286.4212642003406,
+        "Width": 975.44540753077467,
         "Height": 462.0,
         "FontSize": 36.0,
-        "InitialTop": 1342.647092338909,
-        "InitialHeight": 469.31483112068349,
+        "InitialTop": 1339.4063388272064,
+        "InitialHeight": 486.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFC1D676"
       }
     ],
-    "X": 3309.65601724726,
-    "Y": -1243.32801669752,
-    "Zoom": 1.1298815007517617
+    "X": 3575.85587767845,
+    "Y": -1257.9778511938637,
+    "Zoom": 1.1907842822007861
   }
 }
