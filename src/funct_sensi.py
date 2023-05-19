@@ -43,7 +43,14 @@ def remove_frozen_group(dt_param, dt_param_bdry, dt_param_grp, group_frozen):
     return new_dt_param, new_dt_param_bdry, new_dt_param_grp
 
 
-def saltelli_sampling(ref_design, group_frozen, n_smp=4, set_SA_group=False, set_SA_distribution='unif', sa_calc_second_order=True, saltelli_skip=1024):
+def saltelli_sampling(
+        ref_design,
+        group_frozen,
+        n_smp=4,
+        set_SA_group=False,
+        set_SA_distribution='unif',
+        sa_calc_second_order=True,
+        saltelli_skip=1024):
     """
     sampling based on saltelli ...
 
@@ -66,25 +73,11 @@ def saltelli_sampling(ref_design, group_frozen, n_smp=4, set_SA_group=False, set
     SA_param_num = int(len(SA_param_names))
     SA_param_dists = np.array([set_SA_distribution]*SA_param_num)
 
-    # consider (or not) grouping the parameters
-    if set_SA_group:
-
-        SA_param_groups = list(dt_param_grp.values())
-
-        problem = {
-            'groups': SA_param_groups,
-            'num_vars': SA_param_num,
-            'names': SA_param_names,
-            'bounds': SA_param_bounds,
-            'dists': SA_param_dists
-        }
-
-    else:
-        problem = {
-            'num_vars': SA_param_num,
-            'names': SA_param_names,
-            'bounds': SA_param_bounds,
-            'dists': SA_param_dists
+    problem = {
+        'num_vars': SA_param_num,
+        'names': SA_param_names,
+        'bounds': SA_param_bounds,
+        'dists': SA_param_dists
         }
 
     # Sampling via Saltelli’s extension of the Sobol’ sequence
@@ -169,3 +162,45 @@ def execute_sa_sobol(dirs_res, dirs_fig, problem, target_rules, sa_calc_second_o
     return all_total, all_first, all_second
 
 
+# new functions.
+
+def duplicateRVT(dir_ini, dir_dest, amount=0, clear_destination=True):
+    """
+    duplicate the initial .rvt file.
+    """
+
+    # clear all the previous *.rvt files the destination folder.
+    if clear_destination:
+        for f in os.listdir(dir_dest):
+            if f.endswith(".rvt"):
+                os.remove(os.path.join(dir_dest, f))
+    if amount > 0 :
+        nbs =  [item for item in range(1, amount+1)]
+        pathnames = [dir_dest+'\\'+ str(nb) for nb in nbs]
+        for pathname in pathnames:
+            if os.path.isfile(dir_ini):
+                shutil.copy(dir_ini, pathname+'.rvt')
+    else:
+        return 'Amount Error'
+
+def getRVTFilename(file_dir, outpath, remove_ext = True):
+    """
+    write the .rvt files into a csv for controling.
+    """
+
+    # list to store files
+    res = []
+
+    # Iterate directory
+    for path in os.listdir(file_dir):
+        # check if current path is a file
+        if os.path.isfile(os.path.join(file_dir, path)):
+            if path.endswith('.rvt'):
+                res.append(path)
+    
+    if remove_ext:
+        res = [x.replace('.rvt', '') for x in res]
+
+    df_rvtids = pd.DataFrame(res)
+    df_rvtids.to_csv(outpath, header=False, index=False)
+    print('Extraction of duplicated RVT filenames (with student IDs) Succeed.')

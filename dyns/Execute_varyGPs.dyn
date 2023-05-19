@@ -2,7 +2,7 @@
   "Uuid": "cb55b93f-2941-42d0-b5e2-1277f089ff3d",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "varydesign",
+  "Name": "Execute_varyGPs",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -70,7 +70,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\40_sensitivity_analysis\\vary",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\vary",
       "Id": "c81756a4e8d349f7a632a106e47221a8",
       "Inputs": [],
       "Outputs": [
@@ -90,7 +90,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\40_sensitivity_analysis\\dups",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\dups",
       "Id": "9771d3dfdbf147f0865317e93794dabc",
       "Inputs": [],
       "Outputs": [
@@ -110,7 +110,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\ini_gps_varytest.csv",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\sa_vary.csv",
       "Id": "dadb0f2f84eb4f0298e6d8d7833644b8",
       "Inputs": [],
       "Outputs": [
@@ -215,8 +215,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "\"*.rvt\";",
       "NodeType": "CodeBlockNode",
+      "Code": "\"*.rvt\";",
       "Id": "ca302b43327943f39ff4eff97b41e5e6",
       "Inputs": [],
       "Outputs": [
@@ -468,7 +468,7 @@
         "Id": "5b87231a1aee4b51b11ae063f1e0db12",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Excluded": false,
+        "Excluded": true,
         "X": 1382.4364177579264,
         "Y": 124.81558430492578
       },
@@ -592,7 +592,7 @@
         "Height": 280.00000000000011,
         "FontSize": 36.0,
         "InitialTop": 443.42326424268975,
-        "InitialHeight": 344.00000000000006,
+        "InitialHeight": 304.00000000000006,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
       },
@@ -606,7 +606,7 @@
         ],
         "Left": 298.84034602341023,
         "Top": -106.67044136007004,
-        "Width": 237.07462686567169,
+        "Width": 237.19079151167705,
         "Height": 464.58657866095211,
         "FontSize": 36.0,
         "InitialTop": 33.001200430974734,
@@ -615,8 +615,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": -293.50600103379452,
-    "Y": -104.53595456907283,
-    "Zoom": 0.97722060134152811
+    "X": -92.1249824855081,
+    "Y": 98.564533603587023,
+    "Zoom": 0.64317697278984065
   }
 }

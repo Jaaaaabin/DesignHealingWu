@@ -692,26 +692,6 @@
       "Description": "Allows for DesignScript code to be authored directly"
     },
     {
-      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\teaching\\bimfunda\\bimfunda_assignment\\SS23-assign2\\data\\4_ifc_export",
-      "Id": "fa8c358537d6406b80c53b8a05bee46d",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "49d5b28f1738435fa75519c5ee556802",
-          "Name": "",
-          "Description": "String",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a string."
-    },
-    {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
       "NodeType": "NumberInputNode",
       "NumberType": "Double",
@@ -1263,15 +1243,15 @@
     },
     "Camera": {
       "Name": "Background Preview",
-      "EyeX": -19.8799991607666,
-      "EyeY": 27.1200008392334,
-      "EyeZ": 63.919998168945313,
-      "LookX": 14.880000114440918,
-      "LookY": -16.1200008392334,
-      "LookZ": -71.919998168945313,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
+      "EyeX": -67.518417358398438,
+      "EyeY": 16.54627799987793,
+      "EyeZ": -3.9616622924804688,
+      "LookX": 50.862838745117188,
+      "LookY": -29.009061813354492,
+      "LookZ": -10.186817169189453,
+      "UpX": 0.28399279713630676,
+      "UpY": 0.95713800191879272,
+      "UpZ": -0.056877776980400085
     },
     "NodeViews": [
       {
@@ -1476,16 +1456,6 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Directory Path (OUTPUT)",
-        "Id": "fa8c358537d6406b80c53b8a05bee46d",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 2816.2802460482417,
-        "Y": -286.91450406518294
-      },
-      {
-        "ShowGeometry": true,
         "Name": "number of 3DViews per Document.",
         "Id": "7cd8065a845f4d459edea381b99a9937",
         "IsSetAsInput": false,
@@ -1576,8 +1546,8 @@
       }
     ],
     "Annotations": [],
-    "X": -2547.5414283115588,
-    "Y": 356.32972112903025,
-    "Zoom": 0.80821986639302912
+    "X": -1364.2454329708121,
+    "Y": 297.8547985943992,
+    "Zoom": 0.68320669405256784
   }
 }
