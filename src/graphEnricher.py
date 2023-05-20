@@ -121,5 +121,8 @@ def graphEnrich():
     with open(FILE_RELATED_GP_INI, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(zip(all_gps, all_gps_vals))
-    
-    # to do to move the results to the related folder.
+
+    filesToMove = [f for f in os.listdir(DIRS_DATA_TOPO) if 'res_ini_' in f or '.png' in f]
+    for file in filesToMove:
+        new_path = DIRS_DATA_TOPO + r'\neighbor_'+ str(LEVEL_FAILURE_NEIGHBOR) + '\\' + file
+        shutil.move(os.path.join(DIRS_DATA_TOPO, file), new_path)

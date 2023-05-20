@@ -3,12 +3,12 @@
 #
 
 # import modules
-from const_project import DIRS_DATA_SA, DIRS_DATA_SA_DUP, FILE_SA_VARY
-from const_project import FILE_INIT_RVT, DIRS_DATA_SA_DUP, FILE_SA_PARAM_LIST
+from const_project import FILE_INIT_RVT, FILE_SA_PARAM_LIST, DIRS_DATA_SA, DIRS_DATA_SA_FIG, DIRS_DATA_SA_DUP, FILE_SA_VARY
 from const_sensi import K_LEVEL_PARAMETER, N_SMP, SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTION, SALTELLI_SKIP
 
-# from base_functions import *
 from funct_sensi import *
+# from funct_plot import plot_sa_parallel_parameters
+# from base_classes import NewDesign
 
 def prepareVariants(set_dup_rvt=False):
 
@@ -38,4 +38,10 @@ def prepareVariants(set_dup_rvt=False):
 
     if set_dup_rvt:
         duplicateRVT(FILE_INIT_RVT, DIRS_DATA_SA_DUP, amount=sa_values.shape[0], clear_destination=True)
+    
+    # initial_design = NewDesign(0)
+    # initial_design.add_codecompliance(BUILDING_RULES, init_output)
+
+    # sa_samples, sa_samples_df = build_samples(initial_design, sa_values, sa_problem)
+    # plot_sa_parallel_parameters(DIRS_DATA_SA_FIG, sa_samples_df)
 

@@ -5,8 +5,11 @@
 # import packages
 from base_external_packages import *
 
-
 def sortStrListbyNumber(lst):
+    """
+    sort a list by number value inside.
+    """
+    
     sort_lst = natsorted(lst)
     return sort_lst
 
@@ -37,6 +40,7 @@ def get_h5_from_directory(directory):
     local_paths = sortStrListbyNumber(local_paths)
     return full_paths, local_paths
 
+
 def analyze_h5s(directory, rules):
     """
     analyze a group of .h5 documents containing code compliance checking results  
@@ -63,6 +67,8 @@ def analyze_h5s(directory, rules):
                 dictCheckResult_target.update({'compliance': tempo.loc[idx, 'checkCompliance']}) #to improve
                 dictCheckResult_targets.update({idx: dictCheckResult_target})
             dictCheckResult_rules.update({rule: dictCheckResult_targets})
-        dictCheckResult_h5s.update({name_h5: dictCheckResult_rules})
+        
+        name_h5_as_number = name_h5 # to improve
+        dictCheckResult_h5s.update({name_h5_as_number: dictCheckResult_rules})
 
     return dictCheckResult_h5s

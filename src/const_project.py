@@ -7,6 +7,7 @@ DIRS_ZERO = r'C:\dev\phd\ModelHealer'
 
 # directory: initial design
 DIRS_INIT =  DIRS_ZERO + r'\ini'
+DIRS_INI_RES = DIRS_INIT + r'\res'
 
 FILE_INIT_RVT = DIRS_INIT + r'\model\ini.rvt'
 
@@ -50,7 +51,7 @@ FILE_SA_VARY = DIRS_DATA_SA + r'\sa_vary.csv'
 DIRS_DATA_SA_DUP = DIRS_DATA_SA + r'\dups'
 DIRS_DATA_SA_VARY = DIRS_DATA_SA + r'\vary'
 DIRS_DATA_SA_RES = DIRS_DATA_SA + r'\res'
-
+DIRS_DATA_SA_FIG = DIRS_DATA_SA + r'\fig'
 
 # directory: tests
 DIRS_TEST = DIRS_ZERO + r'\tests'
