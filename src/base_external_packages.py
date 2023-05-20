@@ -14,6 +14,7 @@ from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d import proj3d
+from natsort import natsorted
 from SALib.analyze import sobol
 from SALib.plotting.bar import plot as barplot
 from SALib.plotting.hdmr import plot as hdmrplot

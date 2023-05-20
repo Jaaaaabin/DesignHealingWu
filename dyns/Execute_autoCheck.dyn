@@ -2,7 +2,7 @@
   "Uuid": "e7f86b79-9e35-4815-88a5-b9cfc2d5cd27",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "autocheck",
+  "Name": "Execute_autoCheck",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -64,7 +64,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\40_sensitivity_analysis\\res",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\res",
       "Id": "76be6926021d46fdbf09bf7c767c8197",
       "Inputs": [],
       "Outputs": [
@@ -84,7 +84,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\jw\\healing\\data\\healing2023\\40_sensitivity_analysis\\vary",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\vary",
       "Id": "5a81ff4c07324576b85a104f219b513a",
       "Inputs": [],
       "Outputs": [
@@ -250,8 +250,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "\"*.rvt\";",
       "NodeType": "CodeBlockNode",
+      "Code": "\"*.rvt\";",
       "Id": "e3b4680ccec74340bc905ad7eba7fc4d",
       "Inputs": [],
       "Outputs": [
@@ -639,8 +639,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": 737.87660333041356,
-    "Y": 356.17778222171,
-    "Zoom": 0.98042379615307262
+    "X": 513.57236605342462,
+    "Y": 206.34184731344953,
+    "Zoom": 0.78735114799886463
   }
 }

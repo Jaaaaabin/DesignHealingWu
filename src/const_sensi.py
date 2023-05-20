@@ -2,6 +2,9 @@
 # const_sensi.py
 #
 
+# initial parameter selction
+K_LEVEL_PARAMETER = 1
+
 # SA overall information
 N_SMP = 2
 SA_CALC_SECOND_ORDER = True

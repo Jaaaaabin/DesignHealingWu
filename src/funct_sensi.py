@@ -204,3 +204,17 @@ def getRVTFilename(file_dir, outpath, remove_ext = True):
     df_rvtids = pd.DataFrame(res)
     df_rvtids.to_csv(outpath, header=False, index=False)
     print('Extraction of duplicated RVT filenames (with student IDs) Succeed.')
+
+
+def get_h5_from_directory(directory):
+
+    full_paths = []
+    local_paths = []
+    for path in os.listdir(directory):
+        if os.path.isfile(os.path.join(directory, path)):
+            if path.endswith('.h5'):
+                full_paths.append(os.path.join(directory, path))
+                local_paths.append(path)
+    full_paths = sortStrListbyNumber(full_paths)
+    local_paths = sortStrListbyNumber(full_paths)
+    return full_paths, local_paths

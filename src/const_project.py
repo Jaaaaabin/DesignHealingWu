@@ -31,13 +31,12 @@ NAME_TOPO_OBJECT = r'\collected_topology_wall_'
 NAME_TOPO_SPACE = r'\collected_topology_space_'
 NAME_TOPO_PARAMETER = r'\collected_topology_parameter_'
 
-FILE_SA_PARAM_LIST = DIRS_DATA_TOPO + r'\neighbor_1\res_ini_parameter_values.csv'
+FILE_SA_PARAM_LIST = DIRS_DATA_TOPO + r'\neighbor_tbd\res_ini_parameter_values.csv'
 
 # directory: dynamo scripts
 DIRS_SCRIPT_DYN = DIRS_ZERO + r'\dyns'
 
 FILE_CONTROL_RVT = DIRS_SCRIPT_DYN + r'\control.rvt'
-
 
 # directory: external scripts
 DIRS_SCRIPT_EXT = DIRS_ZERO + r'\src'
@@ -47,8 +46,10 @@ DIRS_DATA = DIRS_ZERO + r'\data'
 
 # directory: data-sa
 DIRS_DATA_SA = DIRS_DATA + r'\sa'
-DIRS_DATA_SA_DUP = DIRS_DATA_SA + r'\dups'
 FILE_SA_VARY = DIRS_DATA_SA + r'\sa_vary.csv'
+DIRS_DATA_SA_DUP = DIRS_DATA_SA + r'\dups'
+DIRS_DATA_SA_VARY = DIRS_DATA_SA + r'\vary'
+DIRS_DATA_SA_RES = DIRS_DATA_SA + r'\res'
 
 
 # directory: tests

@@ -5,7 +5,6 @@
 # import packages
 from base_external_packages import *
 
-
 def create_dictionary_key_mapping(dictionary):
     """
     """
@@ -104,17 +103,6 @@ def build_instance_df(
         df['classification'] = df.apply(
             lambda x: 'Space_' + x['classification'], axis=1)
     return df
-
-
-def get_data_from_h5(h5doc, key):
-    """
-    Collect data from .h5 file by specifying the store key.
-    """
-
-    allData = pd.HDFStore(h5doc, 'r')
-    data = allData[key]
-    return data
-
 
 def flatten(list):
     return [item for sublist in list for item in sublist]
