@@ -67,8 +67,29 @@ def analyze_h5s(directory, rules):
                 dictCheckResult_target.update({'compliance': tempo.loc[idx, 'checkCompliance']}) #to improve
                 dictCheckResult_targets.update({idx: dictCheckResult_target})
             dictCheckResult_rules.update({rule: dictCheckResult_targets})
-        
-        name_h5_as_number = name_h5 # to improve
+
+        name_h5_as_number = int(name_h5.replace(".h5",""))
         dictCheckResult_h5s.update({name_h5_as_number: dictCheckResult_rules})
 
     return dictCheckResult_h5s
+
+
+def save_dict(dt, filename):
+    """
+    save dictionary / object
+
+    """
+    
+    with open(filename, 'wb') as handle:
+        pickle.dump(dt, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def load_dict(filename):
+    """
+    reload dictionary / object
+    
+    """
+    
+    with open(filename, 'rb') as handle:
+        dt = pickle.load(handle)
+    return dt

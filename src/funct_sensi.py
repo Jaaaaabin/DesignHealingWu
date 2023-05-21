@@ -204,3 +204,17 @@ def getRVTFilename(file_dir, outpath, remove_ext = True):
     df_rvtids = pd.DataFrame(res)
     df_rvtids.to_csv(outpath, header=False, index=False)
     print('Extraction of duplicated RVT filenames (with student IDs) Succeed.')
+
+
+def collect_ini_sa_parameters(file_sa_parameter_list, k_level_parameter):
+    """
+    collect the initial parameters from a csv.
+    """
+
+    path_csv = file_sa_parameter_list.replace('tbd', str(k_level_parameter))
+    data = pd.read_csv(path_csv, names=['names', 'values'], header=None)
+    values = data['values'].tolist()
+    names = data['names'].tolist()
+    num = len(names)
+
+    return names, values, num

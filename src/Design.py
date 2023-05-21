@@ -8,21 +8,39 @@ from base_external_packages import *
 from base_functions import parameter_grouping, parameter_freezing, parameter_boundarying
 
 # define base classes
-class NewDesign():
+class Design():
     """
     Main class: Design clas
     """
 
-    def __init__(self):
-
-        self.number = []    # nr
-        self.parameters = []    # dict(parameter:value)
-        self.compliance = []    # dict(rule: dict(target:True/False))
-        self.distance = []      # dict(rule: dict(target:distance))
-    
-    # def add_parameters(self, ):
+    def __init__(self, nr, rules):
         
-    # def add_checkresults():
+        self.rules = rules          # rules.
+        self.number = nr            # nr.
+        self.parameters = dict()    # dict(parameter:value)
+        self.results = dict()       # dict(rule: dict(target: ((distance: ), (compliance: )))) 
+        self.data = dict()
+    
+    def set_parameters(self, newdict):
+        
+        self.parameters = newdict
+        
+    def set_checkresults(self, newdict):
+
+        # archive the initial checking results.
+        for rl in self.rules:
+            self.results.update({rl: newdict[rl]})
+            
+        # transpose the first two levels of the initial checking results. and rewrite into self.data.
+        tempo_dict = pd.DataFrame(self.results).transpose().to_dict()           
+        for i in tempo_dict.keys():
+            for j in tempo_dict[i].keys():
+                if not isinstance(tempo_dict[i][j], dict) and np.isnan(tempo_dict[i][j]):
+                    tempo_dict[i][j] = {'distance': None, 'compliance': None} 
+        # to do .
+        # https://stackoverflow.com/questions/47416113/how-to-build-a-multiindex-pandas-dataframe-from-a-nested-dictionary-with-lists
+        # tempo_df.index = pd.MultiIndex.from_tuples(tempo_df.index)
+        self.data = tempo_dict
 
     # # add parameters
     # def add_parameters(self, inputdata):
