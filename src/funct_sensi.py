@@ -8,7 +8,7 @@ from base_external_packages import *
 # import modules
 from base_functions import *
 # from base_classes import Design
-from funct_plot import plot_sa_second_indices, plot_sa_S1ST_per_rule
+from funct_plot import plot_sa_S1ST, plot_sa_S2
 
 # define sensitivity analysis functions
 def set_sa_low_2_high(
@@ -117,49 +117,50 @@ def build_samples(ref_design, sa_values, sa_problem):
     return samples, df_samples
 
 
-def execute_sa_sobol(dirs_res, dirs_fig, problem, target_rules, sa_calc_second_order=True, plot_res=False, plot_res_1_T=False, plot_res_2=False):
+def execute_sa_sobol(
+        dirs_fig,
+        problem,
+        target,
+        rule,
+        y_result_txt,
+        sa_calc_second_order=True,
+        plot_res=False,
+        plot_res_1_T=False,
+        plot_res_2=False):
+    
     """
-    execute Sobol sensitivity analysis per checking rule.
-
+    execute Sobol sensitivity analysis per checking target and checking rule.
     """
 
-    all_total, all_first, all_second = [], [], []
+    total, first, second = [], [], []
 
-    for single_rule in target_rules:
-        
-        single_rule_results = np.loadtxt(dirs_res + "/rule_results_" + str(single_rule) + ".txt", float)
-        
-        # remove the results of initial design.
-        Y = single_rule_results[1:]
-        
-        # execute the sobol analysis.
-        Si = sobol.analyze(problem, Y, calc_second_order=sa_calc_second_order, print_to_console=False)
-        
-        if sa_calc_second_order:
-            total, first, second = Si.to_df()
-            all_total.append(total)
-            all_first.append(first)
-            all_second.append(second)
-        else:
-            total, first = Si.to_df()
-            all_total.append(total)
-            all_first.append(first)
+    # execute the sobol analysis.
+    Y = np.loadtxt(y_result_txt, float)
+    Si = sobol.analyze(problem, Y, calc_second_order=sa_calc_second_order, print_to_console=False)
+    
+    if sa_calc_second_order:
+        total, first, second = Si.to_df()
+        total.append(total)
+        first.append(first)
+        second.append(second)
+    else:
+        total, first = Si.to_df()
+        total.append(total)
+        first.append(first)
         
     # plot settings
     if plot_res:
         
         # 1st and total-order indices are anyway alwayes calculated.
         if plot_res_1_T:
-            for rl, first_df, total_df in zip(target_rules, all_first, all_total):
-                plot_sa_S1ST_per_rule(dirs_fig, rl, first_df, total_df)
+            plot_sa_S1ST(dirs_fig, target, rule, first, total)
 
         # only if 2nd sensitivity indices are calculated.
         if sa_calc_second_order:
             if plot_res_2:
-                for ii in range(len(target_rules)):
-                    plot_sa_second_indices(dirs_fig, target_rules[ii], all_second[ii])
+                plot_sa_S2(dirs_fig, target, rule, second)
     
-    return all_total, all_first, all_second
+    return total, first, second
 
 
 # new functions.

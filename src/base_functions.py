@@ -317,20 +317,20 @@ def build_variation_txt_csv(dirs_bim, project_name, txt_filename, df):
     n = text_file.write(csv_file)
     text_file.close()
 
+# def build_rule_results(dirs_res, samples, target_rules):
+#     """
+#     build rule results per checking rule.
 
-def build_rule_results(dirs_res, samples, target_rules):
-    """
-    build rule results per checking rule.
-
-    """
+#     """
     
-    rule_results_df = pd.DataFrame(data=None, columns=target_rules)
-    for rule in target_rules:
-        rule_results_df[rule] = [sample.compliance_distance[rule]
-                         for sample in samples]
-        np.savetxt(dirs_res + "/rule_results_" + str(rule) + ".txt", rule_results_df[rule])
-    return rule_results_df
+#     rule_results_df = pd.DataFrame(data=None, columns=target_rules)
+#     for rule in target_rules:
+#         rule_results_df[rule] = [sample.compliance_distance[rule]
+#                          for sample in samples]
+#         np.savetxt(dirs_res + "/results_" + str(rule) + ".txt", rule_results_df[rule])
+#     return rule_results_df
 
+#new.
 
 def save_samples(dirs_data, data_file_name, samples, save_sample_object=False):
     """

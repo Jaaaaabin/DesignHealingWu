@@ -9,7 +9,7 @@ from const_project import FILE_LIST_GP, FILE_RELATED_GP_PERRULE, FILE_RELATED_FL
 from const_ibcrule import BUILDING_RULES, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
 from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE, EXCEPTION_LINK_TYPES
 
-from funct_h5 import get_data_from_h5
+from funct_data import get_data_from_h5
 from funct_topo import *
 
 def graphEnrich():

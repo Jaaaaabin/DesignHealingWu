@@ -12,7 +12,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "D_ue",
+      "InputValue": "d_wl",
       "Id": "8f9fe23d0b544a209908a6e5ce5808e3",
       "Inputs": [],
       "Outputs": [
@@ -179,6 +179,159 @@
       ],
       "Replication": "Disabled",
       "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\nimport healVisual\r\nimportlib.reload(healVisual)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\nkey = IN[0]\r\nrun = IN[1]\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\nout = []\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nif run:\r\n    out = healParameters.deleteGlobalParameter(doc, key)\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "eeca6cf1417b4f9697bff51f05f1d9e9",
+      "Inputs": [
+        {
+          "Id": "c1968fa2663e4cf7b738793e81a45357",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "62fe694806dd42b68958f6f26767f157",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "46729dbac370475c957812b8d0234158",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "a63285806d504dc7a5045b287c3842d9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c674e70b3a854b05a23c8f08649577ed",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "d_wl",
+      "Id": "bd47a9d0ee774771b9aca32299a4a10b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "90dbc7bef011435ea781e3c0f319d2ba",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\nelement = IN[0]\r\n\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\nout = []\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nhealBasics.rerunNodes()\r\n\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out\r\n\r\n\r\n\r\n\r\n\r\n",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "09752b616239442980ed7ce511fd75c7",
+      "Inputs": [
+        {
+          "Id": "90751883a31048d886635bd42cfa894a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "499c0710e1614615a9d3dbefed96486e",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "ecce77dc-1290-438e-a056-970b256fd553",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "43b15ade28054619b93556048f7a4af5",
+      "Inputs": [
+        {
+          "Id": "c615a9304d66476a99cbe598cf22d7b5",
+          "Name": "passThrough",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50a02232e83d4e5193c5c51b6f11c01b",
+          "Name": "waitFor",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "de20786db99940069be1f64675983fa8",
+          "Name": "passThrough",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Forces a sequential order of execution. The node wired into the output of the Passthrough node will be executed *after* the node wired into the waitFor input (e.g. important for some Revit operations). The value of the passThrough input will be passed on to the node wired into the output port of the Passthrough node."
     }
   ],
   "Connectors": [
@@ -193,6 +346,11 @@
       "Id": "2a5f730009b24c97bb15b4d0a78b80ae"
     },
     {
+      "Start": "c04ecb0497bf4a718f98b2c4771227f1",
+      "End": "50a02232e83d4e5193c5c51b6f11c01b",
+      "Id": "874976c6b356409491eb975d8917e9b2"
+    },
+    {
       "Start": "7a9402c314d44e39a72a76292820d847",
       "End": "b9f83fc0bb084f7887bf12c5fd537fad",
       "Id": "a9a8e735aee341649b465257fdd14bff"
@@ -201,10 +359,36 @@
       "Start": "506bcb835b6f402485366bad3b840554",
       "End": "2765a6b70dee404eb24eeb4674cbb9ad",
       "Id": "e8f0ad41ae3d4371ad897593439fc4b9"
+    },
+    {
+      "Start": "c674e70b3a854b05a23c8f08649577ed",
+      "End": "c615a9304d66476a99cbe598cf22d7b5",
+      "Id": "64b5652e66504ccab29bd08fbfe72ffc"
+    },
+    {
+      "Start": "90dbc7bef011435ea781e3c0f319d2ba",
+      "End": "c1968fa2663e4cf7b738793e81a45357",
+      "Id": "8516efce386a4e24aed34b838cb6d2f9"
+    },
+    {
+      "Start": "de20786db99940069be1f64675983fa8",
+      "End": "62fe694806dd42b68958f6f26767f157",
+      "Id": "6cadc636bb194eb093f3ac5059626a12"
     }
   ],
-  "Dependencies": [],
-  "NodeLibraryDependencies": [],
+  "Dependencies": [
+    "ecce77dc-1290-438e-a056-970b256fd553"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.3.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "43b15ade28054619b93556048f7a4af5"
+      ]
+    }
+  ],
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
@@ -253,13 +437,13 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "String",
+        "Name": "key of Parameters related to Constraints.",
         "Id": "8f9fe23d0b544a209908a6e5ce5808e3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 31.680125596215134,
-        "Y": 316.08176974154969
+        "X": -143.08323055085842,
+        "Y": 333.10197393711445
       },
       {
         "ShowGeometry": true,
@@ -268,8 +452,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 31.680125596215134,
-        "Y": 568.08176974154969
+        "X": -142.38920323573009,
+        "Y": 514.31118779403789
       },
       {
         "ShowGeometry": true,
@@ -278,8 +462,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 34.185046996209394,
-        "Y": 666.23478198188047
+        "X": -143.2870843458619,
+        "Y": 576.374779647702
       },
       {
         "ShowGeometry": true,
@@ -288,8 +472,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 353.76967783502107,
-        "Y": 403.08176974154969
+        "X": 256.87204911333606,
+        "Y": 406.11126807367043
       },
       {
         "ShowGeometry": true,
@@ -298,8 +482,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 31.680125596215134,
-        "Y": 484.08176974154969
+        "X": -141.69517592060194,
+        "Y": 454.60214382352484
       },
       {
         "ShowGeometry": true,
@@ -308,14 +492,64 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 31.680125596215134,
-        "Y": 400.08176974154969
+        "X": -142.38920323573009,
+        "Y": 394.8930998530119
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "deleteGPbykey",
+        "Id": "eeca6cf1417b4f9697bff51f05f1d9e9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1215.6367215424173,
+        "Y": 377.54940183799476
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Run?",
+        "Id": "a63285806d504dc7a5045b287c3842d9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 575.397875002379,
+        "Y": 394.37789950594362
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "key of Parameters related to Constraints.",
+        "Id": "bd47a9d0ee774771b9aca32299a4a10b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 800.41284094540231,
+        "Y": 348.54940183799476
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "🧡　rerunNodes　🧡",
+        "Id": "09752b616239442980ed7ce511fd75c7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 712.17697098065719,
+        "Y": 572.61549875202809
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Passthrough",
+        "Id": "43b15ade28054619b93556048f7a4af5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 800.41284094540231,
+        "Y": 432.54940183799476
       }
     ],
     "Annotations": [
       {
         "Id": "a7316fdcdb384eb08938615b46e67c12",
-        "Title": "Clear all Global Parameters by keys.\r\n",
+        "Title": "Clear constraint-related GPs by key.\r\n",
         "Nodes": [
           "6037155f052b40fa8dc4c72968eb8093",
           "8f9fe23d0b544a209908a6e5ce5808e3",
@@ -324,19 +558,39 @@
           "7d8d63cb33b44057af5f4c9a1305a6d1",
           "44707734f7ae49a0a1664d725787010c"
         ],
-        "Left": 21.680125596215134,
-        "Top": 176.41012795050491,
-        "Width": 543.40298507462683,
-        "Height": 593.6604749268979,
+        "Left": -153.2870843458619,
+        "Top": 236.41540677293534,
+        "Width": 621.47256629501885,
+        "Height": 443.795193770289,
         "FontSize": 36.0,
-        "InitialTop": 316.08176974154969,
-        "InitialHeight": 495.15301224033078,
-        "TextblockHeight": 129.67164179104478,
+        "InitialTop": 333.10197393711445,
+        "InitialHeight": 388.27280571058753,
+        "TextblockHeight": 86.68656716417911,
+        "Background": "#FFBB87C6"
+      },
+      {
+        "Id": "448db46eb4064efc926baf4d8687adf1",
+        "Title": "Clear independent GPs by key.\r\n",
+        "Nodes": [
+          "a63285806d504dc7a5045b287c3842d9",
+          "bd47a9d0ee774771b9aca32299a4a10b",
+          "09752b616239442980ed7ce511fd75c7",
+          "eeca6cf1417b4f9697bff51f05f1d9e9",
+          "43b15ade28054619b93556048f7a4af5"
+        ],
+        "Left": 565.397875002379,
+        "Top": 251.86283467381566,
+        "Width": 810.68660773406816,
+        "Height": 424.58848497373481,
+        "FontSize": 36.0,
+        "InitialTop": 348.54940183799476,
+        "InitialHeight": 369.06609691403332,
+        "TextblockHeight": 86.68656716417911,
         "Background": "#FFBB87C6"
       }
     ],
-    "X": 219.07295511639271,
-    "Y": -252.07959814539385,
-    "Zoom": 1.251292971575009
+    "X": 189.01970340544915,
+    "Y": -70.976410779542448,
+    "Zoom": 1.0322618358550086
   }
 }

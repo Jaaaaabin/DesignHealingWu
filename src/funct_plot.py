@@ -83,51 +83,6 @@ def plot_sa_parallel_parameters(dirs_fig, sa_samples_df):
     plotly.offline.plot(fig, filename=dirs_fig + plot_name + '.html')
 
 
-def plot_sa_second_indices(dirs_fig, rl, second):
-    """
-    Plot second sensitivity indices.
-
-    """
-
-    def convert2Matrix(second):
-        param_names = []
-        for m in range(second.shape[0]):
-            for n in range(second.shape[1]):
-                if second.index[m][n] not in param_names:
-                    param_names.append(second.index[m][n])
-                else:
-                    continue
-
-        matrix = np.zeros((len(param_names), len(param_names)), float)
-        for k in range(second['S2'].shape[0]):
-            j = param_names.index(second['S2'].index[k][0])
-            i = param_names.index(second['S2'].index[k][1])
-            matrix[j][i] = second['S2'].iloc[k]
-        return param_names, matrix
-
-    param_names, matrix = convert2Matrix(second)
-
-    fig = plt.figure(figsize=(10, 10))  # unit of inch
-    ax1 = plt.axes((0.1, 0.1, 0.8, 0.8))  # in range (0,1)
-
-    pos = ax1.imshow(matrix, interpolation='none', cmap='BuPu')
-
-    ax1.set_xticks(np.arange(len(param_names)), param_names)
-    ax1.set_yticks(np.arange(len(param_names)), param_names)
-    ax1.tick_params(axis='x', which='major', direction='out', length=5, width=2, color='maroon',
-                    pad=10, labelsize=10, labelcolor='navy', labelrotation=15)
-    ax1.tick_params(axis='y', which='major', direction='out', length=5, width=2, color='maroon',
-                    pad=10, labelsize=10, labelcolor='navy', labelrotation=15)
-    ax1.set_title(r'Second-order sensitivity indices for rule: '+rl, size=16)
-    fig.colorbar(pos, location='right', shrink=0.8)
-
-    for (i, j), z in np.ndenumerate(matrix):
-        if z != 0:
-            ax1.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-
-    plt.savefig(dirs_fig + '/SA_' + rl + '_Second' + '_indices.png', dpi=200)
-
-
 def extract_singleorder_indices(Si_df, filter_name, relevant_number):
     """
     extract_singleorder_indices.
@@ -153,7 +108,13 @@ def extract_singleorder_indices(Si_df, filter_name, relevant_number):
     return sensi_filtered, confs_flitered
 
 
-def plot_sa_S1ST_per_rule(dirs_fig, rl, first_df, total_df, relevant_number=5):
+def plot_sa_S1ST(
+    dirs_fig,
+    tgt,
+    rl,
+    first_df,
+    total_df,
+    relevant_number=5):
     """
     to check with:
     
@@ -239,7 +200,56 @@ def plot_sa_S1ST_per_rule(dirs_fig, rl, first_df, total_df, relevant_number=5):
     ax.grid(True)
 
     # save
-    plt.savefig(dirs_fig + '/SA_{}_S1ST_indices.png'.format(rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_{}_{}_S1ST_indices.png'.format(tgt, rl), dpi=200)
+
+
+def plot_sa_S2(
+    dirs_fig,
+    tgt,
+    rl,
+    second):
+    """
+    Plot second sensitivity indices.
+
+    """
+
+    def convert2Matrix(second):
+        param_names = []
+        for m in range(second.shape[0]):
+            for n in range(second.shape[1]):
+                if second.index[m][n] not in param_names:
+                    param_names.append(second.index[m][n])
+                else:
+                    continue
+
+        matrix = np.zeros((len(param_names), len(param_names)), float)
+        for k in range(second['S2'].shape[0]):
+            j = param_names.index(second['S2'].index[k][0])
+            i = param_names.index(second['S2'].index[k][1])
+            matrix[j][i] = second['S2'].iloc[k]
+        return param_names, matrix
+
+    param_names, matrix = convert2Matrix(second)
+
+    fig = plt.figure(figsize=(10, 10))  # unit of inch
+    ax1 = plt.axes((0.1, 0.1, 0.8, 0.8))  # in range (0,1)
+
+    pos = ax1.imshow(matrix, interpolation='none', cmap='BuPu')
+
+    ax1.set_xticks(np.arange(len(param_names)), param_names)
+    ax1.set_yticks(np.arange(len(param_names)), param_names)
+    ax1.tick_params(axis='x', which='major', direction='out', length=5, width=2, color='maroon',
+                    pad=10, labelsize=10, labelcolor='navy', labelrotation=15)
+    ax1.tick_params(axis='y', which='major', direction='out', length=5, width=2, color='maroon',
+                    pad=10, labelsize=10, labelcolor='navy', labelrotation=15)
+    ax1.set_title(r'Second-order sensitivity indices for rule: '+rl, size=16)
+    fig.colorbar(pos, location='right', shrink=0.8)
+
+    for (i, j), z in np.ndenumerate(matrix):
+        if z != 0:
+            ax1.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
+
+    plt.savefig(dirs_fig + '/SA_{}_{}_S2_indices.png'.format(tgt, rl), dpi=200)
 
 
 def plot_pca_matrix(

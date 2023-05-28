@@ -34,4 +34,3 @@ def prepareVariants(set_dup_rvt=False):
 
     if set_dup_rvt:
         duplicateRVT(FILE_INIT_RVT, DIRS_DATA_SA_DUP, amount=sa_values.shape[0], clear_destination=True)
-
