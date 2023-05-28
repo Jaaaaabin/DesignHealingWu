@@ -389,7 +389,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "0",
+      "InputValue": "1",
       "Id": "fbe2966608a943759f122707954b2f68",
       "Inputs": [],
       "Outputs": [
@@ -894,7 +894,7 @@
         "Height": 458.11315988742967,
         "FontSize": 36.0,
         "InitialTop": -443.426368146601,
-        "InitialHeight": 417.184436983807,
+        "InitialHeight": 482.11315988742962,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFFFC999"
       }

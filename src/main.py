@@ -14,14 +14,15 @@ if __name__ == "__main__":
     # topoCollect()
     # graphCreate()
     # graphEnrich()
-    prepareVariants(set_dup_rvt=True)
-    # testSensi(build_design=True, calc_index=True, plot_index=True)
+    # prepareVariants(set_dup_rvt=True)
+    testSensi(build_design=True, calc_index=True, plot_index=True)
 
 # to do 
 # 1. develop an automated Error/Warning handler.
 # 1.1 too hard with Python for an automated handler. 
 # 1.2 continue to test with test-handler-paramed.rvt and test-handler.dyn
-# 1.2 remove windows/doors for testing 
+# -> first conflict nr .38.
+# 1.2 [First test] remove windows/doors before the duplication.
 
 # 2. add more advanced locational parameters on doors and windows.
 # 2.1 ground floor -> [already succeed.]
