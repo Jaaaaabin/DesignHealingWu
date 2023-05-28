@@ -344,7 +344,7 @@
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
       "NodeType": "NumberInputNode",
       "NumberType": "Double",
-      "InputValue": 3.0,
+      "InputValue": 1.0,
       "Id": "d0248749f78c4b4db63f4f0b2c939095",
       "Inputs": [],
       "Outputs": [
@@ -628,8 +628,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
       "Code": "\"View Name\";",
+      "NodeType": "CodeBlockNode",
       "Id": "6a7c9339a54742be8ee9ab5605861840",
       "Inputs": [],
       "Outputs": [
@@ -1880,8 +1880,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 1396.2936493998245,
-    "Y": -179.90237845014428,
+    "X": 1463.636932981914,
+    "Y": -179.18596053969651,
     "Zoom": 0.4884952992566986
   }
 }

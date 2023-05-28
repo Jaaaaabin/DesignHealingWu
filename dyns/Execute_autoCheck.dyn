@@ -62,46 +62,6 @@
       "Description": "Creates a string."
     },
     {
-      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\res",
-      "Id": "76be6926021d46fdbf09bf7c767c8197",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "09b80d0c664644e6814bd8cd2480ea15",
-          "Name": "",
-          "Description": "String",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a string."
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa\\vary",
-      "Id": "5a81ff4c07324576b85a104f219b513a",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "61ce8fa48fe84c64bbc3115205e96669",
-          "Name": "",
-          "Description": "String",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a string."
-    },
-    {
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
       "FunctionSignature": "1b8a0ebb-5f53-4f9d-962e-078837177e64",
       "FunctionType": "Graph",
@@ -250,8 +210,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
       "Code": "\"*.rvt\";",
+      "NodeType": "CodeBlockNode",
       "Id": "e3b4680ccec74340bc905ad7eba7fc4d",
       "Inputs": [],
       "Outputs": [
@@ -385,6 +345,203 @@
       ],
       "Replication": "Disabled",
       "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "C:\\dev\\phd\\ModelHealer\\data\\sa-",
+      "Id": "5808a99ac857469ab79551010aeda1e2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7f04b5384cfc4fa491382dcb0bee00f4",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "\\vary",
+      "Id": "85da74ba730140569792e2d3656ac46c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c54f3106f0574236b6abd113290548c1",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "0",
+      "Id": "fbe2966608a943759f122707954b2f68",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e92e282d39194b37bd6118ec4f93a2f1",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "c4643c0dc2094fcbab2095a9d2644cc5",
+      "Inputs": [
+        {
+          "Id": "be5a9a72fe7a455bab5aa7eef5a0377d",
+          "Name": "x",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0d8473235a2046a7b0fa3b2beed66d9e",
+          "Name": "y",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "708277024a0f4c6dae9978cbfe1934bc",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "\\res",
+      "Id": "8761c732899147979579cffe02319c79",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a37ff6cc2c6d4d4f9227350aff7c2c31",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "4066acbfb15c45adae74a2c9efc9b32a",
+      "Inputs": [
+        {
+          "Id": "782174ebeb4b475082616f244107afc3",
+          "Name": "x",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c5b7a6c0f2c0479cb71b7c87a8f0602b",
+          "Name": "y",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f2ee9c7b93994cbfb0dfb48e5dde31c9",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "7eab3551299f47bd83c538de7ab6a7c9",
+      "Inputs": [
+        {
+          "Id": "74ed3004daa140fdb6472f3bf7f21e36",
+          "Name": "x",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bd95fc59d660429dae6c8124505068bc",
+          "Name": "y",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "95c4fc44e0f848d387158c2db30774c0",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     }
   ],
   "Connectors": [
@@ -392,21 +549,6 @@
       "Start": "21fac054353b47e89229acae1b4ecbe8",
       "End": "a433f720150545c796a72ca653d2153a",
       "Id": "c17ec54b913e4a65b5ab59012b27e318"
-    },
-    {
-      "Start": "09b80d0c664644e6814bd8cd2480ea15",
-      "End": "e3474e6525f044489ea4b78ee73de24c",
-      "Id": "03f2c038690c47bfb58bbad21f12bf96"
-    },
-    {
-      "Start": "61ce8fa48fe84c64bbc3115205e96669",
-      "End": "655c8643881d4846b131b1e771bd1716",
-      "Id": "5efe498f0aff461997360cfdd4bfae92"
-    },
-    {
-      "Start": "61ce8fa48fe84c64bbc3115205e96669",
-      "End": "8f8a78d8a32b4cf6bfb3648e2114ed36",
-      "Id": "39821744b51948589f5ee17d50ee438b"
     },
     {
       "Start": "b413d41050634d80b6b4e39d3ece2867",
@@ -442,6 +584,51 @@
       "Start": "41a64258711a4861a53057514afd3e4d",
       "End": "998bb0db68f747b49bfc1292d518ae3e",
       "Id": "cc5640ca0032431385b1b7d9e2dba152"
+    },
+    {
+      "Start": "7f04b5384cfc4fa491382dcb0bee00f4",
+      "End": "be5a9a72fe7a455bab5aa7eef5a0377d",
+      "Id": "ee2d21ea410d427293460035d294a6f5"
+    },
+    {
+      "Start": "c54f3106f0574236b6abd113290548c1",
+      "End": "c5b7a6c0f2c0479cb71b7c87a8f0602b",
+      "Id": "b3a9154d26c1490a85356ef55a63abb1"
+    },
+    {
+      "Start": "e92e282d39194b37bd6118ec4f93a2f1",
+      "End": "0d8473235a2046a7b0fa3b2beed66d9e",
+      "Id": "fdad54c85c2e46908a059489dc023369"
+    },
+    {
+      "Start": "708277024a0f4c6dae9978cbfe1934bc",
+      "End": "74ed3004daa140fdb6472f3bf7f21e36",
+      "Id": "54c245a8151c48c1a119bfa203e877d7"
+    },
+    {
+      "Start": "708277024a0f4c6dae9978cbfe1934bc",
+      "End": "782174ebeb4b475082616f244107afc3",
+      "Id": "d0552acf440240e7b0a821efd6f42136"
+    },
+    {
+      "Start": "a37ff6cc2c6d4d4f9227350aff7c2c31",
+      "End": "bd95fc59d660429dae6c8124505068bc",
+      "Id": "cc5d221446914c6da26b6c52acc15c3f"
+    },
+    {
+      "Start": "f2ee9c7b93994cbfb0dfb48e5dde31c9",
+      "End": "655c8643881d4846b131b1e771bd1716",
+      "Id": "f5c7cf3543c24fcc9a0681214f92214d"
+    },
+    {
+      "Start": "f2ee9c7b93994cbfb0dfb48e5dde31c9",
+      "End": "8f8a78d8a32b4cf6bfb3648e2114ed36",
+      "Id": "ef07cedd307c4105868064850cfd43bc"
+    },
+    {
+      "Start": "95c4fc44e0f848d387158c2db30774c0",
+      "End": "e3474e6525f044489ea4b78ee73de24c",
+      "Id": "7988895496154d468a54a86f4b6c0363"
     }
   ],
   "Dependencies": [
@@ -501,8 +688,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -1121.9315308722375,
-        "Y": -458.706509461647
+        "X": -1175.9970709989038,
+        "Y": -480.722804436831
       },
       {
         "ShowGeometry": true,
@@ -511,38 +698,18 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -794.475090309576,
-        "Y": -101.17547864774468
+        "X": -921.4176200578238,
+        "Y": -106.3132082591714
       },
       {
-        "ShowGeometry": true,
-        "Name": "String",
-        "Id": "76be6926021d46fdbf09bf7c767c8197",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -795.01011341285232,
-        "Y": -227.69439704356625
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "String",
-        "Id": "5a81ff4c07324576b85a104f219b513a",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -800.63326118147279,
-        "Y": -370.02790776128677
-      },
-      {
-        "ShowGeometry": true,
+        "ShowGeometry": false,
         "Name": "autoCheck",
         "Id": "2eb4f63376dc458886ee97114f73c7c2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -139.87692031927213,
-        "Y": -309.62943553065975
+        "X": 173.04056612135855,
+        "Y": -322.29083671611863
       },
       {
         "ShowGeometry": true,
@@ -613,6 +780,76 @@
         "Excluded": false,
         "X": -284.16791429358909,
         "Y": 96.523895496803576
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "5808a99ac857469ab79551010aeda1e2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -941.56031937231262,
+        "Y": -396.63803538973519
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "85da74ba730140569792e2d3656ac46c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -642.396140267835,
+        "Y": -223.84970263286937
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "fbe2966608a943759f122707954b2f68",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -941.56031937231262,
+        "Y": -296.63803538973519
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "+",
+        "Id": "c4643c0dc2094fcbab2095a9d2644cc5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -642.396140267835,
+        "Y": -359.63803538973519
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8761c732899147979579cffe02319c79",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -642.396140267835,
+        "Y": -443.426368146601
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "variations (input)",
+        "Id": "4066acbfb15c45adae74a2c9efc9b32a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -397.67972235738728,
+        "Y": -280.84970263286937
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "compliance checking (output)",
+        "Id": "7eab3551299f47bd83c538de7ab6a7c9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -395.87095075946434,
+        "Y": -431.19128175491016
       }
     ],
     "Annotations": [
@@ -637,10 +874,33 @@
         "InitialHeight": 304.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
+      },
+      {
+        "Id": "ffe179756141419cafb2974fed165789",
+        "Title": "<Click here to edit the group title>",
+        "Nodes": [
+          "8761c732899147979579cffe02319c79",
+          "85da74ba730140569792e2d3656ac46c",
+          "fbe2966608a943759f122707954b2f68",
+          "c4643c0dc2094fcbab2095a9d2644cc5",
+          "5808a99ac857469ab79551010aeda1e2",
+          "4066acbfb15c45adae74a2c9efc9b32a",
+          "7eab3551299f47bd83c538de7ab6a7c9",
+          "1fd5bff113e6480b9073ea7c9e11031d"
+        ],
+        "Left": -951.56031937231262,
+        "Top": -496.41144277346672,
+        "Width": 807.12220443374383,
+        "Height": 458.11315988742967,
+        "FontSize": 36.0,
+        "InitialTop": -443.426368146601,
+        "InitialHeight": 417.184436983807,
+        "TextblockHeight": 42.985074626865675,
+        "Background": "#FFFFC999"
       }
     ],
-    "X": 513.57236605342462,
-    "Y": 206.34184731344953,
-    "Zoom": 0.78735114799886463
+    "X": 1334.3024737008095,
+    "Y": 446.30228397013997,
+    "Zoom": 0.876532124596912
   }
 }

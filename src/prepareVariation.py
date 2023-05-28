@@ -11,7 +11,11 @@ from funct_sensi import *
 # from base_classes import NewDesign
 
 def prepareVariants(set_dup_rvt=False):
+    
+    # check if the data directory exists.
+    create_directory(DIRS_DATA_SA)
 
+    # 
     sa_init_parameter_names, sa_init_parameter_values, sa_init_parameter_num = collect_ini_sa_parameters(
         FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER)
     sa_init_parameter_bounds = np.array(
@@ -26,6 +30,7 @@ def prepareVariants(set_dup_rvt=False):
         }
 
     sa_values = saltelli.sample(sa_problem, N_SMP, calc_second_order=SA_CALC_SECOND_ORDER, skip_values=SALTELLI_SKIP)
+
     save_ndarray_2txt(sa_values, DIRS_DATA_SA+"/sa_values.txt")
     save_dict(sa_problem, DIRS_DATA_SA+"/sa_problem.pickle")
 

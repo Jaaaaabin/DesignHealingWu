@@ -83,7 +83,7 @@ def testSensi(build_design=False, calc_index=False, plot_index=False):
             
             # for every pair of target & rule.
             if calc_index:
-                tempo_indices = calculateIndex(sa_problem, tgt, rl)
+                tempo_indices = calculateIndex(sa_problem, tgt, rl, plot_index)
                 sa_indices_one.update({rl: tempo_indices})
 
         sa_indices_all.update({tgt: sa_indices_one})

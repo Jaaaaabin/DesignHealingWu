@@ -44,11 +44,11 @@ EXCEPTION_LINK_TYPES = {
 LEVEL_FAILURE_NEIGHBOR = 1
 EXCEPTION_LINK_SEQUENCE = [['wall_external','wall_stairway']]
 
-LEVEL_FAILURE_NEIGHBOR = 3
-EXCEPTION_LINK_SEQUENCE = [
-    ['wall_external','wall_stairway'],
-    ['space_corridor','space_stairway','space_toilet'],
-    ['wall_external','wall_stairway']]
+# LEVEL_FAILURE_NEIGHBOR = 3
+# EXCEPTION_LINK_SEQUENCE = [
+#     ['wall_external','wall_stairway'],
+#     ['space_corridor','space_stairway','space_toilet'],
+#     ['wall_external','wall_stairway']]
 
 # LEVEL_FAILURE_NEIGHBOR = 5
 # EXCEPTION_LINKAGE = [True, True, True, True, True]

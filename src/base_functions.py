@@ -8,39 +8,29 @@ from base_external_packages import *
 
 # define base functions
 
-def set_project(project_number):
-    """
-    Set the project.
-
-    """
-
-    project_name = str(project_number)
-    test_name = 'tests//' + project_name
-    design_data_file = "designdata"+"_" + project_name
-
-    return project_name, test_name, design_data_file
-
-
-def create_directory(test_name):
+#new
+def create_directory(test_directory):
     """
     Create directories for tests
 
     """
 
-    dirs_data = test_name+"/data"
-    dirs_fig = test_name+"/fig"
-    dirs_res = test_name+"/res"
+    test_directory_dup = test_directory + r'\dups'
+    test_directory_vary = test_directory + r'\vary'
+    test_directory_res = test_directory + r'\res'
+    test_directory_fig = test_directory + r'\fig'
 
     try:
-        os.makedirs(dirs_data)
-        os.makedirs(dirs_fig)
-        os.makedirs(dirs_res)
+
+        os.makedirs(test_directory)
+        os.makedirs(test_directory_dup)
+        os.makedirs(test_directory_vary)
+        os.makedirs(test_directory_res)
+        os.makedirs(test_directory_fig)
+
     except FileExistsError:
-        # directory already exists
-        print("directory already exists!")
+        print("Warning: the given data directory already exists: {}".format(test_directory))
         pass
-    
-    return dirs_data, dirs_fig, dirs_res
 
 
 def collect_bim_data(dirs_data, dirs_bim_res, nr_model=0):
@@ -75,29 +65,6 @@ def get_data_from_h5(h5doc,datakey):
     data = allDatapd[datakey]
     return data
 
-
-def build_directory(test_name, dirs_bim_res, build=False):
-    """
-    build a healing creates placeholder for a healing test
-    and copy the INITIAL data to corresponding subfolder
-
-    :test_name:     the name of the healing test.
-    :dirs_bim_res:  directory for data of the initial design.
-    :build:         whether to build a test or not.
-
-    """
-
-    # build the placeholder
-    if build:
-        print ("New directory built.")
-        dirs_data, dirs_fig, dirs_res = create_directory(test_name) # create new directories
-        collect_bim_data(dirs_data, dirs_bim_res) # copy the initial data
-
-    else:
-        print ("Directories existing.")
-        dirs_data, dirs_fig, dirs_res = test_name+"/data", test_name+"/fig", test_name+"/res" #use existing ones
-
-    return dirs_data, dirs_fig, dirs_res
 
 
 def analyze_h5_data(dirs_data, input_h5_key, output_h5_key, nr_model=0):
