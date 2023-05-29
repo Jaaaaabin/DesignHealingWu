@@ -3,7 +3,7 @@
 #
 
 # import modules
-from const_project import FILE_INIT_RVT, FILE_SA_PARAM_LIST, DIRS_DATA_SA, DIRS_DATA_SA_FIG, DIRS_DATA_SA_DUP, FILE_SA_VARY
+from const_project import FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST, DIRS_DATA_SA, DIRS_DATA_SA_FIG, DIRS_DATA_SA_DUP, FILE_SA_VARY
 from const_sensi import K_LEVEL_PARAMETER, N_SMP, SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTION, SALTELLI_SKIP
 
 from funct_sensi import *
@@ -36,6 +36,6 @@ def prepareVariants(set_dup_rvt=False):
 
     df_sa_variation = pd.DataFrame(sa_values, columns=sa_init_parameter_names).T
     df_sa_variation.to_csv(FILE_SA_VARY, header=False)
-
+    
     if set_dup_rvt:
-        duplicateRVT(FILE_INIT_RVT, DIRS_DATA_SA_DUP, amount=sa_values.shape[0], clear_destination=True)
+        duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values.shape[0], clear_destination=True)

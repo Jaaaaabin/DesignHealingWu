@@ -210,8 +210,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "\"*.rvt\";",
       "NodeType": "CodeBlockNode",
+      "Code": "\"*.rvt\";",
       "Id": "e3b4680ccec74340bc905ad7eba7fc4d",
       "Inputs": [],
       "Outputs": [

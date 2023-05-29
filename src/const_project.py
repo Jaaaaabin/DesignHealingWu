@@ -12,6 +12,7 @@ DIRS_INI_RES = DIRS_INIT + r'\res'
 FILE_INIT_RVT = DIRS_INIT + r'\model\ini.rvt'
 
 FILE_INIT_RVT = DIRS_INIT + r'\model\ini_param.rvt'
+FILE_INIT_SKL_RVT = DIRS_INIT + r'\model\ini_param_skeleton.rvt'
 FILE_INIT_RES = DIRS_INIT + r'\res\0.h5'
 
 # DIRS_DATA_TOPO = r'C:\dev\phd\enrichgraph\data\ini\res'
@@ -46,7 +47,7 @@ DIRS_SCRIPT_EXT = DIRS_ZERO + r'\src'
 DIRS_DATA = DIRS_ZERO + r'\data'
 
 # directory: data-sa-
-EXECUTION_NR = 1
+EXECUTION_NR = 2
 
 DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR)
 FILE_SA_VARY = DIRS_DATA_SA + r'\sa_vary.csv'
