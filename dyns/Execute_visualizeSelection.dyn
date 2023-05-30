@@ -344,7 +344,7 @@
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
       "NodeType": "NumberInputNode",
       "NumberType": "Double",
-      "InputValue": 1.0,
+      "InputValue": 3.0,
       "Id": "d0248749f78c4b4db63f4f0b2c939095",
       "Inputs": [],
       "Outputs": [
@@ -1880,8 +1880,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 1463.636932981914,
-    "Y": -179.18596053969651,
+    "X": 1510.9205150714661,
+    "Y": -193.51431874865176,
     "Zoom": 0.4884952992566986
   }
 }

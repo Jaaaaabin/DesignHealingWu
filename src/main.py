@@ -13,8 +13,8 @@ if __name__ == "__main__":
     
     # topoCollect()
     # graphCreate()
-    # graphEnrich()
-    prepareVariants(set_dup_rvt=True)
+    graphEnrich()
+    # prepareVariants(set_dup_rvt=True)
     # testSensi(build_design=True, calc_index=True, plot_index=True)
 
 
@@ -24,8 +24,9 @@ if __name__ == "__main__":
 # 1.2 continue to test with test-handler-paramed.rvt and test-handler.dyn
 # -> first conflict nr .38.
 # 1.2 [first test] try with activating the workset during the generation
-# slightly faster for generation. slower for checking.
-# 1.3 [second test] remove windows/doors before the duplication.
+# it's slightly faster for generation.
+# it's slower for checking.
+# 1.3 [second test] remove windows/doors before the duplication. OK.
 # desgin overwrite completed.
 # how to automatically save??
 

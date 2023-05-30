@@ -648,47 +648,6 @@
       "Description": "Selection between a true and false."
     },
     {
-      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
-      "NodeType": "PythonScriptNode",
-      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor, SaveAsOptions\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\nimport healVisual\r\nimportlib.reload(healVisual)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\nsavepath = IN[0]\r\nrun = IN[1]\r\n\r\nif isinstance(savepath, list):\r\n    savepath = savepath[0]\r\n    \r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\nout = []\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nif run:\r\n    out = healBasics.createSkeleton(doc)\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nif run:\r\n    \r\n    optionSave = SaveAsOptions()\r\n    optionSave.OverwriteExistingFile = True\r\n    doc.SaveAs(savepath, optionSave)\r\n\r\nTransactionManager.Instance.TransactionTaskDone()\r\n###############################################################\r\n# End\r\nOUT = out\r\n",
-      "Engine": "CPython3",
-      "VariableInputPorts": true,
-      "Id": "dea84b5a274b46e58dfd692a6a18aad7",
-      "Inputs": [
-        {
-          "Id": "47c4b4da760047f8a2a95477afa58f07",
-          "Name": "IN[0]",
-          "Description": "Input #0",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "6d749bc857794bc7b2df7bf45d852aa7",
-          "Name": "IN[1]",
-          "Description": "Input #1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "e112fcef18b04f4f8da07de4413011a0",
-          "Name": "OUT",
-          "Description": "Result of the python script",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Runs an embedded Python script."
-    },
-    {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
       "InputValue": "ini_param_skeleton.rvt",
@@ -1203,16 +1162,6 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "createSkeleton",
-        "Id": "dea84b5a274b46e58dfd692a6a18aad7",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 885.79293282760352,
-        "Y": 425.95646553549318
-      },
-      {
-        "ShowGeometry": true,
         "Name": "String",
         "Id": "d13579d5973546949c61247d06dabdc0",
         "IsSetAsInput": false,
@@ -1310,8 +1259,8 @@
         "Background": "#FFFFAA45"
       }
     ],
-    "X": -79.460307455501038,
-    "Y": 148.7307835371559,
-    "Zoom": 0.80935718288419534
+    "X": 754.84835171415193,
+    "Y": 204.34448842976749,
+    "Zoom": 0.7180018167980512
   }
 }

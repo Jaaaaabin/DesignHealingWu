@@ -12,7 +12,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "d_wl",
+      "InputValue": "d_wd",
       "Id": "8f9fe23d0b544a209908a6e5ce5808e3",
       "Inputs": [],
       "Outputs": [
@@ -32,7 +32,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
       "NodeType": "BooleanInputNode",
-      "InputValue": true,
+      "InputValue": false,
       "Id": "6037155f052b40fa8dc4c72968eb8093",
       "Inputs": [],
       "Outputs": [
@@ -244,7 +244,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "d_wl",
+      "InputValue": "d_wd",
       "Id": "bd47a9d0ee774771b9aca32299a4a10b",
       "Inputs": [],
       "Outputs": [
@@ -589,8 +589,8 @@
         "Background": "#FFBB87C6"
       }
     ],
-    "X": 189.01970340544915,
-    "Y": -70.976410779542448,
-    "Zoom": 1.0322618358550086
+    "X": 213.13667080881206,
+    "Y": 23.175172590293528,
+    "Zoom": 0.87000321506639489
   }
 }

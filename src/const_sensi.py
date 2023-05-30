@@ -6,7 +6,7 @@
 K_LEVEL_PARAMETER = 1
 
 # SA overall information
-N_SMP = 8
+N_SMP = 16
 SA_CALC_SECOND_ORDER = True
 
 # sa boundary information
