@@ -11,9 +11,9 @@ from testSensitivity import testSensi
 
 if __name__ == "__main__":
     
-    # topoCollect()
-    # graphCreate()
-    graphEnrich()
+    topoCollect()
+    graphCreate()
+    graphEnrich(plot_graph=False)
     # prepareVariants(set_dup_rvt=True)
     # testSensi(build_design=True, calc_index=True, plot_index=True)
 

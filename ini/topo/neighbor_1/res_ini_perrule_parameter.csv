@@ -1,7 +1,7 @@
 ,IBC1020_2,IBC1207_1,IBC1207_3
-0,U1_OK_d_wl_ew7,U1_OK_d_wl_sn22,U1_OK_d_wl_sn22
-1,U1_OK_d_wl_ew6,U1_OK_d_wl_ew6,U1_OK_d_wl_ew6
-2,E0_OK_d_wl_ew7,E1_OK_d_wl_ew4,E1_OK_d_wl_ew4
-3,E1_OK_d_wl_ew5,E0_OK_d_wl_sn20,E0_OK_d_wl_sn20
-4,E1_OK_d_wl_ew4,E0_OK_d_wl_ew6,E0_OK_d_wl_ew6
-5,E0_OK_d_wl_ew6,E1_OK_d_wl_sn21,E1_OK_d_wl_sn21
+0,E1_OK_d_wl_ew4,E1_OK_d_wl_ew4,E1_OK_d_wl_ew4
+1,E1_OK_d_wl_ew5,E0_OK_d_wl_sn20,E0_OK_d_wl_sn20
+2,E0_OK_d_wl_ew7,E0_OK_d_wl_ew6,E0_OK_d_wl_ew6
+3,E0_OK_d_wl_ew6,U1_OK_d_wl_sn22,U1_OK_d_wl_sn22
+4,U1_OK_d_wl_ew7,E1_OK_d_wl_sn21,E1_OK_d_wl_sn21
+5,U1_OK_d_wl_ew6,U1_OK_d_wl_ew6,U1_OK_d_wl_ew6

@@ -315,13 +315,13 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "1;\n3;",
       "NodeType": "CodeBlockNode",
+      "Code": "1;\n3;\n5;",
       "Id": "3a69788c925e4386a6620e79982db956",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "ea7b080a83fd4772b12f885c63588ee3",
+          "Id": "d1090875ab05441c94ce135e422a8735",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -330,9 +330,18 @@
           "KeepListStructure": false
         },
         {
-          "Id": "7ba827a03cdd4c51bd939f5d3d6858f1",
+          "Id": "6534718d037040dca3c0d4d23a2266fb",
           "Name": "",
           "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1e62d73c7693473189707443a3d02ac5",
+          "Name": "",
+          "Description": "Value of expression at line 3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -361,6 +370,15 @@
           "Id": "6400a084d1ee4faeba66eb32a9f2d4aa",
           "Name": "item1",
           "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3dbf006d7bd749ab877865b90cdf05ec",
+          "Name": "item2",
+          "Description": "Item Index #2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -826,14 +844,19 @@
       "Id": "31953b9ed59f45d0b9805ef44e65edbc"
     },
     {
-      "Start": "ea7b080a83fd4772b12f885c63588ee3",
+      "Start": "d1090875ab05441c94ce135e422a8735",
       "End": "cbabb2343de14351841d5a0ffbe7ba49",
-      "Id": "8d6f8c10d7b24ba5b9d88446e9645d2f"
+      "Id": "263599927d094703958831ad2668c2a2"
     },
     {
-      "Start": "7ba827a03cdd4c51bd939f5d3d6858f1",
+      "Start": "6534718d037040dca3c0d4d23a2266fb",
       "End": "6400a084d1ee4faeba66eb32a9f2d4aa",
-      "Id": "5465b7ff4ca941aaa50c5627c920ab3b"
+      "Id": "679798a8be5f4e029ca89feec926e705"
+    },
+    {
+      "Start": "1e62d73c7693473189707443a3d02ac5",
+      "End": "3dbf006d7bd749ab877865b90cdf05ec",
+      "Id": "2cb8e87e64404826b5f150154f9b8286"
     },
     {
       "Start": "d53270e02b1f42f0ab5419db0eeb26b0",
@@ -1210,7 +1233,7 @@
         "Left": 195.65344914488708,
         "Top": -314.74565773551876,
         "Width": 1329.1343283582087,
-        "Height": 388.70149253731347,
+        "Height": 411.35820895522386,
         "FontSize": 36.0,
         "InitialTop": -218.05909057133965,
         "InitialHeight": 369.0,
@@ -1232,7 +1255,7 @@
         "Left": -948.33965321965036,
         "Top": -273.7146696280609,
         "Width": 1106.5054323274476,
-        "Height": 502.97487827822215,
+        "Height": 520.88532603941621,
         "FontSize": 36.0,
         "InitialTop": -177.02810246388179,
         "InitialHeight": 448.16890812896844,
@@ -1259,8 +1282,8 @@
         "Background": "#FFFFAA45"
       }
     ],
-    "X": 754.84835171415193,
-    "Y": 204.34448842976749,
+    "X": 752.69909798280855,
+    "Y": 206.49374216111076,
     "Zoom": 0.7180018167980512
   }
 }

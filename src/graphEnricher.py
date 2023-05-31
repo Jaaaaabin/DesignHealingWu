@@ -12,7 +12,7 @@ from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE, EXCEP
 from funct_data import get_data_from_h5
 from funct_topo import *
 
-def graphEnrich():
+def graphEnrich(plot_graph=False):
 
     # - - - - - - - - - - - - - - 
     # visualization of the failures.
@@ -85,13 +85,14 @@ def graphEnrich():
             )
         
         # plot the networkx.
-        plot_networkx_per_rule(
-            DIRS_DATA_TOPO,
-            rule,
-            dictGraphs[rule],
-            nodesize_map_by_object_type,
-            nodecolor_map_by_object_type,
-            )
+        if plot_graph:
+            plot_networkx_per_rule(
+                DIRS_DATA_TOPO,
+                rule,
+                dictGraphs[rule],
+                nodesize_map_by_object_type,
+                nodecolor_map_by_object_type,
+                )
 
     # - - - - - - - - - - - - - -
     # write to csv for the failure information.
