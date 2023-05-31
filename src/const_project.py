@@ -47,7 +47,7 @@ DIRS_SCRIPT_EXT = DIRS_ZERO + r'\src'
 DIRS_DATA = DIRS_ZERO + r'\data'
 
 # directory: data-sa-
-EXECUTION_NR = 11
+EXECUTION_NR = 1
 
 DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR)
 FILE_SA_VARY = DIRS_DATA_SA + r'\sa_vary.csv'
