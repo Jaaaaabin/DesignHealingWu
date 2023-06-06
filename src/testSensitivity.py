@@ -5,7 +5,7 @@
 from const_project import DIRS_INI_RES, DIRS_DATA_SA, DIRS_DATA_SA_RES, DIRS_DATA_SA_FIG
 from const_project import FILE_SA_PARAM_LIST, FILE_SA_VARY
 from const_ibcrule import BUILDING_RULES
-from const_sensi import K_LEVEL_PARAMETER,SA_CALC_SECOND_ORDER
+from const_sensi import K_LEVEL_PARAMETER, SA_CALC_SECOND_ORDER, NAME_FLOOR
 
 from funct_data import analyze_h5s, save_dict, load_dict
 from funct_sensi import *
@@ -21,7 +21,7 @@ def buildDesigns():
     # create the initial design: "DesignIni"
     DesignIni = Design(list(ini_dictCheckResult_h5s.keys())[0], BUILDING_RULES)
     sa_ini_parameter_names, sa_ini_parameter_values, sa_ini_parameter_num = collect_ini_sa_parameters(
-        FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER)
+        FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER, set_floor=NAME_FLOOR)
     DesignIni.set_parameters({k:v for k,v in zip(sa_ini_parameter_names,sa_ini_parameter_values)})
     DesignIni.set_checkresults(ini_dictCheckResult_h5s[0])
 

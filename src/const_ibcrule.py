@@ -1,6 +1,7 @@
 #
 # const_ibcrule.py
 #
+from const_sensi import K_LEVEL_PARAMETER
 
 # building rules
 BUILDING_RULES = ['IBC1020_2', 'IBC1207_1', 'IBC1207_3']
@@ -47,26 +48,26 @@ EXCEPTION_LINK_TYPES = {
     }
 }
 
-LEVEL_FAILURE_NEIGHBOR = 1
-EXCEPTION_LINK_SEQUENCE = [
-    ['wall_external','wall_stairway']
-    ]
+LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
 
-# LEVEL_FAILURE_NEIGHBOR = 3
-# EXCEPTION_LINK_SEQUENCE = [
-#     ['wall_external','wall_stairway'],
-#     ['space_corridor','space_stairway','space_toilet'],
-#     ['wall_external','wall_stairway','wall_corridor']
-#     ]
-
-# LEVEL_FAILURE_NEIGHBOR = 5
-# EXCEPTION_LINK_SEQUENCE = [
-#     ['wall_external','wall_stairway'],
-#     ['space_corridor','space_stairway','space_toilet'],
-#     ['wall_external','wall_stairway','wall_corridor'],
-#     ['space_corridor','space_stairway','space_toilet'],
-#     ['wall_external','wall_stairway','wall_corridor'],
-#     ]
+if LEVEL_FAILURE_NEIGHBOR == 1:
+    EXCEPTION_LINK_SEQUENCE = [
+        ['wall_external','wall_stairway']
+        ]
+elif LEVEL_FAILURE_NEIGHBOR == 3:
+    EXCEPTION_LINK_SEQUENCE = [
+        ['wall_external','wall_stairway'],
+        ['space_corridor','space_stairway','space_toilet'],
+        ['wall_external','wall_stairway']
+        ]
+elif LEVEL_FAILURE_NEIGHBOR == 5:
+    EXCEPTION_LINK_SEQUENCE = [
+        ['wall_external','wall_stairway'],
+        ['space_corridor','space_stairway','space_toilet'],
+        ['wall_external','wall_stairway','wall_corridor'],
+        ['space_corridor','space_stairway','space_toilet'],
+        ['wall_external','wall_stairway'],
+        ]
 
 # sweep target
 APPROACH_TARGET = 'IBC_selected'

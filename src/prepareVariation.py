@@ -3,8 +3,9 @@
 #
 
 # import modules
-from const_project import DIRS_DATA_SA, DIRS_DATA_SA_FIG, DIRS_DATA_SA_DUP, FILE_SA_VARY, FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST
-from const_sensi import K_LEVEL_PARAMETER, N_SMP, SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTION, SALTELLI_SKIP
+from const_project import DIRS_DATA_SA, DIRS_DATA_SA_DUP, FILE_SA_VARY, FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST
+from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR, N_SMP, EXCEPTION_GP
+from const_sensi import SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTION, SALTELLI_SKIP
 
 from funct_sensi import *
 # from funct_plot import plot_sa_parallel_parameters
@@ -17,7 +18,7 @@ def prepareVariants(set_dup_rvt=False):
 
     # 
     sa_init_parameter_names, sa_init_parameter_values, sa_init_parameter_num = collect_ini_sa_parameters(
-        FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER)
+        FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER, set_floor = NAME_FLOOR, exclude_gp = EXCEPTION_GP)
     sa_init_parameter_bounds = np.array(
         [[v-BOUNDARY_VALUES, v+BOUNDARY_VALUES] for v in sa_init_parameter_values]).reshape((sa_init_parameter_num,2))
 

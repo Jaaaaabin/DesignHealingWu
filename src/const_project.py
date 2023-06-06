@@ -1,6 +1,20 @@
 #
 # const_project.py
-# 
+#
+
+# # # # # # # # #
+# for graphEnrich
+# EXECUTION_NR  = 11 
+#               or 31 
+#               or 51
+
+# # # # # # # # #
+# for SA
+# EXECUTION_NR  = 15(first)
+#               or 35
+#               or 55(second)
+
+EXECUTION_NR = 15
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'
@@ -47,7 +61,6 @@ DIRS_SCRIPT_EXT = DIRS_ZERO + r'\src'
 DIRS_DATA = DIRS_ZERO + r'\data'
 
 # directory: data-sa-
-EXECUTION_NR = 1
 
 DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR)
 FILE_SA_VARY = DIRS_DATA_SA + r'\sa_vary.csv'

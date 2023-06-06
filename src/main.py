@@ -1,7 +1,7 @@
 #
 # __main__.py
 #
-
+from const_project import EXECUTION_NR
 from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
@@ -14,8 +14,10 @@ if __name__ == "__main__":
     # topoCollect()
     # graphCreate()
     # graphEnrich(plot_graph=False)
-    prepareVariants(set_dup_rvt=True)
-    # testSensi(build_design=True, calc_index=True, plot_index=True)
+
+    print (EXECUTION_NR)
+    # prepareVariants(set_dup_rvt=True)
+    testSensi(build_design=True, calc_index=True, plot_index=True)
 
 
 # to do 
@@ -35,3 +37,6 @@ if __name__ == "__main__":
 # 2.2 upper floors -> [not successful yet.]
 # solution 1 - > refer to different grids per floor.
 # solution 2 - > find exact aligned dimension command.
+
+# the next step.
+# 3. focus on error on one floor maybe.. if not the paper doesnt move on

@@ -114,7 +114,7 @@ def plot_sa_S1ST(
     rl,
     first_df,
     total_df,
-    relevant_number=5):
+    relevant_number=4):
     """
     to check with:
     
@@ -247,7 +247,7 @@ def plot_sa_S2(
 
     for (i, j), z in np.ndenumerate(matrix):
         if z != 0:
-            ax1.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
+            ax1.text(j, i, '{:0.3f}'.format(z), ha='center', va='center')
 
     plt.savefig(dirs_fig + '/SA_{}_{}_S2_indices.png'.format(tgt, rl), dpi=200)
 

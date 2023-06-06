@@ -207,15 +207,32 @@ def getRVTFilename(file_dir, outpath, remove_ext = True):
     print('Extraction of duplicated RVT filenames (with student IDs) Succeed.')
 
 
-def collect_ini_sa_parameters(file_sa_parameter_list, k_level_parameter):
+def collect_ini_sa_parameters(
+        file_sa_parameter_list,
+        k_level_parameter,
+        set_floor=[],
+        exclude_gp=[]):
     """
     collect the initial parameters from a csv.
     """
 
     path_csv = file_sa_parameter_list.replace('tbd', str(k_level_parameter))
     data = pd.read_csv(path_csv, names=['names', 'values'], header=None)
-    values = data['values'].tolist()
     names = data['names'].tolist()
+    values = data['values'].tolist()
+    
+    # including.
+    if set_floor:
+        idx = [id for id in range(len(names)) if set_floor in names[id]]
+        names = [names[id] for id in idx]
+        values = [values[id] for id in idx]
+    
+    # excluding.
+    if exclude_gp:
+        idx = [id for id in range(len(names)) if exclude_gp not in names[id]]
+        names = [names[id] for id in idx]
+        values = [values[id] for id in idx]   
+    
     num = len(names)
 
     return names, values, num
