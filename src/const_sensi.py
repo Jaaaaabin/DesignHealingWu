@@ -4,6 +4,7 @@
 from const_project import EXECUTION_NR
 
 NAME_FLOOR = 'U1_OK'
+NAME_FAILURES = ['2SzsE5m8T4h9JlM6XpBSn3','2SzsE5m8T4h9JlM6XpBSnd']
 EXCEPTION_GP = 'U1_OK_d_wl_sn25'
 
 # SA overall information

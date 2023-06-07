@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     print (EXECUTION_NR)
     # prepareVariants(set_dup_rvt=True)
-    testSensi(build_design=True, calc_index=True, plot_index=True)
+    testSensi(build_design=False, calc_index=True, plot_index=True)
 
 
 # to do 

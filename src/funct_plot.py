@@ -98,6 +98,7 @@ def extract_singleorder_indices(Si_df, filter_name, relevant_number):
     confs = tempo_confs.replace(np.nan, 0.) # Replace NaN Values with Zero
     sensi = tempo_sensi.replace(np.nan, 0.) # Replace NaN Values with Zero
     
+    # if the order is already given.
     sensi_sort = sensi.sort_values(by=[filter_name],ascending=False) # Sort by Descending values of the column[filter_name]
     relevant_number = min(len(sensi_sort.index), relevant_number) # in case the row numbers are smaller than the given number
     filter_idx = sensi_sort.index.values[:relevant_number]
@@ -121,9 +122,15 @@ def plot_sa_S1ST(
     """
 
     fig_title = "First and total order indices to rule {} \n (The {} most relevant parameters)".format(rl,relevant_number)
-    sensi_f, confs_f = extract_singleorder_indices(first_df,'S1',relevant_number)
+
+    # The first- and total-order indices are sorted according to ST values.
     sensi_t, confs_t = extract_singleorder_indices(total_df,'ST',relevant_number)
-    
+    sensi_f, confs_f = extract_singleorder_indices(first_df,'S1',relevant_number)
+    sensi_f = sensi_f.reindex(sensi_t.index.tolist())
+    confs_f = confs_f.reindex(sensi_t.index.tolist())
+
+    # .reindex(['11-', 'Just 12', 'Some College', 'Bachelor+'])
+
     fig = plt.figure(figsize=(8,5))  # unit of inch
     ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
     
@@ -174,7 +181,7 @@ def plot_sa_S1ST(
 
     # x axis
     ax.tick_params(
-        axis='y',
+        axis='x',
         which='major', direction='out', color='grey',
         grid_alpha=0.33,
         pad=3, labelsize=8, labelcolor='black', labelrotation=0
@@ -184,7 +191,7 @@ def plot_sa_S1ST(
     # y axis
     ax.set_yticks(np.arange(0-0.25, 2, 0.25))
     ax.tick_params(
-        axis='x',
+        axis='y',
         which='major', direction='out', color='grey',
         grid_alpha=0.0,
         pad=3, length=5, width=2,

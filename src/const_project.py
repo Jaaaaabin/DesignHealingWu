@@ -14,7 +14,7 @@
 #               or 35
 #               or 55(second)
 
-EXECUTION_NR = 15
+EXECUTION_NR = 55
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'
