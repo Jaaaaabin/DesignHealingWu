@@ -109,7 +109,7 @@ def extract_singleorder_indices(Si_df, filter_name, relevant_number):
     return sensi_filtered, confs_flitered
 
 
-def plot_sa_S1ST(
+def sobol_plot_sa_S1ST(
     dirs_fig,
     tgt,
     rl,
@@ -207,10 +207,10 @@ def plot_sa_S1ST(
     ax.grid(True)
 
     # save
-    plt.savefig(dirs_fig + '/SA_{}_{}_S1ST_indices.png'.format(tgt, rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_{}_{}_sobol_S1ST_indices.png'.format(tgt, rl), dpi=200)
 
 
-def plot_sa_S2(
+def sobol_plot_sa_S2(
     dirs_fig,
     tgt,
     rl,
@@ -256,7 +256,41 @@ def plot_sa_S2(
         if z != 0:
             ax1.text(j, i, '{:0.3f}'.format(z), ha='center', va='center')
 
-    plt.savefig(dirs_fig + '/SA_{}_{}_S2_indices.png'.format(tgt, rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_{}_{}_sobol_S2_indices.png'.format(tgt, rl), dpi=200)
+
+
+def morris_sa_plot(
+    dirs_fig,
+    tgt,
+    rl,
+    Si,
+    input_sample=[],
+    problem = [],
+    ):
+    # see API: https://salib.readthedocs.io/en/latest/_modules/SALib/plotting/morris.html
+    
+    
+    # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output
+    fig = plt.figure(figsize=(8,5))  # unit of inch
+    ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
+    SALib.plotting.morris.horizontal_bar_plot(ax, Si, {'marker':'x'})
+    plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_horbar.png'.format(tgt, rl), dpi=200)
+
+    # covariance_plot(ax, Si, opts=None, unit=''): 
+    
+    # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
+    fig = plt.figure(figsize=(8,5))  # unit of inch
+    ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
+    SALib.plotting.morris.covariance_plot(ax, Si, opts=None, unit='')
+    plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_convar.png'.format(tgt, rl), dpi=200)
+
+    # sample_histograms:
+    fig = plt.figure(figsize=(8,5))  # unit of inch
+    ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
+    SALib.plotting.morris.sample_histograms(fig, input_sample, problem, opts=None)
+    plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_histo.png'.format(tgt, rl), dpi=200)
+
+
 
 
 def plot_pca_matrix(

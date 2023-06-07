@@ -38,7 +38,7 @@ def buildDesigns():
     save_dict(DesignsNew, DIRS_DATA_SA + r'\DesignsNew.pickle')
 
 
-def calculateIndex(sa_problem, tgt, rl, plot_index=False):
+def calculateIndex_sobol(sa_problem, tgt, rl, plot_index=False):
 
     result_y_txt = DIRS_DATA_SA_RES + '/results_y' + tgt + '_' + rl + '.txt'
     # result_index = DIRS_DATA_SA_RES + '/results_index' + tgt + '_' + rl + '.txt'..
@@ -62,6 +62,7 @@ def calculateIndex(sa_problem, tgt, rl, plot_index=False):
 
     return all_indices
 
+
 def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
@@ -76,6 +77,7 @@ def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     for tgt in DesignIni.failures.keys():
 
         if tgt in NAME_FAILURES:
+
             sa_indices_one = dict()
             for rl in DesignIni.failures[tgt]:
                 tempo_result = [design.data[tgt][rl]['distance'] for design in DesignsNew]
@@ -84,10 +86,59 @@ def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
                 
                 # for every pair of target & rule.
                 if calc_index:
-                    tempo_indices = calculateIndex(sa_problem, tgt, rl, plot_index)
+                    tempo_indices = calculateIndex_sobol(sa_problem, tgt, rl, plot_index)
                     sa_indices_one.update({rl: tempo_indices})
 
             sa_indices_all.update({tgt: sa_indices_one})
-    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_indices.pickle')
+        
+    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
 
-print ('end')
+
+def calculateIndex_morris(sa_problem, tgt, rl, plot_index=False):
+
+    input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
+    result_y_txt = DIRS_DATA_SA_RES + '/results_y' + tgt + '_' + rl + '.txt'
+
+    all_indices = execute_sa_morris(
+        DIRS_DATA_SA_FIG,
+        sa_problem,
+        tgt,
+        rl,
+        input_x_txt,
+        result_y_txt)
+
+    return all_indices
+
+
+def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
+    
+    if build_design:
+        buildDesigns()
+    
+    DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
+    DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
+
+    sa_problem = load_dict(DIRS_DATA_SA+"/sa_problem.pickle")
+
+    sa_indices_all = dict()
+    for tgt in DesignIni.failures.keys():
+
+        if tgt in NAME_FAILURES:
+
+            sa_indices_one = dict()
+            for rl in DesignIni.failures[tgt]:
+                tempo_result = [design.data[tgt][rl]['distance'] for design in DesignsNew]
+                result_y_txt = DIRS_DATA_SA_RES + '/results_y' + tgt + '_' + rl + '.txt'
+                np.savetxt(result_y_txt,tempo_result)
+                
+                # for every pair of target & rule.
+                if calc_index:
+                    tempo_indices = calculateIndex_morris(sa_problem, tgt, rl, plot_index)
+                    sa_indices_one.update({rl: tempo_indices})
+
+            sa_indices_all.update({tgt: sa_indices_one})
+    
+    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices.pickle')
+
+
+

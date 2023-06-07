@@ -54,3 +54,8 @@ def prepareVariants(
 
         if set_dup_rvt:
             duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_morris.shape[0], clear_destination=True)
+        
+        input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
+        X = np.loadtxt(input_x_txt)
+
+        print ('end')

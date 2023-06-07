@@ -6,7 +6,7 @@ from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
 from prepareVariation import prepareVariants
-from testSensitivity import testSensi_sobol
+from testSensitivity import testSensi_sobol, testSensi_morris
 # from prepareSolutionSpace import buildSpace
 
 if __name__ == "__main__":
@@ -15,11 +15,15 @@ if __name__ == "__main__":
     # graphCreate()
     # graphEnrich(plot_graph=False)
 
-    print (EXECUTION_NR)
-    prepareVariants(sa_type = 'morris', set_dup_rvt=False)
+    # print (EXECUTION_NR)
+    # prepareVariants(
+    #     sa_type = 'morris',
+    #     set_dup_rvt = False)
+    
     # testSensi_sobol(build_design=False, calc_index=True, plot_index=True)
+    testSensi_morris(build_design=True, calc_index=True, plot_index=True)
 
-
+    
 
 
 # to do
