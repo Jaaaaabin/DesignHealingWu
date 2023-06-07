@@ -15,10 +15,10 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d import proj3d
 from natsort import natsorted
+from SALib.sample import saltelli, morris
 from SALib.analyze import sobol
 from SALib.plotting.bar import plot as barplot
 from SALib.plotting.hdmr import plot as hdmrplot
-from SALib.sample import saltelli
 from scipy.spatial import ConvexHull, convex_hull_plot_2d, Delaunay
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -43,6 +43,7 @@ import plotly
 import plotly.express as px
 import plotly.graph_objects as go
 import random
+
 import seaborn as sns
 import shutil
 import tables

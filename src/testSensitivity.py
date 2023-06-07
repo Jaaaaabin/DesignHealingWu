@@ -3,7 +3,7 @@
 #
 
 from const_project import DIRS_INI_RES, DIRS_DATA_SA, DIRS_DATA_SA_RES, DIRS_DATA_SA_FIG
-from const_project import FILE_SA_PARAM_LIST, FILE_SA_VARY
+from const_project import FILE_SA_PARAM_LIST, FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS
 from const_ibcrule import BUILDING_RULES
 from const_sensi import K_LEVEL_PARAMETER, SA_CALC_SECOND_ORDER, NAME_FLOOR, NAME_FAILURES
 
@@ -27,8 +27,8 @@ def buildDesigns():
 
     # create the new designs: "DesignsNew"
     DesignsNew  = [Design(nr, BUILDING_RULES) for nr in list(dictCheckResult_h5s.keys())]
-    sa_new_parameter_names = pd.read_csv(FILE_SA_VARY, index_col=0, header=None).T.columns.tolist()
-    sa_new_parameter_values_all = pd.read_csv(FILE_SA_VARY, index_col=0, header=None).T.values.tolist()
+    sa_new_parameter_names = pd.read_csv(FILE_SA_VARY_SOBOL, index_col=0, header=None).T.columns.tolist()
+    sa_new_parameter_values_all = pd.read_csv(FILE_SA_VARY_SOBOL, index_col=0, header=None).T.values.tolist()
     for newDesign, sa_new_parameter_values in zip(DesignsNew, sa_new_parameter_values_all):
         newDesign.set_parameters({k:v for k,v in zip(sa_new_parameter_names, sa_new_parameter_values)})
         newDesign.set_checkresults(dictCheckResult_h5s[newDesign.number])
@@ -62,7 +62,7 @@ def calculateIndex(sa_problem, tgt, rl, plot_index=False):
 
     return all_indices
 
-def testSensi(build_design=False, calc_index=False, plot_index=False):
+def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
         buildDesigns()

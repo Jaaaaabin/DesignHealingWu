@@ -3,7 +3,7 @@
 #
 
 # import modules
-from const_project import DIRS_DATA_SA, DIRS_DATA_SA_DUP, FILE_SA_VARY, FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST
+from const_project import DIRS_DATA_SA, DIRS_DATA_SA_DUP, FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS, FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST
 from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR, N_SMP, EXCEPTION_GP
 from const_sensi import SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTION, SALTELLI_SKIP
 
@@ -11,7 +11,8 @@ from funct_sensi import *
 # from funct_plot import plot_sa_parallel_parameters
 # from base_classes import NewDesign
 
-def prepareVariants(set_dup_rvt=False):
+def prepareVariants(
+    sa_type=[],set_dup_rvt=False):
     
     # check if the data directory exists.
     create_directory(DIRS_DATA_SA)
@@ -30,13 +31,26 @@ def prepareVariants(set_dup_rvt=False):
         'dists': np.array([SET_SA_DISTRIBUTION] * sa_init_parameter_num),
         }
 
-    sa_values = saltelli.sample(sa_problem, N_SMP, calc_second_order=SA_CALC_SECOND_ORDER, skip_values=SALTELLI_SKIP)
-
-    save_ndarray_2txt(sa_values, DIRS_DATA_SA+"/sa_values.txt")
     save_dict(sa_problem, DIRS_DATA_SA+"/sa_problem.pickle")
+    #sobol.
+    sa_values_sobol = saltelli.sample(sa_problem, N_SMP, calc_second_order=SA_CALC_SECOND_ORDER, skip_values=SALTELLI_SKIP)
+    df_sa_variation_sobol = pd.DataFrame(sa_values_sobol, columns=sa_init_parameter_names).T
+    #morris.
+    sa_values_morris = morris.sample(sa_problem, N_SMP, num_levels=4)
+    df_sa_variation_morris = pd.DataFrame(sa_values_morris, columns=sa_init_parameter_names).T
 
-    df_sa_variation = pd.DataFrame(sa_values, columns=sa_init_parameter_names).T
-    df_sa_variation.to_csv(FILE_SA_VARY, header=False)
-    
-    if set_dup_rvt:
-        duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values.shape[0], clear_destination=True)
+    if sa_type =='sobol':
+
+        save_ndarray_2txt(sa_values_sobol, DIRS_DATA_SA+"/sa_values_sobol.txt")
+        df_sa_variation_sobol.to_csv(FILE_SA_VARY_SOBOL, header=False)
+
+        if set_dup_rvt:
+            duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_sobol.shape[0], clear_destination=True)
+
+    elif sa_type == 'morris':        
+
+        save_ndarray_2txt(sa_values_morris, DIRS_DATA_SA+"/sa_values_morris.txt")
+        df_sa_variation_morris.to_csv(FILE_SA_VARY_MORRIS, header=False)
+
+        if set_dup_rvt:
+            duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_morris.shape[0], clear_destination=True)
