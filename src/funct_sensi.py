@@ -104,7 +104,7 @@ def execute_sa_sobol(
 
     # execute the sobol analysis.
     Y = np.loadtxt(y_result_txt, float)
-    Si = sobol.analyze(problem, Y, calc_second_order=sa_calc_second_order, print_to_console=False)
+    Si = analyze_sobol.analyze(problem, Y, calc_second_order=sa_calc_second_order, print_to_console=False)
     
     if sa_calc_second_order:
         total, first, second = Si.to_df()
@@ -143,7 +143,13 @@ def execute_sa_morris(
     X = np.loadtxt(input_x_txt)
     Y = np.loadtxt(y_result_txt, float)
     
-    Si = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=4)
+    Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=4)
+    # A dictionary of sensitivity indices containing the following entries.
+    # `mu metric` - the mean of the distribution.
+    # `mu_star` - the mean of the distribution of absolutevalues.
+    # `sigma` - the standard deviation of the distribution.
+    # `mu_star_conf` - the bootstrapped confidence interval
+    # `names` - the names of the parameters
 
     if plot_res:
         morris_sa_plot(

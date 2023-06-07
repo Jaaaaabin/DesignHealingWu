@@ -15,13 +15,13 @@ if __name__ == "__main__":
     # graphCreate()
     # graphEnrich(plot_graph=False)
 
-    # print (EXECUTION_NR)
+    print (EXECUTION_NR)
     # prepareVariants(
     #     sa_type = 'morris',
-    #     set_dup_rvt = False)
+    #     set_dup_rvt = True)
     
     # testSensi_sobol(build_design=False, calc_index=True, plot_index=True)
-    testSensi_morris(build_design=True, calc_index=True, plot_index=True)
+    testSensi_morris(build_design=False, calc_index=True, plot_index=True)
 
     
 

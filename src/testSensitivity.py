@@ -12,7 +12,7 @@ from funct_sensi import *
 
 from Design import Design
 
-def buildDesigns():
+def buildDesigns(file_sa_vary):
 
     # dictionary: design - > rule -> target -> distance & compliance.
     ini_dictCheckResult_h5s = analyze_h5s(DIRS_INI_RES, BUILDING_RULES)
@@ -27,8 +27,8 @@ def buildDesigns():
 
     # create the new designs: "DesignsNew"
     DesignsNew  = [Design(nr, BUILDING_RULES) for nr in list(dictCheckResult_h5s.keys())]
-    sa_new_parameter_names = pd.read_csv(FILE_SA_VARY_SOBOL, index_col=0, header=None).T.columns.tolist()
-    sa_new_parameter_values_all = pd.read_csv(FILE_SA_VARY_SOBOL, index_col=0, header=None).T.values.tolist()
+    sa_new_parameter_names = pd.read_csv(file_sa_vary, index_col=0, header=None).T.columns.tolist()
+    sa_new_parameter_values_all = pd.read_csv(file_sa_vary, index_col=0, header=None).T.values.tolist()
     for newDesign, sa_new_parameter_values in zip(DesignsNew, sa_new_parameter_values_all):
         newDesign.set_parameters({k:v for k,v in zip(sa_new_parameter_names, sa_new_parameter_values)})
         newDesign.set_checkresults(dictCheckResult_h5s[newDesign.number])
@@ -66,7 +66,7 @@ def calculateIndex_sobol(sa_problem, tgt, rl, plot_index=False):
 def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
-        buildDesigns()
+        buildDesigns(FILE_SA_VARY_SOBOL)
     
     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
@@ -105,7 +105,9 @@ def calculateIndex_morris(sa_problem, tgt, rl, plot_index=False):
         tgt,
         rl,
         input_x_txt,
-        result_y_txt)
+        result_y_txt,
+        plot_index,
+        )
 
     return all_indices
 
@@ -113,7 +115,7 @@ def calculateIndex_morris(sa_problem, tgt, rl, plot_index=False):
 def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
-        buildDesigns()
+        buildDesigns(FILE_SA_VARY_MORRIS)
     
     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')

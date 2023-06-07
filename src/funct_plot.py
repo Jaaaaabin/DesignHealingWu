@@ -4,6 +4,7 @@
 
 # import packages
 from base_external_packages import *
+from base_external_packages import SALib
 from base_functions import map_label_y
 
 # define plot functions
@@ -273,7 +274,9 @@ def morris_sa_plot(
     # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output
     fig = plt.figure(figsize=(8,5))  # unit of inch
     ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
-    SALib.plotting.morris.horizontal_bar_plot(ax, Si, {'marker':'x'})
+
+    plot_morris.horizontal_bar_plot(
+        ax, Si)
     plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_horbar.png'.format(tgt, rl), dpi=200)
 
     # covariance_plot(ax, Si, opts=None, unit=''): 
@@ -281,13 +284,17 @@ def morris_sa_plot(
     # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
     fig = plt.figure(figsize=(8,5))  # unit of inch
     ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
-    SALib.plotting.morris.covariance_plot(ax, Si, opts=None, unit='')
+
+    plot_morris.covariance_plot(
+        ax, Si, opts=None, unit='')
     plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_convar.png'.format(tgt, rl), dpi=200)
 
     # sample_histograms:
     fig = plt.figure(figsize=(8,5))  # unit of inch
     ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
-    SALib.plotting.morris.sample_histograms(fig, input_sample, problem, opts=None)
+
+    plot_morris.sample_histograms(
+        fig, input_sample, problem, opts=None)
     plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_histo.png'.format(tgt, rl), dpi=200)
 
 

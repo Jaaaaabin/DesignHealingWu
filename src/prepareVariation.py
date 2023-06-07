@@ -32,11 +32,13 @@ def prepareVariants(
         }
 
     save_dict(sa_problem, DIRS_DATA_SA+"/sa_problem.pickle")
-    #sobol.
-    sa_values_sobol = saltelli.sample(sa_problem, N_SMP, calc_second_order=SA_CALC_SECOND_ORDER, skip_values=SALTELLI_SKIP)
+
+    #sobol (saltelli extension).
+    sa_values_sobol = sample_saltelli.sample(sa_problem, N_SMP, calc_second_order=SA_CALC_SECOND_ORDER, skip_values=SALTELLI_SKIP)
     df_sa_variation_sobol = pd.DataFrame(sa_values_sobol, columns=sa_init_parameter_names).T
+    
     #morris.
-    sa_values_morris = morris.sample(sa_problem, N_SMP, num_levels=4)
+    sa_values_morris = sample_morris.sample(sa_problem, N_SMP, num_levels=4)
     df_sa_variation_morris = pd.DataFrame(sa_values_morris, columns=sa_init_parameter_names).T
 
     if sa_type =='sobol':
