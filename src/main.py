@@ -20,7 +20,9 @@ if __name__ == "__main__":
     testSensi(build_design=False, calc_index=True, plot_index=True)
 
 
-# to do 
+
+
+# to do
 # 1. develop an automated Error/Warning handler.
 # 1.1 too hard with Python for an automated handler. 
 # 1.2 continue to test with test-handler-paramed.rvt and test-handler.dyn
