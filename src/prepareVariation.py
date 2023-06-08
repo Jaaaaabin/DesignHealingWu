@@ -4,7 +4,8 @@
 
 # import modules
 from const_project import DIRS_DATA_SA, DIRS_DATA_SA_DUP, FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS, FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST
-from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR, N_SMP, EXCEPTION_GP
+from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR, EXCEPTION_GP
+from const_sensi import N_SMP_SOBOL, N_TRAJ_MORRIS, N_LEVEL_MORRIS, N_OPT_TRAJ_MORRIS
 from const_sensi import SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTION, SALTELLI_SKIP
 
 from funct_sensi import *
@@ -33,12 +34,30 @@ def prepareVariants(
 
     save_dict(sa_problem, DIRS_DATA_SA+"/sa_problem.pickle")
 
-    #sobol (saltelli extension).
-    sa_values_sobol = sample_saltelli.sample(sa_problem, N_SMP, calc_second_order=SA_CALC_SECOND_ORDER, skip_values=SALTELLI_SKIP)
+    #=================================#
+    #                                 #
+    #              sobol              #
+    #                                 #
+    #=================================#
+    sa_values_sobol = sample_saltelli.sample(
+        sa_problem,
+        N_SMP_SOBOL,
+        calc_second_order=SA_CALC_SECOND_ORDER,
+        skip_values=SALTELLI_SKIP)
     df_sa_variation_sobol = pd.DataFrame(sa_values_sobol, columns=sa_init_parameter_names).T
     
-    #morris.
-    sa_values_morris = sample_morris.sample(sa_problem, N_SMP, num_levels=4)
+    #=================================#
+    #                                 #
+    #             morris              #
+    #                                 #
+    #=================================#
+    sa_values_morris = sample_morris.sample(
+        sa_problem,
+        N_TRAJ_MORRIS,
+        num_levels=N_LEVEL_MORRIS,
+        optimal_trajectories=N_OPT_TRAJ_MORRIS,
+        seed = N_LEVEL_MORRIS,)
+    
     df_sa_variation_morris = pd.DataFrame(sa_values_morris, columns=sa_init_parameter_names).T
 
     if sa_type =='sobol':
@@ -56,8 +75,5 @@ def prepareVariants(
 
         if set_dup_rvt:
             duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_morris.shape[0], clear_destination=True)
-        
-        input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
-        X = np.loadtxt(input_x_txt)
 
         print ('end')

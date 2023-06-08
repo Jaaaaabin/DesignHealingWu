@@ -145,7 +145,7 @@ def execute_sa_morris(
     
     Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=4)
     # A dictionary of sensitivity indices containing the following entries.
-    # `mu metric` - the mean of the distribution.
+    # `mu` - the mean of the distribution.
     # `mu_star` - the mean of the distribution of absolutevalues.
     # `sigma` - the standard deviation of the distribution.
     # `mu_star_conf` - the bootstrapped confidence interval

@@ -266,7 +266,7 @@ def morris_sa_plot(
     rl,
     Si,
     input_sample=[],
-    problem = [],
+    problem=[],
     ):
     # see API: https://salib.readthedocs.io/en/latest/_modules/SALib/plotting/morris.html
     
@@ -289,13 +289,13 @@ def morris_sa_plot(
         ax, Si, opts=None, unit='')
     plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_convar.png'.format(tgt, rl), dpi=200)
 
-    # sample_histograms:
-    fig = plt.figure(figsize=(8,5))  # unit of inch
-    ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
+    # # sample_histograms:
+    # fig = plt.figure(figsize=(8,5))  # unit of inch
+    # ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
 
-    plot_morris.sample_histograms(
-        fig, input_sample, problem, opts=None)
-    plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_histo.png'.format(tgt, rl), dpi=200)
+    # plot_morris.sample_histograms(
+    #     fig, input_sample, problem, opts=None)
+    # plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_histo.png'.format(tgt, rl), dpi=200)
 
 
 

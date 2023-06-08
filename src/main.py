@@ -7,6 +7,7 @@ from graphCreation import graphCreate
 from graphEnricher import graphEnrich
 from prepareVariation import prepareVariants
 from testSensitivity import testSensi_sobol, testSensi_morris
+
 # from prepareSolutionSpace import buildSpace
 
 if __name__ == "__main__":
@@ -21,10 +22,12 @@ if __name__ == "__main__":
     #     set_dup_rvt = True)
     
     # testSensi_sobol(build_design=False, calc_index=True, plot_index=True)
-    testSensi_morris(build_design=True, calc_index=True, plot_index=True)
+    testSensi_morris(build_design=False, calc_index=True, plot_index=True)
 
     # https://gsa-module.readthedocs.io/en/stable/implementation/morris_screening_method.html
     # for levels in Morris: From Screening to Quantitative Sensitivity Analysis. A Unified Approach
+    # An effective screening design for sensitivity analysis of large models
+    # Choosing the appropriate sensitivity analysis method for building energy model-based investigations
     # The number of grid levels.
 
 

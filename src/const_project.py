@@ -14,10 +14,11 @@
 #               or 55(second)
 
 # for SA morris
-# EXECUTION_NR  = 16(first)
-#               or 56(second)
+# EXECUTION_NR  = 12(first)
+#               or 52(second)
 
-EXECUTION_NR = 56
+EXECUTION_NR = 52
+TEST_PLOT = 0.02
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'
@@ -65,7 +66,7 @@ DIRS_DATA = DIRS_ZERO + r'\data'
 
 # directory: data-sa-
 
-DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR)
+DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR) if TEST_PLOT==0 else DIRS_DATA + r'\sa-' + str(EXECUTION_NR) + '-' + str(TEST_PLOT)  
 FILE_SA_VARY_SOBOL = DIRS_DATA_SA + r'\sa_vary_sobol.csv'
 FILE_SA_VARY_MORRIS = DIRS_DATA_SA + r'\sa_vary_morris.csv'
 DIRS_DATA_SA_DUP = DIRS_DATA_SA + r'\dups'
