@@ -210,8 +210,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "\"*.rvt\";",
       "NodeType": "CodeBlockNode",
+      "Code": "\"*.rvt\";",
       "Id": "e3b4680ccec74340bc905ad7eba7fc4d",
       "Inputs": [],
       "Outputs": [
@@ -389,7 +389,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "12",
+      "InputValue": "52",
       "Id": "fbe2966608a943759f122707954b2f68",
       "Inputs": [],
       "Outputs": [

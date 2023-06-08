@@ -22,7 +22,7 @@ if __name__ == "__main__":
     #     set_dup_rvt = True)
     
     # testSensi_sobol(build_design=False, calc_index=True, plot_index=True)
-    testSensi_morris(build_design=False, calc_index=True, plot_index=True)
+    testSensi_morris(build_design=True, calc_index=True, plot_index=True)
 
     # https://gsa-module.readthedocs.io/en/stable/implementation/morris_screening_method.html
     # for levels in Morris: From Screening to Quantitative Sensitivity Analysis. A Unified Approach

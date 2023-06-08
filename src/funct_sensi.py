@@ -137,13 +137,14 @@ def execute_sa_morris(
     rule,
     input_x_txt,
     y_result_txt,
+    num_levels=4,
     plot_res=False,
     ):
 
     X = np.loadtxt(input_x_txt)
     Y = np.loadtxt(y_result_txt, float)
     
-    Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=4)
+    Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=num_levels)
     # A dictionary of sensitivity indices containing the following entries.
     # `mu` - the mean of the distribution.
     # `mu_star` - the mean of the distribution of absolutevalues.

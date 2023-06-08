@@ -17,8 +17,8 @@
 # EXECUTION_NR  = 12(first)
 #               or 52(second)
 
-EXECUTION_NR = 52
-TEST_PLOT = 0.02
+EXECUTION_NR = 18
+TEST_PLOT = 0
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'

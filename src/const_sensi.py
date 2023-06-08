@@ -19,7 +19,7 @@ N_TRAJ_MORRIS = 10 * (EXECUTION_NR%10)
 N_OPT_TRAJ_MORRIS = int(N_TRAJ_MORRIS / 10)
 
 # SA boundary information
-BOUNDARY_VALUES = 0.2
+BOUNDARY_VALUES = 0.25
 SET_SA_DISTRIBUTION ="unif"         # "unif", "norm"
 
 # initial parameter selction via neighborhood levels.
