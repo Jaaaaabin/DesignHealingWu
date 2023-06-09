@@ -17,8 +17,7 @@
 # EXECUTION_NR  = 12(first)
 #               or 52(second)
 
-EXECUTION_NR = 18
-TEST_PLOT = 0
+EXECUTION_NR = 12
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'
@@ -63,20 +62,6 @@ DIRS_SCRIPT_EXT = DIRS_ZERO + r'\src'
 
 # directory: data
 DIRS_DATA = DIRS_ZERO + r'\data'
-
-# directory: data-sa-
-
-DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR) if TEST_PLOT==0 else DIRS_DATA + r'\sa-' + str(EXECUTION_NR) + '-' + str(TEST_PLOT)  
-FILE_SA_VARY_SOBOL = DIRS_DATA_SA + r'\sa_vary_sobol.csv'
-FILE_SA_VARY_MORRIS = DIRS_DATA_SA + r'\sa_vary_morris.csv'
-DIRS_DATA_SA_DUP = DIRS_DATA_SA + r'\dups'
-DIRS_DATA_SA_VARY = DIRS_DATA_SA + r'\vary'
-DIRS_DATA_SA_RES = DIRS_DATA_SA + r'\res'
-DIRS_DATA_SA_FIG = DIRS_DATA_SA + r'\fig'
-
-# directory: tests
-DIRS_TEST = DIRS_ZERO + r'\tests'
-
 
 # DIRS_BIM = DIRS_ZERO + r'\data\onestorey'
 # DIRS_BIM_RES = DIRS_BIM + r'\res'

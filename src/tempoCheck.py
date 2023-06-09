@@ -10,34 +10,101 @@ from const_sensi import N_LEVEL_MORRIS
 from funct_data import load_dict
 
 sa_morris_nr = 12
-sa_morris_bdry = [0.02, 0.1, 0.2, 0.25]
-failure_list = ['2SzsE5m8T4h9JlM6XpBSn3_IBC1020_2', '2SzsE5m8T4h9JlM6XpBSnd_IBC1207_1','2SzsE5m8T4h9JlM6XpBSnd_IBC1207_3']
-data_sa_paths = [r'C:\dev\phd\ModelHealer\data\sa-'+str(sa_morris_nr)+'-'+str(bdry) for bdry in sa_morris_bdry]
-sa_problems = [data_sa_path + r'\sa_problem.pickle' for data_sa_path in data_sa_paths]
-input_x = [data_sa_path + r'\sa_values_morris.txt' for data_sa_path in data_sa_paths]
-result_ys = [[data_sa_path + r'\res\results_y' +  fl + '.txt' for data_sa_path in data_sa_paths] for fl in failure_list]
+sa_morris_bdry = [0.02, 0.1, 0.2, 0.25, 0.3]
+sa_morris_bdry_labels = [str(bdry) for bdry in sa_morris_bdry]
+sa_morris_bdry_colors = ['navy', 'royalblue', 'cyan', 'yellow', 'orange']
+y_locs = [-0.3, -0.15 , 0, 0.15, 0.3]
 
-for ys in result_ys:
-    
-    fig = plt.figure(figsize=(12,10))  # unit of inch
-    ax1 = fig.add_subplot(4,1,1)
-    ax2 = fig.add_subplot(4,1,2, sharex = ax1)
-    ax3 = fig.add_subplot(4,1,3, sharex = ax1)
-    ax4 = fig.add_subplot(4,1,4, sharex = ax1)
-    
-    # ax1 = plt.axes((0.15, 0.05, 0.80, 0.20))  # in range (0,1)
-    # ax2 = plt.axes((0.15, 0.275, 0.80, 0.20))  # in range (0,1)
-    # ax3 = plt.axes((0.15, 0.50, 0.80, 0.20))  # in range (0,1)
-    # ax4 = plt.axes((0.15, 0.725, 0.80, 0.20))  # in range (0,1)
+check_failures = ['2SzsE5m8T4h9JlM6XpBSn3_IBC1020_2', '2SzsE5m8T4h9JlM6XpBSnd_IBC1207_1','2SzsE5m8T4h9JlM6XpBSnd_IBC1207_3']
+sa_paths = [r'C:\dev\phd\ModelHealer\data\sa-'+str(sa_morris_nr)+'-'+str(bdry) for bdry in sa_morris_bdry]
+sa_problems = [sa_path + r'\sa_problem.pickle' for sa_path in sa_paths]
+input_x = [sa_path + r'\sa_values_morris.txt' for sa_path in sa_paths]
+result_ys = [[sa_path + r'\res\results_y_' +  fl + '.txt' for sa_path in sa_paths] for fl in check_failures]
 
-    axes = [ax1, ax2, ax3, ax4]
-    for sa_problem, x, y, ax in zip(sa_problems, input_x, ys, axes):
+
+def _sort_Si(Si, key, sortby='mu_star'):
+    return np.array([Si[key][x] for x in np.argsort(Si[sortby])])
+
+def morris_horizontal_bar_plot(
+    ax,
+    Si,
+    bcolor,
+    bheight,
+    lwidth=0.25,
+    y_loc=0,
+    alpah=1,
+    opts=None,
+    sortby='mu_star',
+    unit=''):
+
+    '''Updates a matplotlib axes instance with a horizontal bar plot
+    of mu_star, with error bars representing mu_star_conf.
+    '''
+    assert sortby in ['mu_star', 'mu_star_conf', 'sigma', 'mu']
+
+    if opts is None:
+        opts = {}
+
+    # Sort all the plotted elements by mu_star (or optionally another metric)
+    names_sorted = _sort_Si(Si, 'names', sortby)
+    mu_star_sorted = _sort_Si(Si, 'mu_star', sortby)
+    mu_star_conf_sorted = _sort_Si(Si, 'mu_star_conf', sortby)
+
+    # Plot horizontal barchart
+    y_pos = np.arange(len(mu_star_sorted))
+    plot_names = names_sorted
+
+    out = ax.barh(y_pos + y_loc,
+                  mu_star_sorted,
+                  xerr=mu_star_conf_sorted,
+                  color=bcolor,
+                  height=bheight,
+                  linewidth=lwidth,
+                  alpha=alpah,
+                  align='center',
+                  ecolor='black',
+                  edgecolor='black',
+                  **opts)
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(plot_names)
+    ax.set_xlabel(r'$\mu^\star$' + unit)
+
+    ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
+
+    return out
+
+
+for fl, ys in zip(check_failures, result_ys):
+    
+    fig = plt.figure(figsize=(10,5))  # unit of inch
+    ax = plt.axes((0.15, 0.05, 0.80, 0.90))  # in range (0,1)
+    
+    for sa_problem, x, y, y_loc, bdry_label, bdry_color in zip(
+        sa_problems, input_x, ys, y_locs, sa_morris_bdry_labels, sa_morris_bdry_colors):
+        
+        # load
         problem = load_dict(sa_problem)
         X = np.loadtxt(x)
         Y = np.loadtxt(y, float)
 
+        # calculate Si
         Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=N_LEVEL_MORRIS)
-        plot_morris.horizontal_bar_plot(ax, Si)
-        plt.savefig(r'C:\dev\phd\ModelHealer\data\test.png',dpi=200)
+
+        # default plot
+        bar = morris_horizontal_bar_plot(
+            ax,
+            Si,
+            bcolor=bdry_color,
+            bheight=0.15,
+            lwidth=0.5,
+            y_loc=y_loc,
+            alpah=0.80,
+            )
+        
+        # refine plot
+        bar.set_label(bdry_label)
+        plt.legend(loc='lower right')
+        plt.savefig(r'C:\dev\phd\ModelHealer\data\test_{}.png'.format(fl), dpi=200)
         
 print('end')
