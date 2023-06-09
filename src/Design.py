@@ -36,7 +36,7 @@ class Design():
             for j in tempo_dict[i].keys():
                 if not isinstance(tempo_dict[i][j], dict) and np.isnan(tempo_dict[i][j]):
                     tempo_dict[i][j] = {'distance': None, 'compliance': None} 
-                elif tempo_dict[i][j]['distance'] <0 and tempo_dict[i][j]['compliance']== False:
+                elif tempo_dict[i][j]['distance'] < 0 and tempo_dict[i][j]['compliance']== False:
                     tempo_failures.append(j)
             
             # archive the 'initial' failures.

@@ -2,6 +2,7 @@
 # __main__.py
 #
 from const_project import EXECUTION_NR
+from const_sensi import BOUNDARY_VALUES
 from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     # graphCreate()
     # graphEnrich(plot_graph=False)
 
-    print (EXECUTION_NR)
+    print (EXECUTION_NR, BOUNDARY_VALUES)
     # prepareVariants(
     #     sa_type = 'morris',
     #     set_dup_rvt = True)

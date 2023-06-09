@@ -63,7 +63,7 @@ def analyze_h5s(directory, rules):
                 
                 # per target (of checking).
                 dictCheckResult_target = dict()
-                dictCheckResult_target.update({'distance': tempo.loc[idx, 'healDistanceScaled']}) #to improve
+                dictCheckResult_target.update({'distance': tempo.loc[idx, 'healDistanceScaled']}) #to improve 
                 dictCheckResult_target.update({'compliance': tempo.loc[idx, 'checkCompliance']}) #to improve
                 dictCheckResult_targets.update({idx: dictCheckResult_target})
             dictCheckResult_rules.update({rule: dictCheckResult_targets})

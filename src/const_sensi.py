@@ -4,7 +4,8 @@
 from const_project import EXECUTION_NR, DIRS_DATA
 
 # SA boundary information
-BOUNDARY_VALUES = 0.3
+# 0.02, 0.05, 0.1, 0.3
+BOUNDARY_VALUES = 0.02
 SET_SA_DISTRIBUTION ="unif"         # "unif", "norm"
 
 NAME_FLOOR = 'U1_OK'

@@ -357,7 +357,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "12",
+      "InputValue": "18",
       "Id": "5e2b703326f240149d2e852d05a1d428",
       "Inputs": [],
       "Outputs": [
@@ -703,7 +703,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "0.3",
+      "InputValue": "0.1",
       "Id": "06031a53b44243eb89a71dec629cefde",
       "Inputs": [],
       "Outputs": [
@@ -1315,13 +1315,13 @@
         "Height": 489.303839968882,
         "FontSize": 36.0,
         "InitialTop": -141.32128005506061,
-        "InitialHeight": 497.303839968882,
+        "InitialHeight": 513.303839968882,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFFFC999"
       }
     ],
-    "X": 281.75636938824096,
-    "Y": 232.77987666788124,
-    "Zoom": 0.644100017050214
+    "X": 625.25939593879843,
+    "Y": 77.526126221341542,
+    "Zoom": 1.7972332729131546
   }
 }
