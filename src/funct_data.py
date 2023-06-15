@@ -5,6 +5,9 @@
 # import packages
 from base_external_packages import *
 
+def flatten(list):
+    return [item for sublist in list for item in sublist]
+
 def sortStrListbyNumber(lst):
     """
     sort a list by number value inside.

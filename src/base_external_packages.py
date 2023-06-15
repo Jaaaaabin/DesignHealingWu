@@ -26,8 +26,8 @@ from SALib.plotting import morris as plot_morris
 from scipy.spatial import ConvexHull, convex_hull_plot_2d, Delaunay
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.cluster import AgglomerativeClustering
 from sklearn.cluster import KMeans
+from sklearn import svm
 from sklearn.metrics import silhouette_samples, silhouette_score
 from collections import namedtuple
 

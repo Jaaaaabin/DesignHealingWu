@@ -52,21 +52,21 @@ LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
 
 if LEVEL_FAILURE_NEIGHBOR == 1:
     EXCEPTION_LINK_SEQUENCE = [
-        ['wall_external','wall_stairway']
+        ['wall_external','wall_stairway'] #0
         ]
 elif LEVEL_FAILURE_NEIGHBOR == 3:
     EXCEPTION_LINK_SEQUENCE = [
-        ['wall_external','wall_stairway'],
-        ['space_corridor','space_stairway','space_toilet'],
-        ['wall_external','wall_stairway']
+        ['wall_external','wall_stairway'],  #0
+        ['space_corridor','space_stairway','space_toilet'], #1
+        ['wall_external','wall_stairway'] #1
         ]
 elif LEVEL_FAILURE_NEIGHBOR == 5:
     EXCEPTION_LINK_SEQUENCE = [
-        ['wall_external','wall_stairway'],
-        ['space_corridor','space_stairway','space_toilet'],
-        ['wall_external','wall_stairway','wall_corridor'],
-        ['space_corridor','space_stairway','space_toilet'],
-        ['wall_external','wall_stairway'],
+        ['wall_external','wall_stairway'],  #0
+        ['space_corridor','space_stairway','space_toilet'], #1
+        ['wall_external','wall_stairway','wall_corridor'], #1
+        ['space_corridor','space_stairway','space_toilet'], #2
+        ['wall_external','wall_stairway'], #2
         ]
 
 # sweep target
