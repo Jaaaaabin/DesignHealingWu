@@ -22,7 +22,7 @@ class SolutionSpace():
         self.guid = ifcguid         # ifcguid.
         self.rule = rule            # rule.
         
-    def set_space_center(self, iniDesign):
+    def set_center(self, iniDesign):
 
         self.ini_parameters = iniDesign.parameters
         
@@ -33,20 +33,22 @@ class SolutionSpace():
         elif not self.guid and self.rule:
             self.ini_results = iniDesign.results[self.rule]
     
-    def form_space(self, newDesigns, label_y='distance'):
+    def form_space(self, newDesigns, columns_Y=['distance','compliance']):
         
-        data_columns = list(self.ini_parameters.keys())
-        data_columns.append(label_y)
+        columns_X = list(self.ini_parameters.keys())
+        columns_X_Y = columns_X.copy()
+        columns_X_Y += columns_Y
         
-        data_X_y =[]
+        data_X_Y =[]
         for i, design in enumerate(newDesigns):
-            data_X_y.append(
+            data_X_Y.append(
                 list(flatten(
                 [list(design.parameters.values()), # X
-                design.data[self.guid][self.rule][label_y] # y
+                [design.data[self.guid][self.rule][column_y] for column_y in columns_Y], # Y
                 ])))
 
-        self.data = pd.DataFrame(data_X_y, columns=data_columns)
-
+        self.data_X_Y = pd.DataFrame(data_X_Y, columns=columns_X_Y)
+        self.data_X = self.data_X_Y[columns_X].to_numpy()
+        self.data_Y = self.data_X_Y[columns_Y[1]].to_numpy().astype(int) # use true or false as y.
 
         # self.

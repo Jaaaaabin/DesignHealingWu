@@ -11,19 +11,41 @@
 
 from base_external_packages import *
 from funct_data import *
+from funct_svm import executeLinearSVC, evaluateLinearSVC, displaySVCinPC
+# make_meshgrid, plot_contours, displaySVCinPC, displaySVC
 from Space import SolutionSpace
 
-# import matplotlib.pyplot as plt
-# from sklearn import svm
-# from sklearn.datasets import make_blobs
-# from sklearn.inspection import DecisionBoundaryDisplay
+from mlxtend.plotting import plot_decision_regions
+import matplotlib.pyplot as plt
+from sklearn import svm, metrics, tree
+from sklearn.svm import LinearSVC
+from sklearn.datasets import make_blobs
+from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.model_selection import train_test_split
+
+# -Import the dataset
+# -Explore the data to figure out what they look like
+# -Pre-process the data
+# -Split the data into attributes and labels
+# -Divide the data into training and testing sets
+# -Train the SVM algorithm
+# -Make some predictions
+# -Evaluate the results of the algorithm
+
+def flatten(list):
+    return [item for sublist in list for item in sublist]
 
 set = '\sa-18-0.3'
 pathIni = r'C:\dev\phd\ModelHealer\data'+ set + r'\DesignIni.pickle'
 pathNew = r'C:\dev\phd\ModelHealer\data'+ set + r'\DesignsNew.pickle'
+designIni = load_dict(pathIni)
+# del designIni.parameters["U1_OK_d_wl_sn25"]
+designNew = load_dict(pathNew)
 
-tempoIni = load_dict(pathIni)
-tempoNew =  load_dict(pathNew)
+# all_sets = ['\sa-18-0.1','\sa-18-0.02','\sa-18-0.3','\sa-18-0.05' ]
+# PathNewAll = [r'C:\dev\phd\ModelHealer\data'+ set + r'\DesignsNew.pickle' for set in all_sets]
+# designNewAll =  [load_dict(pathNew) for path in PathNewAll]
+# designNewAll = flatten(designNewAll)
 
 pathRes= r'C:\dev\phd\ModelHealer\data'+set + r'\res'
 lst_txt = []
@@ -36,68 +58,168 @@ lst_txt = [txt.split("_", 1) for txt in lst_txt]
 test_txt = lst_txt[0]
 
 testSpace = SolutionSpace(ifcguid=test_txt[0], rule=test_txt[1])
-testSpace.set_space_center(tempoIni)
-testSpace.form_space(tempoNew)
+testSpace.set_center(designIni)
+testSpace.form_space(designNew)
+
+X = testSpace.data_X
+y = testSpace.data_Y
+svc_class_weight = 4
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2023)
+
+clf = executeLinearSVC(X, y, C=1.0, y_train_weight=svc_class_weight)
+y_pred_error_index, y_pred_val_index = evaluateLinearSVC(clf, X, y)
+displaySVCinPC(X, y, svckernel="linear")
+
+# y = clf.decision_function(X)
+# w_norm = np.linalg.norm(clf.coef_)
+# dist = y / w_norm
+# print("Distance to the boundary: ", dist)
+
+# calculate the distance from samples to the hyperplane
+# here the y value converges with y_pred, but not alwadys with y_test
 
 
-# results_y_2SzsE5m8T4h9JlM6XpBSn3_IBC1020_2
 
-# we create two clusters of random points
-n_samples_1 = 1000
-n_samples_2 = 100
-centers = [[0.0, 0.0], [2.0, 2.0]]
-clusters_std = [1.5, 0.5]
-X, y = make_blobs(
-    n_samples=[n_samples_1, n_samples_2],
-    centers=centers,
-    cluster_std=clusters_std,
-    random_state=0,
-    shuffle=False,
-)
+# w = clf.coef_[0]
+# a = -w[0] / w[1]
+# xx = np.linspace(-5, 5)
+# yy = a * xx - (clf.intercept_[0]) / w[1]
+# margin = 1 / np.sqrt(np.sum(clf.coef_ ** 2))
+# yy_down = yy - np.sqrt(1 + a ** 2) * margin
+# yy_up = yy + np.sqrt(1 + a ** 2) * margin
+# plt.figure(1, figsize=(4, 3))
+# plt.clf()
+# plt.plot(xx, yy, "k-")
+# plt.plot(xx, yy_down, "k-")
+# plt.plot(xx, yy_up, "k-")
+# plt.scatter(clf.support_vectors_[:, 0], clf.support_vectors_[:, 1], s=80,
+#  facecolors="none", zorder=10, edgecolors="k")
+# plt.scatter(X[:, 0], X[:, 1], c=y, zorder=10, cmap=plt.cm.Paired,
+#  edgecolors="k")
+# plt.xlabel("x1")
+# plt.ylabel("x2")
+# plt.show()
 
-# fit the model and get the separating hyperplane
-clf = svm.SVC(kernel="linear", C=1.0)
-clf.fit(X, y)
+# displaySVC(clf, X, y)
 
-# fit the model and get the separating hyperplane using weighted classes
-wclf = svm.SVC(kernel="linear", class_weight={1: 10})
-wclf.fit(X, y)
+# fig, ax = plt.subplots()
+# plot_decision_regions(X[:,:2], y, clf=clf, legend=2)
+# plt.show()
 
-# plot the samples
-plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Paired, edgecolors="k")
+# # title for the plots
+# title = ('Decision surface of linear SVC ')
+# # Set-up grid for plotting.
+# X0, X1 = X[:, 0], X[:, 1]
+# xx, yy = make_meshgrid(X0, X1)
 
-# plot the decision functions for both classifiers
-ax = plt.gca()
-disp = DecisionBoundaryDisplay.from_estimator(
-    clf,
-    X,
-    plot_method="contour",
-    colors="k",
-    levels=[0],
-    alpha=0.5,
-    linestyles=["-"],
-    ax=ax,
-)
+# plot_contours(ax, clf, xx, yy, cmap=plt.cm.coolwarm, alpha=0.8)
+# ax.scatter(X0, X1, c=y, cmap=plt.cm.coolwarm, s=20, edgecolors='k')
+# ax.set_ylabel('y label here')
+# ax.set_xlabel('x label here')
+# ax.set_xticks(())
+# ax.set_yticks(())
+# ax.set_title(title)
+# ax.legend()
+# plt.show()
 
-# plot decision boundary and margins for weighted classes
-wdisp = DecisionBoundaryDisplay.from_estimator(
-    wclf,
-    X,
-    plot_method="contour",
-    colors="r",
-    levels=[0],
-    alpha=0.5,
-    linestyles=["-"],
-    ax=ax,
-)
+# clf, y_pred, dist, y_pred_error_index, y_pred_val_index = executeLinearSVC(X, y, svc_class_weight)
+# y_pred = clf.predict(X)
 
-plt.legend(
-    [disp.surface_.collections[0], wdisp.surface_.collections[0]],
-    ["non weighted", "weighted"],
-    loc="upper right",
-)
-plt.show()
+# displaySVC(clf, X, y)
 
+# model = svm.SVC(kernel="linear", C=1.0, probability=True, class_weight={1: int(svc_class_weight)})
+# clf = model.fit(X, y)
+
+# X0, X1 = X[:, 0], X[:, 1]
+# https://datascience.stackexchange.com/questions/33910/number-of-features-of-the-model-must-match-the-input-model-n-features-is-n-an
+# https://stackoverflow.com/questions/72252887/valueerror-x-has-1-features-but-svc-is-expecting-3-features-as-input
+# https://www.analyticsvidhya.com/blog/2021/10/support-vector-machinessvm-a-complete-guide-for-beginners/
+
+# fig, ax = plt.subplots(figsize=(10, 6))
+# disp = DecisionBoundaryDisplay.from_estimator(
+#     clf,
+#     X,
+#     response_method="predict",
+#     cmap=plt.cm.coolwarm,
+#     alpha=0.8,
+#     ax=ax,
+#     xlabel='1',
+#     ylabel='2',)
+
+# ax.scatter(X0, X1, c=y, cmap=plt.cm.coolwarm, s=20, edgecolors="k")
+# ax.set_xticks(())
+# ax.set_yticks(())
+# ax.set_title('t')
+# plt.savefig('test.png', dpi=200)
+
+# Von Stavros.
+
+# # Run SVM and fit data
+# svc = svm.SVC(kernel='linear')
+# X_train = df2.to_numpy()
+# svc.fit(X_train, y_train)
+
+
+# # Outcomes
+# y_pred = svc.predict(X_train)
+# supp=svc.support_vectors_
+
+
+# # Find distance to boundary
+# x1=X_train[0,:]
+# x1=np.expand_dims(x1, axis=0)
+# y = svc.decision_function(x1)
+# w_norm = np.linalg.norm(svc.coef_)
+# dist = y / w_norm
+
+
+
+# y_pred_error_dist = [item for item in dist[y_pred_error_index]]
+# y_pred_val_dist = [item for item in dist[y_pred_val_index]]
+
+
+
+# nu_list = [0.01, 0.02, 0.05, 0.1, 0.125]
+# for nu_v in nu_list:
+#     display_svc_pc(X, y, svckernel="nu", nu_nu=nu_v)
+
+# # fit the model and get the separating hyperplane
+# clf = svm.SVC(kernel="linear", C=1.0)
+# clf.fit(X, y)
+# # fit the model and get the separating hyperplane using weighted classes
+# wclf = svm.SVC(kernel="linear", class_weight={1: 10})
+# wclf.fit(X, y)
+# # plot the samples
+# plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Paired, edgecolors="k")
+# # plot the decision functions for both classifiers
+# ax = plt.gca()
+# disp = DecisionBoundaryDisplay.from_estimator(
+#     clf,
+#     X,
+#     plot_method="contour",
+#     colors="k",
+#     levels=[0],
+#     alpha=0.5,
+#     linestyles=["-"],
+#     ax=ax,
+# )
+# # plot decision boundary and margins for weighted classes
+# wdisp = DecisionBoundaryDisplay.from_estimator(
+#     wclf,
+#     X,
+#     plot_method="contour",
+#     colors="r",
+#     levels=[0],
+#     alpha=0.5,
+#     linestyles=["-"],
+#     ax=ax,
+# )
+# plt.legend(
+#     [disp.surface_.collections[0], wdisp.surface_.collections[0]],
+#     ["non weighted", "weighted"],
+#     loc="upper right",
+# )
+# plt.show()
 
 # # Read the initial data
 # df_init = pd.read_csv(r'data/0_initial_parameters.csv',
@@ -202,34 +324,3 @@ plt.show()
 #         i = param_names.index(second['S2'].index[k][1])
 #         matrix[j][i] = second['S2'].iloc[k]
 #     return param_names, matrix
-
-
-# def plotSecondIndices(dirs_fig, rl, second):
-
-#     param_names, matrix = convert2Matrix(second)
-
-#     fig = plt.figure(figsize=(10, 10))  # unit of inch
-#     ax1 = plt.axes((0.1, 0.1, 0.8, 0.8))  # in range (0,1)
-
-#     pos = ax1.imshow(matrix, interpolation='none', cmap='BuPu')
-
-#     ax1.set_xticks(np.arange(len(param_names)), param_names)
-#     ax1.set_yticks(np.arange(len(param_names)), param_names)
-#     ax1.tick_params(axis='x', which='major', direction='out', length=5, width=2, color='maroon',
-#                     pad=10, labelsize=10, labelcolor='navy', labelrotation=15)
-#     ax1.tick_params(axis='y', which='major', direction='out', length=5, width=2, color='maroon',
-#                     pad=10, labelsize=10, labelcolor='navy', labelrotation=15)
-#     ax1.set_title(r'Second-order sensitivity indices for rule: '+rl, size=16)
-#     fig.colorbar(pos, location='right', shrink=0.8)
-
-#     for (i, j), z in np.ndenumerate(matrix):
-#         if z != 0:
-#             ax1.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-
-#     plt.savefig(dirs_fig + '/SA_' + rl + '_Second' + '_indices.png', dpi=200)
-
-# nu_list = [0.01, 0.02, 0.05, 0.1, 0.125]
-# display_svc_pc(X_train, y_train, svckernel="linear")
-
-# for nu_v in nu_list:
-#     display_svc_pc(X_train, y_train, svckernel="nu", nu_nu=nu_v)
