@@ -3,28 +3,38 @@
 #
 from const_project import EXECUTION_NR, DIRS_DATA
 
+
 # SA boundary information
-# 0.02, 0.05, 0.1, 0.3
-BOUNDARY_VALUES = 0.02
+BOUNDARY_VALUES_LIST = [0.01, 0.05, 0.1, 0.3]
+BOUNDARY_VALUES = BOUNDARY_VALUES_LIST[int(EXECUTION_NR%5-1)]
 SET_SA_DISTRIBUTION ="unif"         # "unif", "norm"
+
 
 NAME_FLOOR = 'U1_OK'
 NAME_FAILURES = ['2SzsE5m8T4h9JlM6XpBSn3','2SzsE5m8T4h9JlM6XpBSnd']
 EXCEPTION_GP = 'U1_OK_d_wl_sn25'
 
-# SA sobol overall information
-N_SMP_SOBOL = 2**(EXECUTION_NR%10)    #= 2** (int
+
+#=================================#
+#              sobol              #
+#=================================#
+# amount = (N_p)
+N_SMP_SOBOL = int(2**(EXECUTION_NR%10 - 4))    #= 2** (int
 SA_CALC_SECOND_ORDER = True
 SALTELLI_SKIP = 1024
 
-# SA morris overall information
-# amount = (parameter amount +1)* traj
+#=================================#
+#             morris              #
+#=================================#
+# amount = (N_p +1)* N_OPT_TRAJ_MORRIS
 N_LEVEL_MORRIS = 4
-N_TRAJ_MORRIS = 10 * (EXECUTION_NR%10)
-N_OPT_TRAJ_MORRIS = int(N_TRAJ_MORRIS / 10)
+N_TRAJ_MORRIS = 100 * (EXECUTION_NR%10)
+N_OPT_TRAJ_MORRIS = int(N_TRAJ_MORRIS/10)
+
 
 # initial parameter selction via neighborhood levels.
 K_LEVEL_PARAMETER = int(EXECUTION_NR/10) #= 1 , 3 , 5
+
 
 DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR) + '-' + str(BOUNDARY_VALUES)
 FILE_SA_VARY_SOBOL = DIRS_DATA_SA + r'\sa_vary_sobol.csv'

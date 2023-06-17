@@ -12,8 +12,8 @@
 from base_external_packages import *
 from funct_data import *
 from funct_svm import executeLinearSVC, evaluateLinearSVC, displaySVCinPC
-# make_meshgrid, plot_contours, displaySVCinPC, displaySVC
 from Space import SolutionSpace
+from const_project import DIRS_DATA
 
 from mlxtend.plotting import plot_decision_regions
 import matplotlib.pyplot as plt
@@ -29,40 +29,35 @@ from sklearn.model_selection import train_test_split
 # -Split the data into attributes and labels
 # -Divide the data into training and testing sets
 # -Train the SVM algorithm
-# -Make some predictions
+# -Make some predictions 
 # -Evaluate the results of the algorithm
 
-def flatten(list):
-    return [item for sublist in list for item in sublist]
+dataset = [
+    '\sa-14-0.3',
+    '\sa-19-0.3',
+    ]
 
-set = '\sa-18-0.3'
-pathIni = r'C:\dev\phd\ModelHealer\data'+ set + r'\DesignIni.pickle'
-pathNew = r'C:\dev\phd\ModelHealer\data'+ set + r'\DesignsNew.pickle'
+pathIni = DIRS_DATA + dataset[0] + r'\DesignIni.pickle'
+pathRes = DIRS_DATA + dataset[0] + r'\res'
+problems =  get_problems_from_paths(pathRes)
+
 designIni = load_dict(pathIni)
 # del designIni.parameters["U1_OK_d_wl_sn25"]
-designNew = load_dict(pathNew)
 
-# all_sets = ['\sa-18-0.1','\sa-18-0.02','\sa-18-0.3','\sa-18-0.05' ]
-# PathNewAll = [r'C:\dev\phd\ModelHealer\data'+ set + r'\DesignsNew.pickle' for set in all_sets]
-# designNewAll =  [load_dict(pathNew) for path in PathNewAll]
-# designNewAll = flatten(designNewAll)
+pathsNew = [DIRS_DATA + set + r'\DesignsNew.pickle' for set in dataset]
+designsNew = flatten([load_dict(path) for path in pathsNew])
 
-pathRes= r'C:\dev\phd\ModelHealer\data'+set + r'\res'
-lst_txt = []
-for file in os.listdir(pathRes):
-    if file.endswith(".txt"):
-        lst_txt.append(os.path.join(file))
-lst_txt = [txt.replace('results_y_','') for txt in lst_txt]
-lst_txt = [txt.replace('.txt','') for txt in lst_txt]
-lst_txt = [txt.split("_", 1) for txt in lst_txt]
-test_txt = lst_txt[0]
+firstSpace = SolutionSpace(problems)
 
-testSpace = SolutionSpace(ifcguid=test_txt[0], rule=test_txt[1])
-testSpace.set_center(designIni)
-testSpace.form_space(designNew)
+firstSpace.set_center(designIni)
 
-X = testSpace.data_X
-y = testSpace.data_Y
+firstSpace.form_space(designsNew)
+
+firstSpace.subdivide_space()
+print(firstSpace)
+
+X = firstSpace.data_X
+y = firstSpace.data_Y
 svc_class_weight = 4
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2023)
 

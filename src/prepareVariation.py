@@ -14,7 +14,7 @@ from funct_sensi import *
 # from base_classes import NewDesign
 
 def prepareVariants(
-    sa_type=[],set_dup_rvt=False):
+    sa_type=[], set_dup_rvt=False):
     
     # check if the data directory exists.
     create_directory(DIRS_DATA_SA)
@@ -40,28 +40,14 @@ def prepareVariants(
     #              sobol              #
     #                                 #
     #=================================#
-    sa_values_sobol = sample_saltelli.sample(
-        sa_problem,
-        N_SMP_SOBOL,
-        calc_second_order=SA_CALC_SECOND_ORDER,
-        skip_values=SALTELLI_SKIP)
-    df_sa_variation_sobol = pd.DataFrame(sa_values_sobol, columns=sa_init_parameter_names).T
-    
-    #=================================#
-    #                                 #
-    #             morris              #
-    #                                 #
-    #=================================#
-    sa_values_morris = sample_morris.sample(
-        sa_problem,
-        N_TRAJ_MORRIS,
-        num_levels=N_LEVEL_MORRIS,
-        optimal_trajectories=N_OPT_TRAJ_MORRIS,
-        seed = N_LEVEL_MORRIS,)
-    
-    df_sa_variation_morris = pd.DataFrame(sa_values_morris, columns=sa_init_parameter_names).T
-
     if sa_type =='sobol':
+
+        sa_values_sobol = sample_saltelli.sample(
+            sa_problem,
+            N_SMP_SOBOL,
+            calc_second_order=SA_CALC_SECOND_ORDER,
+            skip_values=SALTELLI_SKIP)
+        df_sa_variation_sobol = pd.DataFrame(sa_values_sobol, columns=sa_init_parameter_names).T
 
         save_ndarray_2txt(sa_values_sobol, DIRS_DATA_SA+"/sa_values_sobol.txt")
         df_sa_variation_sobol.to_csv(FILE_SA_VARY_SOBOL, header=False)
@@ -69,8 +55,21 @@ def prepareVariants(
         if set_dup_rvt:
             duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_sobol.shape[0], clear_destination=True)
 
-    elif sa_type == 'morris':        
-
+    #=================================#
+    #                                 #
+    #             morris              #
+    #                                 #
+    #=================================#
+    elif sa_type == 'morris':
+            
+        sa_values_morris = sample_morris.sample(
+            sa_problem,
+            N_TRAJ_MORRIS,
+            num_levels=N_LEVEL_MORRIS,
+            optimal_trajectories=N_OPT_TRAJ_MORRIS,
+            seed = N_LEVEL_MORRIS,)
+        
+        df_sa_variation_morris = pd.DataFrame(sa_values_morris, columns=sa_init_parameter_names).T
         save_ndarray_2txt(sa_values_morris, DIRS_DATA_SA+"/sa_values_morris.txt")
         df_sa_variation_morris.to_csv(FILE_SA_VARY_MORRIS, header=False)
 

@@ -8,7 +8,7 @@ from graphCreation import graphCreate
 from graphEnricher import graphEnrich
 from prepareVariation import prepareVariants
 from testSensitivity import testSensi_sobol, testSensi_morris
-
+from formSpace import formSolutionSpace
 # from prepareSolutionSpace import buildSpace
 
 if __name__ == "__main__":
@@ -18,15 +18,14 @@ if __name__ == "__main__":
     # topoCollect()
     # graphCreate()
     # graphEnrich(plot_graph=False)
-    # prepareVariants(sa_type = 'morris',set_dup_rvt = True)
     
-    # testSensi_sobol(build_design=False, calc_index=True, plot_index=True)
-    testSensi_morris(build_design=True, calc_index=True, plot_index=True)
-
-
-
-
-
+    # prepareVariants(sa_type='morris', set_dup_rvt = True)
+    
+    # testSensi_morris(build_design=True, calc_index=True, plot_index=True)
+    # testSensi_sobol(build_design=True, calc_index=True, plot_index=True)
+       
+    formSolutionSpace(['\sa-14-0.3', '\sa-19-0.3'])
+    formSolutionSpace(['\sa-54-0.3', '\sa-59-0.3'])
 
 # https://gsa-module.readthedocs.io/en/stable/implementation/morris_screening_method.html
 # for levels in Morris: From Screening to Quantitative Sensitivity Analysis. A Unified Approach

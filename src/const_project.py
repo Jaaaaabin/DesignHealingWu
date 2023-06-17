@@ -3,21 +3,14 @@
 #
 
 # # # # # # # # #
-# for graphEnrich
-# EXECUTION_NR  = 11 
-#               or 31 
-#               or 51
-
-# # # # # # # # #
-# for SA sobol
-# EXECUTION_NR  = 15(first)
-#               or 55(second)
-
 # for SA morris
-# EXECUTION_NR  = 12(first)
-#               or 52(second)
+# EXECUTION_NR  = 14(first)
+#               or 54(second)
+# for SA sobol
+# EXECUTION_NR  = 19(first)
+#               or 59(second)
 
-EXECUTION_NR = 12
+EXECUTION_NR = 59
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'

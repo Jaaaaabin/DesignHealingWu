@@ -44,9 +44,3 @@ class Design():
         
         # archive the 'target-oriented' data
         self.data = tempo_dict
-        # # alternative option to write data in DataFrame.
-        # self.data = pd.DataFrame.from_dict({(i,j): tempo_dict[i][j] 
-        #                     for i in tempo_dict.keys() 
-        #                     for j in tempo_dict[i].keys()},
-        #                     orient='index')
-        # self.data.index = pd.MultiIndex.from_tuples(tempo_dict.index)
