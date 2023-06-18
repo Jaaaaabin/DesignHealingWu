@@ -4,13 +4,10 @@
 
 # import modules
 
-# https://www.analyticsvidhya.com/blog/2021/03/beginners-guide-to-support-vector-machine-svm/
-# https://towardsdatascience.com/support-vector-machines-svm-clearly-explained-a-python-tutorial-for-classification-problems-29c539f3ad8
-# https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
-# http://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote09.html
-
 from base_external_packages import *
 from funct_data import *
+from funct_region import get_approach_parameters
+
 from funct_svm import executeLinearSVC, evaluateLinearSVC, displaySVCinPC
 from Space import SolutionSpace
 from const_project import DIRS_DATA
@@ -23,47 +20,55 @@ from sklearn.datasets import make_blobs
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.model_selection import train_test_split
 
-# -Import the dataset
-# -Explore the data to figure out what they look like
-# -Pre-process the data
-# -Split the data into attributes and labels
-# -Divide the data into training and testing sets
-# -Train the SVM algorithm
-# -Make some predictions 
-# -Evaluate the results of the algorithm
+# - Import the dataset
+# - Explore the data to figure out what they look like
+# - Pre-process the data
+# - Split the data into attributes and labels
+# - Divide the data into training and testing sets
+# - Train the SVM algorithm
+# - Make some predictions 
+# - Evaluate the results of the algorithm
 
-dataset = [
-    '\sa-14-0.3',
-    '\sa-19-0.3',
-    ]
 
-pathIni = DIRS_DATA + dataset[0] + r'\DesignIni.pickle'
-pathRes = DIRS_DATA + dataset[0] + r'\res'
-problems =  get_problems_from_paths(pathRes)
+# https://www.analyticsvidhya.com/blog/2021/03/beginners-guide-to-support-vector-machine-svm/
+# https://towardsdatascience.com/support-vector-machines-svm-clearly-explained-a-python-tutorial-for-classification-problems-29c539f3ad8
+# https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
+# http://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote09.html
 
-designIni = load_dict(pathIni)
-# del designIni.parameters["U1_OK_d_wl_sn25"]
 
-pathsNew = [DIRS_DATA + set + r'\DesignsNew.pickle' for set in dataset]
-designsNew = flatten([load_dict(path) for path in pathsNew])
+# set the approaching target (one of the rules or the sum of the rules).
+# feasible_data_df = feasible_data[APPROACH_TARGET]
+# feasible_data_df = feasible_data_df.reset_index(drop=True)
+# approach_params = get_approach_parameters(feasible_data_df)
 
-firstSpace = SolutionSpace(problems)
+# # values via evenly sampling.
+# sweeping_values = build_sweeping_values(
+#     feasible_data_df,
+#     approach_params,
+#     sweep_density=2,)
+# save_ndarray_2txt(sweeping_values, dirs_res+"/sweeping_values.txt")
 
-firstSpace.set_center(designIni)
+# # build sweeping_samples and sweeping_samples_df 
+# sweeping_samples, sweeping_samples_df = build_sweeping_samples(
+#     initial_design,
+#     sweeping_values,
+#     approach_params)
 
-firstSpace.form_space(designsNew)
+# def Remove(lst):
+#      return list(map(list, (set(map(lambda x: tuple(sorted(x)), lst)))))
+# test_df = pd.read_csv(r'C:\dev\phd\ModelHealer\data\sa-14-0.3\sa_vary_morris.csv', index_col=0, header=None).T
+# test_df_dup = test_df.duplicated()
 
-firstSpace.subdivide_space()
-print(firstSpace)
+firstSpace = load_dict(DIRS_DATA + r'\Space_sa-14-0.3-save-rep.pickle')
 
 X = firstSpace.data_X
 y = firstSpace.data_Y
 svc_class_weight = 4
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2023)
 
-clf = executeLinearSVC(X, y, C=1.0, y_train_weight=svc_class_weight)
-y_pred_error_index, y_pred_val_index = evaluateLinearSVC(clf, X, y)
-displaySVCinPC(X, y, svckernel="linear")
+# clf = executeLinearSVC(X, y, C=1.0, y_train_weight=svc_class_weight)
+# y_pred_error_index, y_pred_val_index = evaluateLinearSVC(clf, X, y)
+# displaySVCinPC(X, y, svckernel="linear")
 
 # y = clf.decision_function(X)
 # w_norm = np.linalg.norm(clf.coef_)
@@ -72,8 +77,6 @@ displaySVCinPC(X, y, svckernel="linear")
 
 # calculate the distance from samples to the hyperplane
 # here the y value converges with y_pred, but not alwadys with y_test
-
-
 
 # w = clf.coef_[0]
 # a = -w[0] / w[1]

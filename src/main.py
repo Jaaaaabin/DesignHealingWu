@@ -19,13 +19,16 @@ if __name__ == "__main__":
     # graphCreate()
     # graphEnrich(plot_graph=False)
     
+    # Num_level for morris 4 ok , 20 too many.
+    # Num_traj.
+    # https://www.researchgate.net/post/How_to_choose_number_of_trajectories_in_Elementary_Effects_Test_Morris_Screening
     # prepareVariants(sa_type='morris', set_dup_rvt = True)
     
     # testSensi_morris(build_design=True, calc_index=True, plot_index=True)
     # testSensi_sobol(build_design=True, calc_index=True, plot_index=True)
        
-    formSolutionSpace(['\sa-14-0.3', '\sa-19-0.3'])
-    formSolutionSpace(['\sa-54-0.3', '\sa-59-0.3'])
+    # formSolutionSpace(['\sa-14-0.3']) 
+    # formSolutionSpace(['\sa-54-0.3', '\sa-59-0.3'])
 
 # https://gsa-module.readthedocs.io/en/stable/implementation/morris_screening_method.html
 # for levels in Morris: From Screening to Quantitative Sensitivity Analysis. A Unified Approach

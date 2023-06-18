@@ -29,7 +29,7 @@ class SolutionSpace():
         self.data_X_Y = pd.DataFrame()
         self.data_X = np.empty(1, dtype=np.float32)
         self.data_Y = np.empty(1, dtype=np.float32)
-
+        self.valid_idx = dict()
 
     @property
     def strQuant(self):
@@ -105,9 +105,15 @@ class SolutionSpace():
         self.data_X_Y[self.strQuant] = data_Y_quant_sum
         self.data_X_Y[self.strQual] = data_Y_qual_sum
 
-
+        self.valid_idx.update({
+            self.strQual: self.data_X_Y.index[self.data_X_Y[self.strQual]].tolist()})
+        for cl in columns_Y_qual:
+            self.valid_idx.update({
+                cl: self.data_X_Y.index[self.data_X_Y[cl]].tolist()})
+        
     def subdivide_space(self, divide_label_x=[], divide_label_y=[]):
 
         if not divide_label_x and not divide_label_y:
             self.data_X = self.data_X_Y[list(self.ini_parameters.keys())].to_numpy()
             self.data_Y = self.data_X_Y[self.strQual].to_numpy().astype(int) # use true or false as y.
+        

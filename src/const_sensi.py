@@ -27,7 +27,7 @@ SALTELLI_SKIP = 1024
 #             morris              #
 #=================================#
 # amount = (N_p +1)* N_OPT_TRAJ_MORRIS
-N_LEVEL_MORRIS = 4
+N_LEVEL_MORRIS = 20
 N_TRAJ_MORRIS = 100 * (EXECUTION_NR%10)
 N_OPT_TRAJ_MORRIS = int(N_TRAJ_MORRIS/10)
 

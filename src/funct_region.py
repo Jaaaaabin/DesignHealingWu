@@ -7,7 +7,7 @@
 from base_external_packages import *
 
 # import modules
-from base_classes import Design
+from Design import Design
 from base_functions import *
 
 # define region related functions
