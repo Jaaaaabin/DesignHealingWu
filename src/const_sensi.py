@@ -27,14 +27,12 @@ SALTELLI_SKIP = 1024
 #             morris              #
 #=================================#
 # amount = (N_p +1)* N_OPT_TRAJ_MORRIS
-N_LEVEL_MORRIS = 20
-N_TRAJ_MORRIS = 100 * (EXECUTION_NR%10)
-N_OPT_TRAJ_MORRIS = int(N_TRAJ_MORRIS/10)
-
+N_LEVEL_MORRIS = 6 # fix to 6 levels.
+N_TRAJ_MORRIS = 500 # total trajs
+N_OPT_TRAJ_MORRIS = 16 # 8 for 1..; 16 for 5..
 
 # initial parameter selction via neighborhood levels.
 K_LEVEL_PARAMETER = int(EXECUTION_NR/10) #= 1 , 3 , 5
-
 
 DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR) + '-' + str(BOUNDARY_VALUES)
 FILE_SA_VARY_SOBOL = DIRS_DATA_SA + r'\sa_vary_sobol.csv'

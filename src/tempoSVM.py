@@ -56,8 +56,8 @@ from sklearn.model_selection import train_test_split
 
 # def Remove(lst):
 #      return list(map(list, (set(map(lambda x: tuple(sorted(x)), lst)))))
-# test_df = pd.read_csv(r'C:\dev\phd\ModelHealer\data\sa-14-0.3\sa_vary_morris.csv', index_col=0, header=None).T
-# test_df_dup = test_df.duplicated()
+test_df = pd.read_csv(r'C:\dev\phd\ModelHealer\data\sa-54-0.3\sa_vary_morris.csv', index_col=0, header=None).T
+test_df_dup = test_df.duplicated()
 
 firstSpace = load_dict(DIRS_DATA + r'\Space_sa-14-0.3-save-rep.pickle')
 
