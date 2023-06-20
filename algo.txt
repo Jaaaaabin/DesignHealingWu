@@ -1,4 +1,7 @@
 Evolutionary Strategies:
+https://lilianweng.github.io/posts/2019-09-05-evolution-strategies/
+https://pymoo.org/algorithms/soo/es.html
+
 Evolutionary Strategies (ES) are optimization algorithms that focus on directly searching for
 optimal solutions without explicitly defining an objective function.
 ES techniques explore the search space by using mutation and recombination operators to generate new candidate solutions.
@@ -7,27 +10,3 @@ such as comparing the solutions against each other or using surrogate models.
 The goal is to guide the algorithm towards solutions that are considered better within the population,
 without relying on a predefined objective function.
 
-
-
-Particle Swarm Optimization (PSO):
-PSO is a population-based optimization algorithm that does not require an explicit objective function.
-In PSO, a swarm of particles moves through the search space,
-adjusting their positions based on their own historical best position and the best position found by the entire swarm.
-The algorithm aims to converge towards good solutions by iteratively updating the particles' velocities and positions,
-without explicitly evaluating an objective function.
-
-Particle Swarm Optimization (PSO) does not necessarily require real-time cost values.
-In fact, PSO can be used in scenarios where the objective function (or cost function) is computationally expensive
-and requires significant time to evaluate.
-PSO operates by iteratively updating particle positions based on their current positions, velocities,
-and information from personal and global best solutions.
-The quality or fitness of the particles' positions is typically determined by evaluating the objective function.
-However, the evaluation of the objective function does not have to be performed in real-time during each iteration of PSO.
-In many cases, the objective function evaluation can be time-consuming or involve simulations, experiments, or complex computations.
-Therefore, it is common to evaluate the objective function infrequently and reuse the fitness values for a certain number of iterations.
-This approach, known as "fitness caching," reduces the computational burden of evaluating the objective function
-and allows PSO to explore and exploit the solution space using the available fitness values.
-The frequency of objective function evaluations can be adjusted based on the specific problem,
-computational resources, and trade-offs between accuracy and efficiency.
-In summary, PSO can be used even if the objective function evaluation is not in real-time,
-and techniques like fitness caching can be employed to handle computationally expensive or time-consuming objective functions.

@@ -125,6 +125,7 @@ def evaluateLinearSVC(clf, X_test, y_test):
 
     return y_pred_error_index, y_pred_val_index
 
+
 """
 display the sv classification by principal components
 """

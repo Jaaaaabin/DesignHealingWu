@@ -2,6 +2,8 @@
 # testSensitivity.py
 #
 
+from Design import Design
+
 from const_project import DIRS_INI_RES, FILE_SA_PARAM_LIST
 from const_sensi import FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS, DIRS_DATA_SA, DIRS_DATA_SA_RES, DIRS_DATA_SA_FIG
 from const_sensi import SA_CALC_SECOND_ORDER, DIRS_DATA_SA, NAME_FAILURES, N_LEVEL_MORRIS
@@ -11,32 +13,44 @@ from const_ibcrule import BUILDING_RULES
 from funct_data import analyze_h5s, save_dict, load_dict
 from funct_sensi import *
 
-from Design import Design
+def buildDesigns(
+    file_variation,
+    in_path = DIRS_DATA_SA_RES,
+    out_path = DIRS_DATA_SA,
+    build_ini=True,
+    build_new=True):
 
-def buildDesigns(file_sa_vary):
+    if build_ini:
 
-    # dictionary: design - > rule -> target -> distance & compliance.
-    ini_dictCheckResult_h5s = analyze_h5s(DIRS_INI_RES, BUILDING_RULES)
-    dictCheckResult_h5s = analyze_h5s(DIRS_DATA_SA_RES, BUILDING_RULES)
+        # dictionary: design - > rule -> target -> distance & compliance.
+        ini_dictCheckResult_h5s = analyze_h5s(DIRS_INI_RES, BUILDING_RULES)
 
-    # create the initial design: "DesignIni"
-    DesignIni = Design(list(ini_dictCheckResult_h5s.keys())[0], BUILDING_RULES)
-    sa_ini_parameter_names, sa_ini_parameter_values, sa_ini_parameter_num = collect_ini_sa_parameters(
-        FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER, set_floor=NAME_FLOOR, exclude_gp = EXCEPTION_GP)
-    DesignIni.set_parameters({k:v for k,v in zip(sa_ini_parameter_names,sa_ini_parameter_values)})
-    DesignIni.set_checkresults(ini_dictCheckResult_h5s[0])
+        # create the initial design: "DesignIni"
+        DesignIni = Design(list(ini_dictCheckResult_h5s.keys())[0], BUILDING_RULES)
+        ini_parameter_names, ini_parameter_values, ini_parameter_num = collect_ini_sa_parameters(
+            FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER, set_floor=NAME_FLOOR, exclude_gp = EXCEPTION_GP)
+        DesignIni.set_parameters({k:v for k,v in zip(ini_parameter_names,ini_parameter_values)})
+        DesignIni.set_checkresults(ini_dictCheckResult_h5s[0])
+    
+        # save the initial design
+        save_dict(DesignIni, out_path + r'\DesignIni.pickle')   
 
-    # create the new designs: "DesignsNew"
-    DesignsNew  = [Design(nr, BUILDING_RULES) for nr in list(dictCheckResult_h5s.keys())]
-    sa_new_parameter_names = pd.read_csv(file_sa_vary, index_col=0, header=None).T.columns.tolist()
-    sa_new_parameter_values_all = pd.read_csv(file_sa_vary, index_col=0, header=None).T.values.tolist()
-    for newDesign, sa_new_parameter_values in zip(DesignsNew, sa_new_parameter_values_all):
-        newDesign.set_parameters({k:v for k,v in zip(sa_new_parameter_names, sa_new_parameter_values)})
-        newDesign.set_checkresults(dictCheckResult_h5s[newDesign.number])
+    if build_new:
+        
+        # dictionary: design - > rule -> target -> distance & compliance.
+        dictCheckResult_h5s = analyze_h5s(in_path, BUILDING_RULES)
 
-    # save the initial design and the new design.
-    save_dict(DesignIni, DIRS_DATA_SA + r'\DesignIni.pickle')
-    save_dict(DesignsNew, DIRS_DATA_SA + r'\DesignsNew.pickle')
+        # create the new designs: "DesignsNew"
+        DesignsNew  = [Design(nr, BUILDING_RULES) for nr in list(dictCheckResult_h5s.keys())]
+
+        new_parameter_names = pd.read_csv(file_variation, index_col=0, header=None).T.columns.tolist()
+        new_parameter_values_all = pd.read_csv(file_variation, index_col=0, header=None).T.values.tolist()
+        for newDesign, new_parameter_values in zip(DesignsNew, new_parameter_values_all):
+            newDesign.set_parameters({k:v for k,v in zip(new_parameter_names, new_parameter_values)})
+            newDesign.set_checkresults(dictCheckResult_h5s[newDesign.number])
+
+        # save the new design.
+        save_dict(DesignsNew, out_path + r'\DesignsNew.pickle')
 
 
 def calculateIndex_sobol(sa_problem, tgt, rl, plot_index=False):

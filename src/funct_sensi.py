@@ -65,26 +65,6 @@ def collect_ini_sa_parameters(
     return names, values, num
 
 
-def duplicateRVT(dir_ini, dir_dest, amount=0, clear_destination=True):
-    """
-    duplicate the initial .rvt file.
-    """
-
-    # clear all the previous *.rvt files the destination folder.
-    if clear_destination:
-        for f in os.listdir(dir_dest):
-            if f.endswith(".rvt"):
-                os.remove(os.path.join(dir_dest, f))
-    if amount > 0 :
-        nbs =  [item for item in range(1, amount+1)]
-        pathnames = [dir_dest+'\\'+ str(nb) for nb in nbs]
-        for pathname in pathnames:
-            if os.path.isfile(dir_ini):
-                shutil.copy(dir_ini, pathname+'.rvt')
-    else:
-        return 'Amount Error'
-
-
 def execute_sa_sobol(
         dirs_fig,
         problem,
@@ -129,6 +109,7 @@ def execute_sa_sobol(
                 sobol_plot_sa_S2(dirs_fig, target, rule, second)
     
     return total, first, second
+
 
 def execute_sa_morris(
     dirs_fig,

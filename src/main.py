@@ -1,34 +1,47 @@
 #
 # __main__.py
 #
+
 from const_project import EXECUTION_NR
-from const_sensi import BOUNDARY_VALUES
+
 from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
-from prepareVariation import prepareVariants
-from testSensitivity import testSensi_sobol, testSensi_morris
+from prepareVariation import prepareSAVariants
+from testSensitivity import buildDesigns, testSensi_sobol, testSensi_morris
 from formSpace import formSolutionSpace
-# from prepareSolutionSpace import buildSpace
 
 if __name__ == "__main__":
 
-    # print (EXECUTION_NR, BOUNDARY_VALUES)
-    
+    #=================================#
+    #                ini              #
+    #=================================#
     # topoCollect()
     # graphCreate()
     # graphEnrich(plot_graph=False)
     
-    # how to choose Num_level and Num_traj.
-    # https://www.researchgate.net/post/How_to_choose_number_of_trajectories_in_Elementary_Effects_Test_Morris_Screening
-
-    prepareVariants(sa_type = 'morris', set_dup_rvt = True)
-    
+    #=================================#
+    #                 sa              #
+    #=================================#
+    # EXECUTION_NR = 14, 54
+    # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
     # testSensi_morris(build_design=True, calc_index=True, plot_index=True)
+
+    # EXECUTION_NR = 19, 59
+    # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)
     # testSensi_sobol(build_design=True, calc_index=True, plot_index=True)
-       
-    # formSolutionSpace(['\sa-14-0.3']) 
-    # formSolutionSpace(['\sa-54-0.3', '\sa-59-0.3'])
+
+    #=================================#
+    #                 ss              #
+    #=================================#
+    # EXECUTION_NR = 114, 154, 119, 159
+    formSolutionSpace(['\sa-14-0.3'], set_evolve_space = True, set_dup_rvt = True)
+    # formSolutionSpace(['\sa-14-0.3', '\ss-114-0.3'])
+
+
+
+
+
 
 # https://gsa-module.readthedocs.io/en/stable/implementation/morris_screening_method.html
 # for levels in Morris: From Screening to Quantitative Sensitivity Analysis. A Unified Approach
@@ -39,11 +52,6 @@ if __name__ == "__main__":
 # to do
 # 1. develop an automated Error/Warning handler.
 # 1.1 too hard with Python for an automated handler. 
-# 1.2 continue to test with test-handler-paramed.rvt and test-handler.dyn
-# -> first conflict nr .38.
-# 1.2 [first test] try with activating the workset during the generation
-# it's slightly faster for generation.
-# it's slower for checking.
 # 1.3 [second test] remove windows/doors before the duplication. OK.
 # desgin overwrite completed.
 # how to automatically save??

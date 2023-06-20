@@ -10,6 +10,25 @@ def flatten(list):
     return [item for sublist in list for item in sublist]
 
 
+def save_ndarray_2txt(x, filename):
+    """
+    save multidimensional array into a txt file
+
+    """
+
+    np.savetxt(filename, x)
+
+
+def load_ndarray_txt(filename):
+    """
+    reload the multidimensional array 
+
+    """
+
+    data = np.loadtxt(filename)
+    return data
+
+
 def get_problems_from_paths(
     paths, file_end='.txt', file_start = 'results_y_', file_sep = '_'):
 
@@ -24,6 +43,7 @@ def get_problems_from_paths(
     problems = [txt.split(file_sep, 1) for txt in problems]
 
     return problems
+
 
 def sortStrListbyNumber(lst):
     """
@@ -113,3 +133,121 @@ def load_dict(filename):
     with open(filename, 'rb') as handle:
         dt = pickle.load(handle)
     return dt
+
+
+def create_directory(test_directory):
+    """
+    Create directories for tests
+
+    """
+
+    test_directory_archive = test_directory + r'\archive'
+    test_directory_dup = test_directory + r'\dups'
+    test_directory_fig = test_directory + r'\fig'
+    test_directory_res = test_directory + r'\res'
+    test_directory_vary = test_directory + r'\vary'
+
+    try:
+
+        os.makedirs(test_directory)
+        os.makedirs(test_directory_archive)
+        os.makedirs(test_directory_dup)
+        os.makedirs(test_directory_vary)
+        os.makedirs(test_directory_res)
+        os.makedirs(test_directory_fig)
+
+    except FileExistsError:
+
+        print("Warning: the given data directory already exists: {}".format(test_directory))
+        pass
+
+
+def duplicateRVT(dir_ini, dir_dest, amount=0, clear_destination=True):
+    """
+    duplicate the initial .rvt file.
+    """
+
+    # clear all the previous *.rvt files the destination folder.
+    if clear_destination:
+        for f in os.listdir(dir_dest):
+            if f.endswith(".rvt"):
+                os.remove(os.path.join(dir_dest, f))
+    if amount > 0 :
+        nbs =  [item for item in range(1, amount+1)]
+        pathnames = [dir_dest+'\\'+ str(nb) for nb in nbs]
+        for pathname in pathnames:
+            if os.path.isfile(dir_ini):
+                shutil.copy(dir_ini, pathname+'.rvt')
+    else:
+        return 'Amount Error'
+
+
+def checkSampleDuplication(file_csv):
+    """
+    check if there's any repetative samples (rows in a Dataframe.)
+    """
+
+    test_dup = pd.read_csv(file_csv, index_col=0, header=None).T
+    test_df_dup = test_dup.duplicated()
+
+    return test_df_dup.value_counts()
+
+
+def save_samples(dirs_data, data_file_name, samples, save_sample_object=False):
+    """
+    save the samples to a .dat
+    
+    """
+
+    PIK = os.path.join(dirs_data, data_file_name + ".dat")
+
+    if save_sample_object:
+        with open(PIK, "wb") as f:
+            pickle.dump(len(samples), f, protocol=pickle.HIGHEST_PROTOCOL)
+            for sample in samples:
+                pickle.dump(sample, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def load_samples(dirs_data, data_file_name, load_sample_object=False):
+    """
+    laod samples from to a .dat
+
+    """
+
+    PIK = os.path.join(dirs_data, data_file_name + ".dat")
+    samples = []
+
+    if load_sample_object:
+        with open(PIK, "rb") as f:
+            for _ in range(pickle.load(f)):
+                samples.append(pickle.load(f))
+
+    return samples
+
+
+def is_dup_simple(arr):
+    """
+    find if there're duplicated rows in a 2D array and return the counts if any.
+    
+    """
+
+    u, c = np.unique(arr, axis=0, return_counts=True)
+    return (c>1).any(), c
+
+# def map_global_y(elems, set_result_label_type='validity'):
+    
+#     v1,v2 = None, None
+
+#     if set_result_label_type == 'to_1_0':
+#         v1,v2 = 1, 0
+#     elif set_result_label_type == 'to_bool':
+#         v1,v2 = True, False
+#     elif set_result_label_type == 'validity':
+#         v1,v2 = 'valid','invalid'
+#     else:
+#         print("Summarizing error. Please choose correct Summarizing set_result_label_type!")
+
+#     if all(elem == v1 for elem in elems):
+#         return v1
+#     else:
+#         return v2

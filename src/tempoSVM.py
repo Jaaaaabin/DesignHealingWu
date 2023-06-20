@@ -8,7 +8,7 @@ from base_external_packages import *
 from funct_data import *
 from funct_region import get_approach_parameters
 
-from funct_svm import executeLinearSVC, evaluateLinearSVC, displaySVCinPC
+from funct_svm import executeLinearSVC, evaluateLinearSVC, displaySVCinPC, stnd_nrml
 from Space import SolutionSpace
 from const_project import DIRS_DATA
 
@@ -28,7 +28,6 @@ from sklearn.model_selection import train_test_split
 # - Train the SVM algorithm
 # - Make some predictions 
 # - Evaluate the results of the algorithm
-
 
 # https://www.analyticsvidhya.com/blog/2021/03/beginners-guide-to-support-vector-machine-svm/
 # https://towardsdatascience.com/support-vector-machines-svm-clearly-explained-a-python-tutorial-for-classification-problems-29c539f3ad8
@@ -54,25 +53,28 @@ from sklearn.model_selection import train_test_split
 #     sweeping_values,
 #     approach_params)
 
-# def Remove(lst):
-#      return list(map(list, (set(map(lambda x: tuple(sorted(x)), lst)))))
-test_df = pd.read_csv(r'C:\dev\phd\ModelHealer\data\sa-54-0.3\sa_vary_morris.csv', index_col=0, header=None).T
-test_df_dup = test_df.duplicated()
+# ['\sa-14-0.3','\sa-19-0.3','\sa-54-0.3','\sa-59-0.3',]
 
-firstSpace = load_dict(DIRS_DATA + r'\Space_sa-14-0.3-save-rep.pickle')
+firstSpace = load_dict(DIRS_DATA + r'\Space_sa-14-0.3.pickle')
 
-X = firstSpace.data_X
-y = firstSpace.data_Y
-svc_class_weight = 4
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2023)
+firstSpace.evolve_space(vary_file=r'C:\dev\phd\ModelHealer\data\tempoevolv.csv')
 
-# clf = executeLinearSVC(X, y, C=1.0, y_train_weight=svc_class_weight)
-# y_pred_error_index, y_pred_val_index = evaluateLinearSVC(clf, X, y)
-# displaySVCinPC(X, y, svckernel="linear")
+X = firstSpace.data_X_df
+Y_keys = list(firstSpace.data_Y_dict.keys())
+y = firstSpace.data_Y_dict[Y_keys[0]]
 
-# y = clf.decision_function(X)
+svc_class_weight = 10
+
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2023)
+
+X_stnl, X_α_β = stnd_nrml(X)
+clf = executeLinearSVC(X_stnl, y, C=1.0, y_train_weight=svc_class_weight)
+y_pred_error_index, y_pred_val_index = evaluateLinearSVC(clf, X_stnl, y)
+displaySVCinPC(X_stnl, y, svckernel="linear")
+
+# y_tempo = clf.decision_function(X_stnl)
 # w_norm = np.linalg.norm(clf.coef_)
-# dist = y / w_norm
+# dist = y_tempo / w_norm
 # print("Distance to the boundary: ", dist)
 
 # calculate the distance from samples to the hyperplane
