@@ -18,7 +18,9 @@ from sklearn import svm, metrics, tree
 from sklearn.svm import LinearSVC
 from sklearn.datasets import make_blobs
 from sklearn.inspection import DecisionBoundaryDisplay
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+
+from seaborn import pairplot
 
 # - Import the dataset
 # - Explore the data to figure out what they look like
@@ -55,32 +57,82 @@ from sklearn.model_selection import train_test_split
 
 # ['\sa-14-0.3','\sa-19-0.3','\sa-54-0.3','\sa-59-0.3',]
 
-firstSpace = load_dict(DIRS_DATA + r'\Space_sa-14-0.3.pickle')
+file_solutionspace = r'C:\dev\phd\ModelHealer\data\ss-114-3\Space_sa-14-0.3_sa-19-0.3_ss-114-1_ss-114-2.pickle'
+solu_Space = load_dict(file_solutionspace)
+y_keys = list(solu_Space.data_Y_dict.keys())
 
-firstSpace.evolve_space(vary_file=r'C:\dev\phd\ModelHealer\data\tempoevolv.csv')
-
-X = firstSpace.data_X_df
-Y_keys = list(firstSpace.data_Y_dict.keys())
-y = firstSpace.data_Y_dict[Y_keys[0]]
-
-svc_class_weight = 10
-
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2023)
-
+# X data
+# access the X data from the solution space.
+X = solu_Space.data_X_df
+# normalization of the X data.
 X_stnl, X_α_β = stnd_nrml(X)
-clf = executeLinearSVC(X_stnl, y, C=1.0, y_train_weight=svc_class_weight)
-y_pred_error_index, y_pred_val_index = evaluateLinearSVC(clf, X_stnl, y)
-displaySVCinPC(X_stnl, y, svckernel="linear")
 
-# y_tempo = clf.decision_function(X_stnl)
-# w_norm = np.linalg.norm(clf.coef_)
-# dist = y_tempo / w_norm
-# print("Distance to the boundary: ", dist)
+# Y data
+# pick the aspect for y.
+y = solu_Space.data_Y_dict[y_keys[0]]
+
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+sub_columns = list(solu_Space.ini_parameters.keys())
+for label_compliance in list(solu_Space.valid_idx.keys()):
+    sub_columns_label = sub_columns.copy()
+    sub_columns_label.append(label_compliance)
+    fig = plt.figure(figsize=(12, 8))
+    df_plot = solu_Space.data_X_Y[sub_columns_label]
+    pairplot(df_plot, hue=label_compliance, markers=["o", "s"])
+    plt.savefig(DIRS_DATA + r'\data_distribution_{}.png'.format(label_compliance), dpi=300)
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+
+
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# 1- resources svm:
+# https://colab.research.google.com/github/jakevdp/PythonDataScienceHandbook/blob/master/notebooks/05.07-Support-Vector-Machines.ipynb
+# https://stats.stackexchange.com/questions/14876/interpreting-distance-from-hyperplane-in-svm
+
+# 2- check cross_val_score for SVM using multiple folds..
+# different train strategies:
+# a. train_test_split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=2023)
+# b. KFold
+# kf = KFold(n_splits=5, shuffle=True, random_state=2023)
+
+test_size = 0.25
+C = 1.0
+
+kf = KFold(n_splits=5, shuffle=True, random_state=2023)
+model = svm.SVC(kernel="linear", C=C, probability=True, class_weight='balanced')
+cv_scores = cross_val_score(model, X_stnl, y, cv=kf)
+print(sorted(cv_scores.keys()))
+
+# print("Scores:", scores)
+# print("Mean:", scores.mean())
+# print("Standard deviation:", scores.std())
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+
+
+executeLinearSVC(X_stnl, y, C=1.0, y_train_weight='balanced')
+
+clf = model.fit(X_train, y_train)
+
+# displaySVCinPC(X_stnl, y, svckernel="linear")
+
+y_tempo = clf.decision_function(X_stnl)
+w_norm = np.linalg.norm(clf.coef_)
+dist = y_tempo / w_norm
+print("Distance to the boundary: ", dist)
+
+ori_distances = solu_Space.data_X_Y['distance'].values.tolist()
+svm_distances = dist.tolist()
+# tempo_test = [svm_d/ori_d for svm_d,ori_d in zip(svm_distances,ori_distances)]
+
+fig = plt.figure(figsize=(12, 8))  # unit of inch
+plt.plot(ori_distances, 'g', svm_distances, 'r')
+plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
+
 
 # calculate the distance from samples to the hyperplane
 # here the y value converges with y_pred, but not alwadys with y_test
 
-# w = clf.coef_[0]
+w = clf.coef_[0]
 # a = -w[0] / w[1]
 # xx = np.linspace(-5, 5)
 # yy = a * xx - (clf.intercept_[0]) / w[1]

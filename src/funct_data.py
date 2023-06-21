@@ -234,20 +234,40 @@ def is_dup_simple(arr):
     u, c = np.unique(arr, axis=0, return_counts=True)
     return (c>1).any(), c
 
-# def map_global_y(elems, set_result_label_type='validity'):
+
+def map_label_y(value, set_result_label_type='validity'):
+    """
+    mapping set_result_label_types:
+    :'to_1_0':          distance to 1 or 0.
+    :'to_bool':         distance to True or False.
+    :'validity':        distance to string.
     
-#     v1,v2 = None, None
+    """
 
-#     if set_result_label_type == 'to_1_0':
-#         v1,v2 = 1, 0
-#     elif set_result_label_type == 'to_bool':
-#         v1,v2 = True, False
-#     elif set_result_label_type == 'validity':
-#         v1,v2 = 'valid','invalid'
-#     else:
-#         print("Summarizing error. Please choose correct Summarizing set_result_label_type!")
+    if set_result_label_type == 'to_1_0':
+        return 1 if value >= 0 else 0
+    elif set_result_label_type == 'to_bool':
+        return True if value >= 0 else False
+    elif set_result_label_type == 'validity':
+        return 'valid' if value >= 0 else 'invalid'        
+    else:
+        print("Mapping error. Please choose correct mapping set_result_label_type!")
 
-#     if all(elem == v1 for elem in elems):
-#         return v1
-#     else:
-#         return v2
+
+def map_global_y(elems, set_result_label_type='validity'):
+    
+    v1,v2 = None, None
+
+    if set_result_label_type == 'to_1_0':
+        v1,v2 = 1, 0
+    elif set_result_label_type == 'to_bool':
+        v1,v2 = True, False
+    elif set_result_label_type == 'validity':
+        v1,v2 = 'valid','invalid'
+    else:
+        print("Summarizing error. Please choose correct Summarizing set_result_label_type!")
+
+    if all(elem == v1 for elem in elems):
+        return v1
+    else:
+        return v2

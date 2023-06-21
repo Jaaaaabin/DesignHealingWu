@@ -10,9 +10,8 @@
 # EXECUTION_NR  = 19(first)
 #               or 59(second)
 
-EXECUTION_NR = 14
-
-SOLUTION_NR = EXECUTION_NR + 100
+EXECUTION_NR = 14 #SA
+SOLUTION_NR = EXECUTION_NR + 100 #SS
 
 # directory: overall
 DIRS_ZERO = r'C:\dev\phd\ModelHealer'

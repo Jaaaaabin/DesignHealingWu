@@ -22,19 +22,23 @@ class SolutionSpace():
         
         problem = np.array(problem).T.tolist() if len(problem) > 1 else problem
 
-        self.guid = problem[0]          # ifcguid.
-        self.rule = problem[1]          # rule.
-        self.ini_parameters = dict()
-        self.ini_results = []
-        self.data_X_Y = pd.DataFrame()
+        self.guid = problem[0]                          # ifcguid.
+        self.rule = problem[1]                          # rule.
+        self.ini_parameters = dict()                    # initial parameters and their values.
+        self.ini_results = []                           # initial checking results.
+        self.data_X_Y = pd.DataFrame()                  # major database.
+        self.valid_idx = dict()                         # indices of the valid designs.
+        self.evolve_targets = pd.DataFrame()            # existing targets to approach.
+        self.evolve_samples = pd.DataFrame()            # new samples within the evolvement.
+        self.sweep_density = 2
+        self.sweep_ext_pad = 0.1
+
         # self.data_X = np.empty(1, dtype=np.float32)
         # self.data_Y = np.empty(1, dtype=np.float32)
-        self.valid_idx = dict()
 
     @property
     def strQuant(self):
         return 'distance'
-    
 
     @property
     def strQual(self):
@@ -108,7 +112,8 @@ class SolutionSpace():
         for cl in columns_Y_qual:
             self.valid_idx.update({
                 cl: self.data_X_Y.index[self.data_X_Y[cl]].tolist()})
-        
+
+
     def enrich_space(self, divide_label_x=[], divide_label_y=[]):
 
         if not divide_label_x and not divide_label_y:
@@ -126,70 +131,85 @@ class SolutionSpace():
                     cl: self.data_X_Y[cl].to_numpy().astype(int)})
 
 
-    def _sweeping_from_initotargets(self, sweep_density=2,):
+    def _sweeping_from_initotargets(self, sweep_density, ext_pad):
         
         # prepare the data for sweeping.
         v_init = np.array(list(self.ini_parameters.values()))
         v_targets = self.evolve_targets.values
-        values_fill_region = np.array([]).reshape(0,v_init.shape[0])
+        
 
-        def sweeping(init_v, target_vs, sweep_density=sweep_density):
+        def sweeping(init_v, target_vs, sweep_density, ext_pad):
             """
             :init_v:        [0,                 n_parameter]
             :target_vs:     [number_of_targets, n_parameter], and will return
             samples         [number_of_targets * sweep_density, n_parameter]
             """
-
-            def random_evenly_sampling_vm2vn(vm, vn, amount): # np.random.uniform
-                random.seed(2023) 
-                random_factors = np.random.uniform(low=0.1, high=0.80, size=amount) 
+            def random_even_samp_vm2vn(vm, vn, amount, ext_pad): # np.random.uniform
+                random.seed(2023)
+                random_factors = np.random.uniform(
+                    low=0-ext_pad, high=1+ext_pad, size=amount) 
                 samples =  np.array([vm + random_factor*(vn-vm) for random_factor in random_factors])
                 return samples
 
-            all_samples = np.empty(shape=[target_vs.shape[0]*sweep_density,target_vs.shape[1]])
+            all_samples = np.empty(
+                shape=[target_vs.shape[0]*sweep_density,target_vs.shape[1]])
+            
             for ii in range(target_vs.shape[0]):
                 samples = np.empty(shape=[sweep_density,target_vs.shape[1]])
                 for jj in range (target_vs.shape[1]):
-                    inter_samples = random_evenly_sampling_vm2vn(init_v[jj], target_vs[ii,jj], sweep_density)
-                    samples[:,jj] = inter_samples
+                    tp_samples = random_even_samp_vm2vn(init_v[jj], target_vs[ii,jj], amount=sweep_density, ext_pad=ext_pad)
+                    samples[:,jj] = tp_samples
                 all_samples[ii*sweep_density:(ii+1)*sweep_density,:] = samples
+
             return all_samples
 
         # Sweeping Part1: sweeping from the initial design to target designs
-        values_fill_gap = sweeping(v_init, v_targets, sweep_density=(sweep_density*2))
-
+        values_fill_gap = sweeping(v_init, v_targets, sweep_density=sweep_density, ext_pad=ext_pad*2)
+        
         # Sweeping Part2: sweeping between target designs
+        values_fill_region = np.array([]).reshape(0,v_init.shape[0])
         for i in range(v_targets.shape[0]-1):
             v_targets_init = v_targets[i]
             v_targets_targ = v_targets[i+1:]
-            values_tempo = sweeping(v_targets_init, v_targets_targ)
+            values_tempo = sweeping(v_targets_init, v_targets_targ, sweep_density=sweep_density, ext_pad=ext_pad)
             values_fill_region = np.concatenate([values_fill_region, values_tempo], axis=0)
         
         self.evolve_samples = pd.DataFrame(np.concatenate([values_fill_region, values_fill_gap], axis=0), columns=list(self.ini_parameters.keys()))
 
 
-    def evolve_space(self, evolve_targets=[], vary_file=[]):
+    def _config_sweeping(self, set_sweep_density, set_sweep_ext_pad):
+        
+        if set_sweep_density:
+            self.sweep_density = set_sweep_density
+        if set_sweep_ext_pad:
+            self.sweep_ext_pad = set_sweep_ext_pad
+    
+    def evolve_space(self, evolve_aspects=[], vary_file=[]):
         
         # filter the evolve excitements
-        if not evolve_targets:
-            evolve_targets = list(self.valid_idx.keys())
-        
-        list_evolve_dest = []
-        for tgt in evolve_targets:
+        if not evolve_aspects:
+            evolve_aspects = list(self.valid_idx.keys())
+
+        targets_to_approach = []
+        for tgt in evolve_aspects:
             idx = self.valid_idx[tgt]
             evolve_dest = self.data_X_Y.iloc[idx] # use  self.data_X_Y to consider the distance as sweeping input later.
-            list_evolve_dest.append(evolve_dest)
+            targets_to_approach.append(evolve_dest)
         
         # get all evolve_targets to self.evolve_targets
         n = 0
-        while n < len(list_evolve_dest)-1:
-            all_evolve_dest = pd.concat([list_evolve_dest[n], list_evolve_dest[n+1]], axis=0)
-            list_evolve_dest[n+1] = all_evolve_dest
-            n+=1
-        all_evolve_dest = all_evolve_dest.drop_duplicates()
-        self.evolve_targets = all_evolve_dest[list(self.ini_parameters.keys())]
-        
-        # sweep
-        self._sweeping_from_initotargets()
-        
+
+        if len(evolve_aspects) == 1:
+            all_evolve_targets = targets_to_approach[0]
+        else:
+            while n < len(targets_to_approach)-1:
+                all_evolve_targets = pd.concat([targets_to_approach[n], targets_to_approach[n+1]], axis=0)
+                targets_to_approach[n+1] = all_evolve_targets
+                n+=1
+            all_evolve_targets = all_evolve_targets.drop_duplicates()
+        self.evolve_targets = all_evolve_targets[list(self.ini_parameters.keys())]
+            
+        # sweeping within the SolutionSpace.
+        self._sweeping_from_initotargets(sweep_density = self.sweep_density, ext_pad = self.sweep_ext_pad)
         self.evolve_samples.T.to_csv(vary_file, header=False)
+

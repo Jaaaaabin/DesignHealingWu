@@ -13,17 +13,19 @@ from const_ibcrule import BUILDING_RULES
 from funct_data import analyze_h5s, save_dict, load_dict
 from funct_sensi import *
 
+
 def buildDesigns(
     file_variation,
-    in_path = DIRS_DATA_SA_RES,
-    out_path = DIRS_DATA_SA,
+    newdesigns_in_path = [],
+    newdesigns_out_path = [],
+    inidesign_in_path = DIRS_INI_RES,
     build_ini=True,
     build_new=True):
 
     if build_ini:
 
         # dictionary: design - > rule -> target -> distance & compliance.
-        ini_dictCheckResult_h5s = analyze_h5s(DIRS_INI_RES, BUILDING_RULES)
+        ini_dictCheckResult_h5s = analyze_h5s(inidesign_in_path, BUILDING_RULES)
 
         # create the initial design: "DesignIni"
         DesignIni = Design(list(ini_dictCheckResult_h5s.keys())[0], BUILDING_RULES)
@@ -33,12 +35,12 @@ def buildDesigns(
         DesignIni.set_checkresults(ini_dictCheckResult_h5s[0])
     
         # save the initial design
-        save_dict(DesignIni, out_path + r'\DesignIni.pickle')   
+        save_dict(DesignIni, newdesigns_out_path + r'\DesignIni.pickle')   
 
     if build_new:
         
         # dictionary: design - > rule -> target -> distance & compliance.
-        dictCheckResult_h5s = analyze_h5s(in_path, BUILDING_RULES)
+        dictCheckResult_h5s = analyze_h5s(newdesigns_in_path, BUILDING_RULES)
 
         # create the new designs: "DesignsNew"
         DesignsNew  = [Design(nr, BUILDING_RULES) for nr in list(dictCheckResult_h5s.keys())]
@@ -50,10 +52,10 @@ def buildDesigns(
             newDesign.set_checkresults(dictCheckResult_h5s[newDesign.number])
 
         # save the new design.
-        save_dict(DesignsNew, out_path + r'\DesignsNew.pickle')
+        save_dict(DesignsNew, newdesigns_out_path + r'\DesignsNew.pickle')
 
 
-def calculateIndex_sobol(sa_problem, tgt, rl, plot_index=False):
+def calIndex_sobol(sa_problem, tgt, rl, plot_index=False):
 
     result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + tgt + '_' + rl + '.txt'
 
@@ -80,8 +82,8 @@ def calculateIndex_sobol(sa_problem, tgt, rl, plot_index=False):
 def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
-        buildDesigns(FILE_SA_VARY_SOBOL)
-    
+        buildDesigns(FILE_SA_VARY_SOBOL, DIRS_DATA_SA_RES, DIRS_DATA_SA)
+
     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
 
@@ -100,7 +102,7 @@ def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
                 
                 # for every pair of target & rule.
                 if calc_index:
-                    tempo_indices = calculateIndex_sobol(sa_problem, tgt, rl, plot_index)
+                    tempo_indices = calIndex_sobol(sa_problem, tgt, rl, plot_index)
                     sa_indices_one.update({rl: tempo_indices})
 
             sa_indices_all.update({tgt: sa_indices_one})
@@ -108,7 +110,7 @@ def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
 
 
-def calculateIndex_morris(sa_problem, tgt, rl, plot_index=False):
+def calIndex_morris(sa_problem, tgt, rl, plot_index=False):
 
     input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
     result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + tgt + '_' + rl + '.txt'
@@ -130,7 +132,7 @@ def calculateIndex_morris(sa_problem, tgt, rl, plot_index=False):
 def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
-        buildDesigns(FILE_SA_VARY_MORRIS)
+        buildDesigns(FILE_SA_VARY_SOBOL, DIRS_DATA_SA_RES, DIRS_DATA_SA)
     
     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
@@ -150,7 +152,7 @@ def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
                 
                 # for every pair of target & rule.
                 if calc_index:
-                    tempo_indices = calculateIndex_morris(sa_problem, tgt, rl, plot_index)
+                    tempo_indices = calIndex_morris(sa_problem, tgt, rl, plot_index)
                     sa_indices_one.update({rl: tempo_indices})
 
             sa_indices_all.update({tgt: sa_indices_one})

@@ -9,7 +9,7 @@ from graphCreation import graphCreate
 from graphEnricher import graphEnrich
 from prepareVariation import prepareSAVariants
 from testSensitivity import buildDesigns, testSensi_sobol, testSensi_morris
-from formSpace import formSolutionSpace
+from formSpace import formSolutionSpace, buildDesignInSpace
 
 if __name__ == "__main__":
 
@@ -34,11 +34,19 @@ if __name__ == "__main__":
     #=================================#
     #                 ss              #
     #=================================#
-    # EXECUTION_NR = 114, 154, 119, 159
-    formSolutionSpace(['\sa-14-0.3'], set_evolve_space = True, set_dup_rvt = True)
-    # formSolutionSpace(['\sa-14-0.3', '\ss-114-0.3'])
+    # EXECUTION_NR = 100 + (14, 54, 19, 59)
+    
+    # ITERATION-1
+    # formSolutionSpace(['\sa-14-0.3'], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
+    # buildDesignInSpace()
 
-
+    # ITERATION-2
+    # formSolutionSpace(['\sa-14-0.3', '\ss-114-1'], sweep_config = [4, 0.1], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
+    # buildDesignInSpace()
+    
+    # ITERATION-3
+    formSolutionSpace(['\sa-14-0.3','\sa-19-0.3', '\ss-114-1', '\ss-114-2'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
+    # buildDesignInSpace()
 
 
 

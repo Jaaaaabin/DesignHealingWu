@@ -6,7 +6,7 @@
 from base_external_packages import *
 
 # import modules
-from base_functions import *
+from funct_data import *
 # from base_classes import Design
 from funct_plot import sobol_plot_sa_S1ST, sobol_plot_sa_S2, morris_sa_plot
 

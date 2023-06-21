@@ -10,16 +10,16 @@ from Space import SolutionSpace
 # from Design import Design
 
 from funct_data import save_dict, load_dict, get_problems_from_paths, flatten, create_directory, duplicateRVT
-from const_project import DIRS_DATA, FILE_INIT_SKL_RVT, SOLUTION_NR
-from const_solutions import DIRS_DATA_SS, DIRS_DATA_SS_DUP, DIRS_DATA_SS_RES, FILE_SS_VARY_SWEEP
+from const_project import DIRS_DATA, FILE_INIT_SKL_RVT
+from const_solus import DIRS_DATA_SS, DIRS_DATA_SS_DUP, DIRS_DATA_SS_RES, FILE_SS_VARY_SWEEP, ITERATION_VALUES
 
 from testSensitivity import buildDesigns
 
-def formSolutionSpace(dataset=[],
-                      set_evolve_space=False, set_dup_rvt = False):
+def formSolutionSpace(dataset=[], set_evolve_space=False, sweep_config = [[],[]], set_dup_rvt = False, set_new_space=False):
 
-    # check if the data directory exists.
-    create_directory(DIRS_DATA_SS)
+    if set_new_space:
+        # check if the data directory exists.
+        create_directory(DIRS_DATA_SS)
 
     pathIni = DIRS_DATA + dataset[0] + r'\DesignIni.pickle'
     pathRes = DIRS_DATA + dataset[0] + r'\res'
@@ -44,8 +44,19 @@ def formSolutionSpace(dataset=[],
     # evolvement in the initial Space.
     if set_evolve_space:
         
+        
         # save the input for varyGP.dyn
-        initialSpace.evolve_space(vary_file=FILE_SS_VARY_SWEEP)
+        initialSpace._config_sweeping(
+            set_sweep_density=sweep_config[0],
+            set_sweep_ext_pad=sweep_config[1],
+            )
+        
+        iter_evolve_aspect = [] if ITERATION_VALUES == 1 else ['compliance']
+
+        initialSpace.evolve_space(
+            evolve_aspects=iter_evolve_aspect,
+            vary_file=FILE_SS_VARY_SWEEP
+            )
 
         if set_dup_rvt:
             
@@ -54,4 +65,8 @@ def formSolutionSpace(dataset=[],
 
 def buildDesignInSpace():
     buildDesigns(
-        FILE_SS_VARY_SWEEP, in_path = DIRS_DATA_SS_RES, out_path = DIRS_DATA_SS, build_ini=True, build_new=True)
+        FILE_SS_VARY_SWEEP,
+        newdesigns_in_path = DIRS_DATA_SS_RES,
+        newdesigns_out_path = DIRS_DATA_SS,
+        build_ini=False,
+        build_new=True)

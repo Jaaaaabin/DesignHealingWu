@@ -6,7 +6,7 @@
 from base_external_packages import *
 
 # import modules
-from base_functions import *
+from funct_data import *
 
 def out_stnd_nrml(u, α, β):
     """

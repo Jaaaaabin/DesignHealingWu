@@ -4,7 +4,7 @@
 
 # import packages
 from base_external_packages import *
-from base_functions import map_label_y
+from funct_data import map_label_y
 
 # define plot functions
 
