@@ -20,7 +20,7 @@ def distance_from_center(clusterer, X, cluster_labels):
     for ii in range(X.shape[0]):
         center =  clusterer.cluster_centers_[cluster_labels[ii]]
         center =  center[:-1]
-        absolute_distance = np.absolute(np.array(center) - np.array(X[ii]))
+        absolute_distance = np.absolute(np.array(center) - np.array(X)[ii])
         final_distance = np.sqrt(np.sum(absolute_distance**2))
         distance.append(final_distance)
     return np.round(distance, 4)
@@ -49,21 +49,65 @@ def remove_outlier(ini_idx, all_outliers_idx):
     return ini_idx, outliers_idx
 
 
+def build_pca_data(data_for_x, data_for_y, dim, set_result_label_type='bool_'):
+    """
+    prepare X and Y for PCA.
+    
+    """
+    # data_for_y = results_df.applymap(lambda x: map_label_y(x, set_result_label_type=set_result_label_type))
+
+    # execute the PCA for the initial X data
+    X = data_for_x.to_numpy()
+    pca = PCA(n_components=dim)
+    pca_components = pca.fit_transform(X)
+    pca_loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
+    
+    # create labels for the pc s
+    labels = {
+        str(i): f"PC {i+1} ({var:.1f}%)"
+        for i, var in enumerate(pca.explained_variance_ratio_ * 100)
+    }
+    
+    # collect all data into one df.
+    pca_data_X = data_for_x # raw x
+
+    for label in labels:
+        col_nb = int(label)
+        pc_name = labels[str(label)]
+        pca_s = pd.Series(pca_components[:,col_nb], name=pc_name)
+        pca_data_X = pd.concat([pca_data_X,pca_s], axis=1) # x in pc
+    
+    pca_data_Y = pd.Series(data_for_y, name='compliance')
+    pca_data_X_Y = pd.concat([pca_data_X, pca_data_Y], axis=1) # raw y
+
+    return pca_data_X_Y
+
+
 def KMeans_clusterings(
     dirs_fig,
-    rl,
     X,
     y,
-    X_pca,
-    n_clus,):
+    n_clus=2):
     """
     plot the clusterings in PCs.
     
     """
 
-    # combine X, X_pca data with y.
-    X_y = np.concatenate((X, y.T),axis=1) # add y to the last column of X.
-    X_pca_y = np.concatenate((X_pca, y.T),axis=1) # only for plotting
+    pca_data_X_Y = build_pca_data(X, y, 2)  # filter to BUILDING_RULES[1:] to have overall compliant options
+    
+    clns_X_y = [cl for cl in pca_data_X_Y.columns.values.tolist() if not 'PC' in cl]
+    X_y = pca_data_X_Y[clns_X_y].to_numpy()
+
+    clns_X_pca = [cl for cl in pca_data_X_Y.columns.values.tolist() if not 'compliance' in cl]
+    X_pca = pca_data_X_Y.to_numpy()
+
+    X_pca_y = pca_data_X_Y.to_numpy()
+
+    pca = PCA(n_components=2)
+    pca_components = pca.fit_transform(X)
+
+    # X_y = np.concatenate((X, y),axis=1) # add y to the last column of X.
+    # X_pca_y = np.concatenate((X_pca, y.T),axis=1) # only for plotting
 
     # execute KMeans clustering.
     clusterer = KMeans(n_clusters=n_clus, init='random')
@@ -76,7 +120,7 @@ def KMeans_clusterings(
     fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.set_size_inches(18, 7)
     ax1.set_xlim([-0.3, 1])
-    ax1.set_ylim([0, len(X_pca) + (n_clus + 1) * 10])
+    ax1.set_ylim([0, len(X_pca_y) + (n_clus + 1 ) * 10])
 
     # The silhouette_score gives the average value for all the samples.
     silhouette_avg = silhouette_score(X, cluster_labels)
@@ -85,12 +129,13 @@ def KMeans_clusterings(
 
     # 1st plotting (left)
     ax1.set_xlabel("The silhouette coefficient values", color="black", fontsize=10)
-    ax1.set_ylabel("Cluster labels (regarding {})".format(rl), color="black", fontsize=10)
+    ax1.set_ylabel("Cluster labels ", color="black", fontsize=10)
     ax1.set_title("The silhouette plot for the identified clusters")
 
     # - - - - - - - - - - - - - - - - - - - - 
     # silhouette plotting
     y_lower = 10
+
     for i in range(n_clus):
 
         # Aggregate the silhouette scores for samples belonging to cluster i, and sort them
@@ -173,25 +218,25 @@ def KMeans_clusterings(
         )
 
     # Labeling the clusters
-    centers = np.empty(shape=[1,2])
-    for nn in range(n_clus):
-        indices_byclus = [idx for idx, label in enumerate(list(cluster_labels)) if label == nn]
-        X_pca_byclus = X_pca[indices_byclus]
-        X_pca_byclus_mean = np.mean([X_pca_byclus], axis=1)
-        centers = np.concatenate((centers, X_pca_byclus_mean),axis=0)
-    centers = centers[1:,:]
+    # centers = np.empty(shape=[1,2])
+    # for nn in range(n_clus):
+    #     indices_byclus = [idx for idx, label in enumerate(list(cluster_labels)) if label == nn]
+    #     X_pca_byclus = X_pca[indices_byclus]
+    #     X_pca_byclus_mean = np.mean([X_pca_byclus], axis=1)
+    #     centers = np.concatenate((centers, X_pca_byclus_mean),axis=0)
+    # centers = centers[1:,:]
 
-    # Draw white circles at cluster centers
-    ax2.scatter(
-        centers[:, 0],
-        centers[:, 1],
-        marker="o",
-        c="white",
-        alpha=1,
-        s=60,
-        edgecolor="k")
-    for i, c in enumerate(centers):
-        ax2.scatter(c[0], c[1], marker="$%d$" % i, alpha=0.95, s=30, edgecolor="k")
+    # # Draw white circles at cluster centers
+    # ax2.scatter(
+    #     centers[:, 0],
+    #     centers[:, 1],
+    #     marker="o",
+    #     c="white",
+    #     alpha=1,
+    #     s=60,
+    #     edgecolor="k")
+    # for i, c in enumerate(centers):
+    #     ax2.scatter(c[0], c[1], marker="$%d$" % i, alpha=0.95, s=30, edgecolor="k")
     
     # Draw the position of the initial design
     ax2.plot([], [], ' ', label="colors represent different clusters")
@@ -206,7 +251,7 @@ def KMeans_clusterings(
 
     # - - - - - - - - - - - - - - - - - - - - 
     # Save the picture
-    plt.savefig(dirs_fig + "/Clusters_KMeans_" + rl + "_" + str(n_clus), dpi=200)
+    plt.savefig(dirs_fig, dpi=200)
     
     return cluster_labels
 

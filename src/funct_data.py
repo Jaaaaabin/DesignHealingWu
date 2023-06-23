@@ -271,3 +271,81 @@ def map_global_y(elems, set_result_label_type='validity'):
         return v1
     else:
         return v2
+
+
+def out_stnd_nrml(u, α, β):
+    """
+    Standardize/normalize
+    """
+
+    output = (u - β) / α
+    return output
+
+
+def u_stnd_nrml(output, α, β):
+    """
+    Un-standardize/un-normalize
+    """
+
+    u = output * α + β
+    return u
+
+def get_α_β(u, norm=True, norm_01=False, no=False):
+    """
+    Get the coefficients of normalization 
+    norm=True: if norm==False, no normalization.. go for standardization
+    norm_01=False: if norm_01==True, rescale to [0,1]; if norm_01==False, rescale to [-1,1]
+    no=False: if no==True, u_α = 1. u_β = 0., no conversion
+    """
+
+    if no == False:
+        # do something
+        if norm == True:
+            # do normalization
+            if norm_01 == False:
+                # normalization to 01
+                u_max = np.amax(u)
+                u_min = np.amin(u)
+                # print('u_max : ', u_max)
+                # print('u_min : ', u_min)
+                u_α = (u_max - u_min) / 2.
+                u_β = (u_max + u_min) / 2.
+            else:
+                # normalization that keeps signs
+                u_α = np.amax(u)
+                u_β = 0.
+
+        elif norm == False:
+            # do standarlization
+            u_α = np.std(u, axis=0)
+            u_β = np.mean(u, axis=0)
+    else:
+        # nothing happens
+        u_α = 1.
+        u_β = 0.
+    return np.float32(u_α), np.float32(u_β)
+
+
+def stnd_nrml(df, set_norm=True, set_norm_01=False):
+    """
+    normalize the values
+    """
+    # set_norm=True, set_norm_01=False -> normalization, rescale to [-1,1]
+    # set_norm=True, set_norm_01=True -> normalization, rescale to [0,1]
+    # set_norm=False, set_norm_01=False/True -> standarlization to have a mean of 0 and standard deviation of 1
+    
+    clmns = df.columns.tolist()
+    df_norm = df.copy()
+    α_β_c = dict.fromkeys(clmns)
+
+    for clmn in clmns:
+
+        # option 1, rescale to (0-1)
+        # α_c, β_c = get_α_β(df[clmn], norm_01=True)
+        α_c, β_c = get_α_β(df[clmn], norm=set_norm, norm_01=set_norm_01)
+        α_β_c[clmn] = [α_c, β_c]
+        df_norm[clmn] = out_stnd_nrml(df[clmn], α_c, β_c)
+
+        # option 2, rescale to (-1,1)
+
+    return df_norm, α_β_c

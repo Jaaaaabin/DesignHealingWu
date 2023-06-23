@@ -6,7 +6,7 @@
 
 from base_external_packages import *
 from funct_data import *
-from funct_region import get_approach_parameters
+from funct_classifier import KMeans_clusterings
 
 from funct_svm import evaluateLinearSVC_prediction, evaluateLinearSVC_decision, displaySVCinPC, stnd_nrml
 from Space import SolutionSpace
@@ -110,6 +110,8 @@ y_dist = evaluateLinearSVC_decision(clf_svm, X_stnl)
 
 # Plot the decisions.
 ori_dist = solu_Space.data_X_Y['distance'].values.tolist()
+ori_comp = solu_Space.data_X_Y['compliance'].values.tolist()
+
 svm_dist = y_dist.tolist()
 fig = plt.figure(figsize=(25, 4))  # unit of inch
 plt.plot(ori_dist, 'g', label="distance_quasi_true")        # this is not true since distance is a simple sum of the three rules.
@@ -117,6 +119,33 @@ plt.plot(svm_dist, 'r', label="distance_pred")              # this should be com
 plt.axhline(y = 0., color = 'black', linestyle = '-')
 plt.legend()
 plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
+
+# s_valid=0
+# s_fakevalid=0
+
+# s_invalid=0
+# s_fakeinvalid=0
+
+# for ori_c, svm_d in zip(ori_comp, svm_dist):
+#     if ori_c == True and svm_d > 0:
+#         s_valid+=1
+#     elif ori_c == False and svm_d > 0:
+#         s_fakevalid+=1
+#     elif ori_c == False and svm_d < 0:
+#         s_invalid+=1
+#     elif ori_c == True and svm_d < 0:
+#         s_fakeinvalid+=1
+
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# KMeans
+
+KMeans_clusterings(
+    DIRS_DATA + r'\KMeans.png',
+    X_stnl,
+    y)
+
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+
 
 # Plot in PCs.
 # displaySVCinPC(X_stnl, y, svckernel="linear")
