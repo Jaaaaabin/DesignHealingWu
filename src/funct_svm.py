@@ -85,45 +85,50 @@ def stnd_nrml(df, set_norm=True, set_norm_01=False):
 
     return df_norm, α_β_c
 
-def executeLinearSVC(X_train, y_train, C=1.0, y_train_weight=[]):
+def evaluateLinearSVC_decision(clf, X):
 
-    # execute the linear svc
-    if y_train_weight:
-        model = svm.SVC(kernel="linear", C=C, probability=True, class_weight={1: int(y_train_weight)})
-    else:
-        model = svm.SVC(kernel="linear", C=C, probability=True)
+    y_dist = clf.decision_function(X)
+    w_norm = np.linalg.norm(clf.coef_)
+    y_dist /= w_norm
+
+    return y_dist
+
+def evaluateLinearSVC_prediction(clf, X, y):
+
+    y_pred = clf.predict(X)
     
-    clf = model.fit(X_train, y_train)
+    # subset accuracy: the set of labels predicted for a sample must exactly match the corresponding set of labels in y_true.
+    print ("Accuracy:", metrics.accuracy_score(y, y_pred)) # Accuracy classification score.
     
-    return clf
+    # The precision is intuitively the ability of the lassifier not to label as positive a sample that is negative.
+    # The precision is the ratio tp / (tp + fp) where tp is the number of true positives and fp the number of false positives. 
+    print ("Precision:", metrics.precision_score(y, y_pred))
 
-def evaluateLinearSVC(clf, X_test, y_test):
+    # The recall is intuitively the ability of the classifier to find all the positive samples.
+    # The recall is the ratio tp / (tp + fn) where tp is the number of true positives and fn the number of false negatives.
+    print ("Recall:", metrics.recall_score(y, y_pred))
 
-    y_pred = clf.predict(X_test)
 
-    print ("Accuracy:", metrics.accuracy_score(y_test, y_pred))
-    print ("Precision:", metrics.precision_score(y_test, y_pred))
-    print ("Recall:", metrics.recall_score(y_test, y_pred))
+    # supp = clf.support_vectors_
+    # y_pred_error_index, y_pred_val_index = [], []
+    # for i, ys in enumerate(zip(y_test, y_pred.tolist())):
+    #     if ys[0] != ys[1]:
 
-    supp = clf.support_vectors_
-    y_pred_error_index, y_pred_val_index = [], []
-    for i, ys in enumerate(zip(y_test, y_pred.tolist())):
-        if ys[0] != ys[1]:
+    #         # display those wrong predictions and the corresponding prediction probabilities.
+    #         y_pred_error_index.append(i)
+    #         print(f"\n Wrong prediction - number:{str(i)}, y_test: {str(ys[0])}, y_pred: {str(ys[1])}")
+    #         print("with prediction probabilities on {} and {}".format(
+    #             clf.classes_[0], clf.classes_[1]), "\n", ["{:0.3f}".format(x) for x in clf.predict_proba(X_test)[i, :]])
+    #     elif ys[0] == ys[1]:
 
-            # display those wrong predictions and the corresponding prediction probabilities.
-            y_pred_error_index.append(i)
-            print(f"\n Wrong prediction - number:{str(i)}, y_test: {str(ys[0])}, y_pred: {str(ys[1])}")
-            print("with prediction probabilities on {} and {}".format(
-                clf.classes_[0], clf.classes_[1]), "\n", ["{:0.3f}".format(x) for x in clf.predict_proba(X_test)[i, :]])
-        elif ys[0] == ys[1]:
+    #         # display those predicted True samples and the corresponding prediction probabilities
+    #         y_pred_val_index.append(i)
+    #         print(f"\n Predicted True Sample - number:{str(i)}, y_test: {str(ys[0])}, y_pred: {str(ys[1])}")
+    #         print("with prediction probabilities on {} and {}".format(
+    #             clf.classes_[0], clf.classes_[1]), "\n", ["{:0.3f}".format(x) for x in clf.predict_proba(X_test)[i, :]])
 
-            # display those predicted True samples and the corresponding prediction probabilities
-            y_pred_val_index.append(i)
-            print(f"\n Predicted True Sample - number:{str(i)}, y_test: {str(ys[0])}, y_pred: {str(ys[1])}")
-            print("with prediction probabilities on {} and {}".format(
-                clf.classes_[0], clf.classes_[1]), "\n", ["{:0.3f}".format(x) for x in clf.predict_proba(X_test)[i, :]])
+    # return y_pred_error_index, y_pred_val_index
 
-    return y_pred_error_index, y_pred_val_index
 
 
 """
