@@ -45,8 +45,16 @@ if __name__ == "__main__":
     # buildDesignInSpace()
     
     # ITERATION-3
-    formSolutionSpace(['\sa-14-0.3','\sa-19-0.3', '\ss-114-1', '\ss-114-2'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
+    formSolutionSpace(['\sa-14-0.3', '\ss-114-1', '\ss-114-2'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
     # buildDesignInSpace()
+
+    #=================================#
+    #                cls              #
+    #=================================#
+
+
+
+
 
 
 

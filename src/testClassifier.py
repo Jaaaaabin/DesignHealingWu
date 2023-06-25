@@ -59,10 +59,9 @@ from seaborn import pairplot
 
 
 # ['\sa-14-0.3','\sa-19-0.3','\sa-54-0.3','\sa-59-0.3',]
-file_solutionspace = r'C:\dev\phd\ModelHealer\data\ss-114-3\Space_sa-14-0.3_sa-19-0.3_ss-114-1_ss-114-2.pickle'
+file_solutionspace = r'C:\dev\phd\ModelHealer\data\ss-114-3\Space_sa-14-0.3_ss-114-1_ss-114-2.pickle'
 solu_Space = load_dict(file_solutionspace)
 y_keys = list(solu_Space.data_Y_dict.keys())
-
 
 
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
@@ -76,7 +75,6 @@ y_keys = list(solu_Space.data_Y_dict.keys())
 #     pairplot(df_plot, hue=label_compliance, markers=["o", "s"])
 #     plt.savefig(DIRS_DATA + r'\data_distribution_{}.png'.format(label_compliance), dpi=300)
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
-
 
 
 # X data.
@@ -137,13 +135,19 @@ plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
 #         s_fakeinvalid+=1
 
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
-# KMeans
+# KMeans, n_clus, p_outlier,
+# to test: algorithm {“lloyd”, “elkan”, “auto”, “full”}, default=”lloyd”
 
-KMeans_clusterings(
-    DIRS_DATA + r'\KMeans.png',
-    X_stnl,
-    y)
-
+for n_clus in [2,4,6,8,10]:
+    for p_outlier in [0.05,0.1,0.15]:
+        KMeans_clusterings(
+            DIRS_DATA,
+            X,
+            y,
+            p_outlier=p_outlier,
+            outlier_sort_type='cluster',
+            n_clus=n_clus)
+    
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
 
@@ -151,31 +155,31 @@ KMeans_clusterings(
 # displaySVCinPC(X_stnl, y, svckernel="linear")
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
-# okokokokokokokokokokokokokokokokokokokokokokokokokokok
-# cross_val_score for SVM using multiple folds..with <sklearn.model_selection.KFold>
-# https://colab.research.google.com/github/jakevdp/PythonDataScienceHandbook/blob/master/notebooks/05.07-Support-Vector-Machines.ipynb
-# https://stats.stackexchange.com/questions/14876/interpreting-distance-from-hyperplane-in-svm
+# # okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# # cross_val_score for SVM using multiple folds..with <sklearn.model_selection.KFold>
+# # https://colab.research.google.com/github/jakevdp/PythonDataScienceHandbook/blob/master/notebooks/05.07-Support-Vector-Machines.ipynb
+# # https://stats.stackexchange.com/questions/14876/interpreting-distance-from-hyperplane-in-svm
 
-# Computation of cv metrics. simplest way: cross_val_score
-n_folds = 5
-kf = KFold(n_splits=n_folds, shuffle=True, random_state=2023)
-cv_scores = cross_val_score(model, X_stnl, y, cv=kf)
+# # Computation of cv metrics. simplest way: cross_val_score
+# n_folds = 5
+# kf = KFold(n_splits=n_folds, shuffle=True, random_state=2023)
+# cv_scores = cross_val_score(model, X_stnl, y, cv=kf)
 
-# Computation of cv metrics: cross_validate function
-# differs from cross_val_score in two ways:
-# 1. allows specifying multiple metrics for evaluation.
-# 2. returns a dict containing fit-times, score-times (and optionally training scores as well as fitted estimators) in addition to the test score.
+# # Computation of cv metrics: cross_validate function
+# # differs from cross_val_score in two ways:
+# # 1. allows specifying multiple metrics for evaluation.
+# # 2. returns a dict containing fit-times, score-times (and optionally training scores as well as fitted estimators) in addition to the test score.
 
-scoring = ['precision_macro', 'recall_macro']
-scores = cross_validate(
-    model, X_stnl, y, scoring=scoring, cv=n_folds, return_train_score=True, return_estimator=True)
-print (sorted(scores.keys()))
-scores['test_recall_macro']
+# scoring = ['precision_macro', 'recall_macro']
+# scores = cross_validate(
+#     model, X_stnl, y, scoring=scoring, cv=n_folds, return_train_score=True, return_estimator=True)
+# print (sorted(scores.keys()))
+# scores['test_recall_macro']
 
-# print("Scores:", scores)
-# print("Mean:", scores.mean())
-# print("Standard deviation:", scores.std())
-# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# # print("Scores:", scores)
+# # print("Mean:", scores.mean())
+# # print("Standard deviation:", scores.std())
+# # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
 
 

@@ -12,31 +12,57 @@ from funct_data import *
 
 # define region related functions
 
-# calculate the outlier.
-def distance_from_center(clusterer, X, cluster_labels):
+# determine the outliers
+def find_outlier_by_distance(clusterer, X, cluster_labels, sort_type='cluster', p_outlier=0):
+    """
+    sort_type = 'all': find the outliers by absolute longest distance among samples in all clusters.
+    sort_type = 'cluster': find the outliers by longest distance within each cluster.
+    p_outlier in (0,0.25] positive percent values.
+    """
 
     # calculate the distance from the cluster center.
-    distance = []
+    all_distance = []
+    cls_distance = [[] for _ in range(clusterer.n_clusters)]
+    cls_distance_idx = [[] for _ in range(clusterer.n_clusters)]
+
     for ii in range(X.shape[0]):
         center =  clusterer.cluster_centers_[cluster_labels[ii]]
         center =  center[:-1]
         absolute_distance = np.absolute(np.array(center) - np.array(X)[ii])
         final_distance = np.sqrt(np.sum(absolute_distance**2))
-        distance.append(final_distance)
-    return np.round(distance, 4)
 
+        # write the distances per cluster.
+        cls_distance[cluster_labels[ii]].append(final_distance)
+        cls_distance_idx[cluster_labels[ii]].append(ii)
 
-def find_outlier(cluster_distance, n_outlier=0):
+        # write all the distances together.
+        all_distance.append(final_distance)
 
-    # find certain number of outliers
-    distance = list(cluster_distance)
-    sorted_idx = sorted(range(len(distance)), key=lambda k: distance[k], reverse=True)
-    if n_outlier != 0:
+    all_distance = list(np.round(all_distance, 4))
+    
+    outlier_idx = []
+    # by absolute longest distance among samples in all clusters. + outlier < 25%
+    if sort_type =='all' and 0 < p_outlier:
+        
+        n_outlier = int(p_outlier*len(all_distance))
+        sorted_idx = sorted(range(len(all_distance)), key=lambda k: all_distance[k], reverse=True)
         outlier_idx = sorted_idx[:n_outlier]
-    else:
-        outlier_idx = sorted_idx
-    return outlier_idx
+    
+    # by longest distance within each cluster. + p_outlier < 25%
+    elif sort_type =='cluster' and 0 < p_outlier:
 
+        for cls_dist , cls_dist_idx in zip(cls_distance, cls_distance_idx):
+
+            n_outlier = int(p_outlier*len(cls_dist))
+            cls_sorted_idx = sorted(range(len(cls_dist)), key=lambda k: cls_dist[k], reverse=True)
+            cls_sorted_idx = cls_sorted_idx[:n_outlier]
+            sorted_idx = [cls_dist_idx[id] for id in cls_sorted_idx]
+            outlier_idx.append(sorted_idx)
+            
+        outlier_idx = flatten(outlier_idx)
+
+    return outlier_idx
+    
 
 def remove_outlier(ini_idx, all_outliers_idx):
     
@@ -46,23 +72,22 @@ def remove_outlier(ini_idx, all_outliers_idx):
     # refine the ini_idx by outliers_idx
     for idx in outliers_idx:
         ini_idx.remove(idx)
+
     return ini_idx, outliers_idx
 
 
-def build_pca_data(data_for_x, data_for_y, dim, set_result_label_type='bool_'):
+def build_pca_data(data_for_x, data_for_y, dim,):
     """
     prepare X and Y for PCA.
     
     """
-    # data_for_y = results_df.applymap(lambda x: map_label_y(x, set_result_label_type=set_result_label_type))
-
     # execute the PCA for the initial X data
     X = data_for_x.to_numpy()
     pca = PCA(n_components=dim)
     pca_components = pca.fit_transform(X)
     pca_loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
-    
-    # create labels for the pc s
+
+    # create labels for all the PCs
     labels = {
         str(i): f"PC {i+1} ({var:.1f}%)"
         for i, var in enumerate(pca.explained_variance_ratio_ * 100)
@@ -70,14 +95,14 @@ def build_pca_data(data_for_x, data_for_y, dim, set_result_label_type='bool_'):
     
     # collect all data into one df.
     pca_data_X = data_for_x # raw x
+    pca_data_Y = pd.Series(data_for_y, name='compliance')
 
     for label in labels:
         col_nb = int(label)
         pc_name = labels[str(label)]
         pca_s = pd.Series(pca_components[:,col_nb], name=pc_name)
-        pca_data_X = pd.concat([pca_data_X,pca_s], axis=1) # x in pc
+        pca_data_X = pd.concat([pca_data_X, pca_s], axis=1) # x in pc
     
-    pca_data_Y = pd.Series(data_for_y, name='compliance')
     pca_data_X_Y = pd.concat([pca_data_X, pca_data_Y], axis=1) # raw y
 
     return pca_data_X_Y
@@ -87,35 +112,34 @@ def KMeans_clusterings(
     dirs_fig,
     X,
     y,
-    n_clus=2):
+    p_outlier,
+    outlier_sort_type,
+    n_clus,
+    n_pca=2,
+    ):
+
     """
+    execute the KMeans-Clustering.
     plot the clusterings in PCs.
-    
     """
 
-    pca_data_X_Y = build_pca_data(X, y, 2)  # filter to BUILDING_RULES[1:] to have overall compliant options
+    # pca in 2D.
+    pca_data_X_Y = build_pca_data(X, y, dim=n_pca)
     
+    # real Data (real values)
     clns_X_y = [cl for cl in pca_data_X_Y.columns.values.tolist() if not 'PC' in cl]
     X_y = pca_data_X_Y[clns_X_y].to_numpy()
-
-    clns_X_pca = [cl for cl in pca_data_X_Y.columns.values.tolist() if not 'compliance' in cl]
-    X_pca = pca_data_X_Y.to_numpy()
-
-    X_pca_y = pca_data_X_Y.to_numpy()
-
-    pca = PCA(n_components=2)
-    pca_components = pca.fit_transform(X)
-
-    # X_y = np.concatenate((X, y),axis=1) # add y to the last column of X.
-    # X_pca_y = np.concatenate((X_pca, y.T),axis=1) # only for plotting
+    
+    # plot Data (PCA values)
+    clns_pca_y = [cl for cl in pca_data_X_Y.columns.values.tolist() if 'PC' in cl or 'compliance' in cl]
+    X_pca_y = pca_data_X_Y[clns_pca_y].to_numpy()
 
     # execute KMeans clustering.
     clusterer = KMeans(n_clusters=n_clus, init='random')
 
     # determine the cluster labels and distance (to the corresponding center) for each sample.
     cluster_labels = clusterer.fit_predict(X_y)
-    cluster_distance = distance_from_center(clusterer, X, cluster_labels)
-    outliers_idx = find_outlier(cluster_distance, n_outlier=20)
+    outliers_idx = find_outlier_by_distance(clusterer, X, cluster_labels, sort_type=outlier_sort_type, p_outlier=p_outlier)
 
     fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.set_size_inches(18, 7)
@@ -168,8 +192,8 @@ def KMeans_clusterings(
     colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clus)
 
     # split according to valid and invalid indices.
-    indices_invalid = [idx for idx, val in enumerate(list(X_pca_y)) if val[2] == 0]
-    indices_valid = [idx for idx, val in enumerate(list(X_pca_y)) if val[2] == 1]
+    indices_invalid = [idx for idx, val in enumerate(X_pca_y.tolist()) if val[-1] == 0]
+    indices_valid = [idx for idx, val in enumerate(X_pca_y.tolist()) if val[-1] == 1]
     
     # remove outliers 
     indices_invalid, indices_invalid_outlier = remove_outlier(indices_invalid, outliers_idx)
@@ -218,40 +242,40 @@ def KMeans_clusterings(
         )
 
     # Labeling the clusters
-    # centers = np.empty(shape=[1,2])
-    # for nn in range(n_clus):
-    #     indices_byclus = [idx for idx, label in enumerate(list(cluster_labels)) if label == nn]
-    #     X_pca_byclus = X_pca[indices_byclus]
-    #     X_pca_byclus_mean = np.mean([X_pca_byclus], axis=1)
-    #     centers = np.concatenate((centers, X_pca_byclus_mean),axis=0)
-    # centers = centers[1:,:]
+    centers = []
+    for nn in range(n_clus):
+        indices_byclus = [idx for idx, label in enumerate(list(cluster_labels)) if label == nn]
+        X_pca_byclus = X_pca_y[indices_byclus][:-1]
+        X_pca_byclus_mean = np.mean(X_pca_byclus, axis=0)
+        centers.append(X_pca_byclus_mean)
+    centers = np.array(centers)
 
-    # # Draw white circles at cluster centers
-    # ax2.scatter(
-    #     centers[:, 0],
-    #     centers[:, 1],
-    #     marker="o",
-    #     c="white",
-    #     alpha=1,
-    #     s=60,
-    #     edgecolor="k")
-    # for i, c in enumerate(centers):
-    #     ax2.scatter(c[0], c[1], marker="$%d$" % i, alpha=0.95, s=30, edgecolor="k")
+    # Draw white circles at cluster centers
+    ax2.scatter(
+        centers[:, 0],
+        centers[:, 1],
+        marker="o",
+        c="white",
+        alpha=1,
+        s=60,
+        edgecolor="k")
+    for i, c in enumerate(centers):
+        ax2.scatter(c[0], c[1], marker="$%d$" % i, alpha=0.95, s=30, edgecolor="k")
     
-    # Draw the position of the initial design
-    ax2.plot([], [], ' ', label="colors represent different clusters")
-    ax2.hlines(
-        y=X_pca[0,1], xmin=-0.50, xmax=0.50,
-        color='grey', linestyles='dashed', linewidths=0.5,
-        label='locating lines of initial design')
-    ax2.vlines(
-        x=X_pca[0,0], ymin=-0.50, ymax=0.50,
-        color='grey', linestyles='dashed', linewidths=0.5)
-    ax2.legend(loc='upper right', fontsize ='small')
+    # # Draw the position of the initial design
+    # ax2.plot([], [], ' ', label="colors represent different clusters")
+    # ax2.hlines(
+    #     y=X_pca[0,1], xmin=-1.0, xmax=1.0,
+    #     color='grey', linestyles='dashed', linewidths=0.5,
+    #     label='locating lines of initial design')
+    # ax2.vlines(
+    #     x=X_pca[0,0], ymin=-1.0, ymax=1.0,
+    #     color='grey', linestyles='dashed', linewidths=0.5)
+    # ax2.legend(loc='upper right', fontsize ='small')
 
     # - - - - - - - - - - - - - - - - - - - - 
     # Save the picture
-    plt.savefig(dirs_fig, dpi=200)
+    plt.savefig(dirs_fig + "\KMeansClustering_{}_{}.png".format(n_clus, p_outlier), dpi=200)
     
     return cluster_labels
 
