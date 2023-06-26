@@ -65,13 +65,17 @@ def find_outlier_by_distance(clusterer, X, cluster_labels, sort_type='cluster', 
     
 
 def remove_outlier(ini_idx, all_outliers_idx):
-    
-    # find all outlier_idx that exit in the ini_idx
-    outliers_idx = [i for i in all_outliers_idx if i in ini_idx]
 
-    # refine the ini_idx by outliers_idx
-    for idx in outliers_idx:
-        ini_idx.remove(idx)
+    if all_outliers_idx!=[]:
+        # find all outlier_idx that exit in the ini_idx
+        outliers_idx = [i for i in all_outliers_idx if i in ini_idx]
+
+        # refine the ini_idx by outliers_idx
+        for idx in outliers_idx:
+            ini_idx.remove(idx)
+
+    else:
+        outliers_idx = []
 
     return ini_idx, outliers_idx
 
@@ -206,11 +210,6 @@ def KMeans_clusterings(
     bad_X_pca_y = X_pca_y[indices_invalid]
     good_X_pca_y = X_pca_y[indices_valid]    
 
-    # Outliers: set a uniform color for outliers.
-    c_outlier, c_outlier_edge = 'white', 'black'
-    outlier_bad_X_pca_y = X_pca_y[indices_invalid_outlier]
-    outlier_good_X_pca_y = X_pca_y[indices_valid_outlier]
-
     # plot bad clusters
     ax2.scatter(
         bad_X_pca_y[:,0], bad_X_pca_y[:,1],
@@ -227,19 +226,26 @@ def KMeans_clusterings(
         label='clusters of valid designs',
         )# good points
     
-    # plot outliers (invalid: ".") & (valid: "+")
-    ax2.scatter(
-        outlier_bad_X_pca_y[:,0], outlier_bad_X_pca_y[:,1],
-        c=c_outlier, edgecolors=c_outlier_edge,
-        marker="o", lw=0.5, s=20,
-        label='outliers (invalid)',
-        )
-    ax2.scatter(
-        outlier_good_X_pca_y[:,0], outlier_good_X_pca_y[:,1],
-        c=c_outlier, edgecolors=c_outlier_edge,
-        marker="s", lw=0.5, s=20,
-        label='outliers (valid)',
-        )
+    if outliers_idx!=[]:
+        
+        # Outliers: set a uniform color for outliers.
+        c_outlier, c_outlier_edge = 'white', 'black'
+        outlier_bad_X_pca_y = X_pca_y[indices_invalid_outlier]
+        outlier_good_X_pca_y = X_pca_y[indices_valid_outlier]
+
+        # plot outliers (invalid: ".") & (valid: "+")
+        ax2.scatter(
+            outlier_bad_X_pca_y[:,0], outlier_bad_X_pca_y[:,1],
+            c=c_outlier, edgecolors=c_outlier_edge,
+            marker="o", lw=0.5, s=10,
+            label='outliers (invalid)',
+            )
+        ax2.scatter(
+            outlier_good_X_pca_y[:,0], outlier_good_X_pca_y[:,1],
+            c=c_outlier, edgecolors=c_outlier_edge,
+            marker="s", lw=0.5, s=10,
+            label='outliers (valid)',
+            )
 
     # Labeling the clusters
     centers = []

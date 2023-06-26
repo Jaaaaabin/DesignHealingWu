@@ -83,6 +83,7 @@ def plot_sa_parallel_parameters(dirs_fig, sa_samples_df):
     plotly.offline.plot(fig, filename=dirs_fig + plot_name + '.html')
 
 
+# new
 def extract_singleorder_indices(Si_df, filter_name, relevant_number):
     """
     extract_singleorder_indices.
@@ -108,7 +109,7 @@ def extract_singleorder_indices(Si_df, filter_name, relevant_number):
     
     return sensi_filtered, confs_flitered
 
-
+# new
 def sobol_plot_sa_S1ST(
     dirs_fig,
     tgt,
@@ -209,7 +210,7 @@ def sobol_plot_sa_S1ST(
     # save
     plt.savefig(dirs_fig + '/SA_{}_{}_sobol_S1ST_indices.png'.format(tgt, rl), dpi=200)
 
-
+# new
 def sobol_plot_sa_S2(
     dirs_fig,
     tgt,
@@ -259,6 +260,134 @@ def sobol_plot_sa_S2(
     plt.savefig(dirs_fig + '/SA_{}_{}_sobol_S2_indices.png'.format(tgt, rl), dpi=200)
 
 
+# new
+def _sort_Si(Si, key, sortby='mu_star'):
+    return np.array([Si[key][x] for x in np.argsort(Si[sortby])])
+
+
+def morris_horizontal_bar_plot(
+    ax,
+    Si,
+    plotmu,
+    bcolor='navy',
+    bheight=0.5,
+    lwidth=0.25,
+    y_loc=0,
+    alpah=0.75,
+    opts=None,
+    sortby='mu_star',
+    unit=''):
+
+    '''Updates a matplotlib axes instance with a horizontal bar plot
+    of mu_star, with error bars representing mu_star_conf.
+    '''
+    assert sortby in ['mu_star', 'mu_star_conf', 'sigma', 'mu']
+
+    if opts is None:
+        opts = {}
+
+    # Sort all the plotted elements by mu_star (or optionally another metric)
+    names_sorted = _sort_Si(Si, 'names', sortby)
+
+    mu_sorted = _sort_Si(Si, 'mu', sortby)
+    sigma_sorted = _sort_Si(Si, 'sigma', sortby)
+
+    mu_star_sorted = _sort_Si(Si, 'mu_star', sortby)
+    mu_star_conf_sorted = _sort_Si(Si, 'mu_star_conf', sortby)
+
+    if plotmu == 'mu_star':
+        mean, varian = mu_star_sorted, mu_star_conf_sorted
+    elif plotmu == 'mu':
+        mean, varian = mu_sorted, sigma_sorted
+
+    # Plot horizontal barchart
+    y_pos = np.arange(len(mu_star_sorted))
+    plot_names = names_sorted
+
+    out = ax.barh(y_pos + y_loc,
+                  mean,
+                  xerr=varian,
+                  color=bcolor,
+                  height=bheight,
+                  linewidth=lwidth,
+                  alpha=alpah,
+                  align='center',
+                  ecolor='black',
+                  edgecolor='black',
+                  **opts)
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(plot_names)
+    ax.set_xlabel(r'$\mu^\star$' + unit)
+
+    ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
+
+    return out
+
+
+def morris_covariance_plot(
+    ax,
+    Si,
+    plotmu,
+    annotate_size=8,
+    opts=None,
+    unit=''):
+
+    '''
+    Plots mu*/mu against sigma or the 95% confidence interval
+
+    '''
+
+    mu_type = '\mu^{\star}' if plotmu =='mu_star' else '\mu'
+
+    if opts is None:
+        opts = {}
+
+    if Si['sigma'] is not None:
+
+        # sigma is not present if using morris groups
+        y = Si['sigma']
+        out = ax.scatter(Si[plotmu], y, c='navy', marker=u'o',
+                         **opts)
+        
+        for i, txt in enumerate(Si['names']):
+            ax.annotate(
+                txt,
+                (Si[plotmu][i], y[i]),
+                xytext=(Si[plotmu][i]*0.95, y[i]*0.95),
+                fontsize=annotate_size)
+
+        ax.set_ylabel(r'$\sigma$')
+
+        ax.set_xlim(-0.875,0.875)
+        ax.set_ylim(0.0,)
+
+        x_axis_bounds = np.array(ax.get_xlim())
+
+        line1_p, = ax.plot(x_axis_bounds, x_axis_bounds, 'k-', c='maroon')
+        line1_n, = ax.plot(x_axis_bounds, -x_axis_bounds, 'k-', c='maroon')
+        line2_p, = ax.plot(x_axis_bounds, 0.5 * x_axis_bounds, 'k--', c='maroon')
+        line2_n, = ax.plot(x_axis_bounds, -0.5 * x_axis_bounds, 'k--', c='maroon')
+        line3_p, = ax.plot(x_axis_bounds, 0.1 * x_axis_bounds, 'k-.', c='maroon')
+        line3_n, = ax.plot(x_axis_bounds, -0.1 * x_axis_bounds, 'k-.', c='maroon')
+
+        ax.legend((line1_p, line2_p, line3_p), (r'$\sigma / {} = \pm 1.0$'.format(mu_type),
+                                          r'$\sigma / {} = \pm 0.5$'.format(mu_type),
+                                          r'$\sigma / {} = \pm 0.1$'.format(mu_type)),
+                  loc='lower right')
+
+    else:
+        y = Si['mu_star_conf']
+        out = ax.scatter(Si['mu_star'], y, c=u'k', marker=u'o',
+                         **opts)
+        ax.set_ylabel(r'$95\% CI$')
+    
+    ax.set_xlabel(r'${}$ '.format(mu_type) + unit)
+    ax.set_ylim(0-(0.01 * np.array(ax.get_ylim()[1])),)
+
+    return out
+
+
 def morris_sa_plot(
     dirs_fig,
     tgt,
@@ -267,31 +396,26 @@ def morris_sa_plot(
     input_sample=[],
     problem=[],
     ):
+
     # see API: https://salib.readthedocs.io/en/latest/_modules/SALib/plotting/morris.html
     
-    
-    # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output
-    fig = plt.figure(figsize=(8,5))  # unit of inch
-    ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
-
-    plot_morris.horizontal_bar_plot(
-        ax, Si)
-    plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_horbar.png'.format(tgt, rl), dpi=200)
+    # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output # plot_morris.horizontal_bar_plot(ax, Si)
+    fig = plt.figure(figsize=(10,5))  # unit of inch
+    ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
+    morris_horizontal_bar_plot(ax, Si, plotmu='mu')
+    plt.savefig(dirs_fig + '/SA_mu_{}_{}_morris_Si_indices_horbar.png'.format(tgt, rl), dpi=200)
 
     # covariance_plot(ax, Si, opts=None, unit=''): 
     
     # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
-    fig = plt.figure(figsize=(8,5))  # unit of inch
-    ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
+    fig = plt.figure(figsize=(10,5))  # unit of inch
+    ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
+    morris_covariance_plot(ax, Si, plotmu='mu')
+    plt.savefig(dirs_fig + '/SA_mu_{}_{}_morris_Si_indices_convar.png'.format(tgt, rl), dpi=200)
 
-    plot_morris.covariance_plot(
-        ax, Si, opts=None, unit='')
-    plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_convar.png'.format(tgt, rl), dpi=200)
-
-    # # sample_histograms:
+    # sample_histograms:
     # fig = plt.figure(figsize=(8,5))  # unit of inch
     # ax = plt.axes((0.10, 0.10, 0.80, 0.80))  # in range (0,1)
-
     # plot_morris.sample_histograms(
     #     fig, input_sample, problem, opts=None)
     # plt.savefig(dirs_fig + '/SA_{}_{}_morris_Si_indices_histo.png'.format(tgt, rl), dpi=200)

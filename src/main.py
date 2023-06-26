@@ -25,7 +25,7 @@ if __name__ == "__main__":
     #=================================#
     # EXECUTION_NR = 14, 54
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
-    # testSensi_morris(build_design=True, calc_index=True, plot_index=True)
+    testSensi_morris(build_design=False, calc_index=True, plot_index=True)
 
     # EXECUTION_NR = 19, 59
     # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # buildDesignInSpace()
     
     # ITERATION-3
-    formSolutionSpace(['\sa-14-0.3', '\ss-114-1', '\ss-114-2'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
+    # formSolutionSpace(['\sa-14-0.3', '\ss-114-1', '\ss-114-2'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
     # buildDesignInSpace()
 
     #=================================#

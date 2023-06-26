@@ -97,7 +97,7 @@ def displaySVC(clf, X, y):
     plt.savefig('test.png', dpi=200)
 
 
-def displaySVCinPC(X, y, svckernel="linear", nu_nu=0.05):
+def displaySVCinPC(X, y, path, rule_label, svckernel="linear", nu_nu=0.05):
 
     pca = PCA(n_components=2)
     X_pc = pca.fit_transform(X)
@@ -133,8 +133,10 @@ def displaySVCinPC(X, y, svckernel="linear", nu_nu=0.05):
     plt.yticks(yticks)
     ax.set_title(
         f'Decision surface of SVC with the first two principal components')
+    
+    plot_name = path + '\\' + plot_name + '_{}.png'.format(rule_label)
 
-    plt.savefig(plot_name + '.png', dpi=200)
+    plt.savefig(plot_name, dpi=200)
 
 
 # old
