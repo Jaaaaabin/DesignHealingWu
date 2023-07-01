@@ -10,7 +10,7 @@
 # EXECUTION_NR  = 19(first)
 #               or 59(second)
 
-EXECUTION_NR = 54 #SA
+EXECUTION_NR = 11 #SA
 SOLUTION_NR = EXECUTION_NR + 100 #SS
 
 # directory: overall
@@ -37,7 +37,7 @@ FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter_values.csv'
 
 FILE_INI_GRAPH = DIRS_DATA_TOPO + r'\res_graph.txt'
 
-NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter']
+NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter','separationline']
 NAME_INSTANCE_COLLECTION = r'\collected_instances_'
 
 NAME_TOPO_OBJECT = r'\collected_topology_wall_'

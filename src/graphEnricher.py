@@ -15,12 +15,38 @@ from funct_topo import *
 def graphEnrich(plot_graph=False):
 
     # - - - - - - - - - - - - - - 
-    # visualization of the failures.
+    # collect the built Graph data.
+    with open(FILE_INI_GRAPH, 'rb') as f:
+        G_all = pickle.load(f)
+    
+    # def propa_connection_limit(G, start, connection_classification=None, connection_n=2):
+        
+    #     propa_decision = True
+
+    #     if connection_classification is not None:
+    #         all_conns = G.adj[start]
+    #         connections = [G.nodes[conn]['classification'] for conn in all_conns]
+
+    #         if connections.count(connection_classification) >= connection_n:
+    #             propa_decision = False
+
+    #     return propa_decision
+
+    # tempo = propa_connection_limit(G_all,'3575064', 'space')
+    
+
+    # n_aj =  G_all.adj['3575064']
+    # for k in n_aj:
+    #     print (G_all.nodes[k]['classification'])
+
+    # - - - - - - - - - - - - - - 
+    # visualization settings.
     nodesize_map_by_object_type = {
         'door':50,
         'window':50,
         'wall':50,
         'slab':50,
+        'separationline':50,
         'space':150,
         'parameter':30,
         LABEL_FAILURE_LOCATION:100,
@@ -33,17 +59,13 @@ def graphEnrich(plot_graph=False):
         'window':'skyblue',
         'wall':'darkorange',
         'slab':'yellow',
+        'separationline':'cyan',
         'space':'navy',
         'parameter':'grey',
         LABEL_FAILURE_LOCATION:'red',
         LABEL_FAILURE_NEIGHBOR:'brown',
         LABLE_ASSOCIATED_GP:'maroon',
         }
-    
-    # - - - - - - - - - - - - - - 
-    # collect the built Graph data.
-    with open(FILE_INI_GRAPH, 'rb') as f:
-        G_all = pickle.load(f)
     
     # - - - - - - - - - - - - - -
     # create a dictory covering a specific graph per rule.
@@ -62,7 +84,6 @@ def graphEnrich(plot_graph=False):
     }
 
     # specify the propagration rule.
-    
 
     exception_class_linkage, exception_name_linkage, exception_value_linkage  = build_link_constraints(
         EXCEPTION_LINK_TYPES, LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE)

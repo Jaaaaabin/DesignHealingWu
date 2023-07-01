@@ -64,14 +64,14 @@ y_keys = list(solu_Space.data_Y_dict.keys())
 
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 # Sub Section 1. INPUT Data distribution.
-sub_columns = list(solu_Space.ini_parameters.keys())
-for label_compliance in list(solu_Space.valid_idx.keys()):
-    sub_columns_label = sub_columns.copy()
-    sub_columns_label.append(label_compliance)
-    fig = plt.figure(figsize=(10, 14))
-    df_plot = solu_Space.data_X_Y[sub_columns_label]
-    pairplot(df_plot, hue=label_compliance, markers=["o", "s"])
-    plt.savefig(DIRS_DATA + r'\data_distribution_{}.png'.format(label_compliance), dpi=300)
+# sub_columns = list(solu_Space.ini_parameters.keys())
+# for label_compliance in list(solu_Space.valid_idx.keys()):
+#     sub_columns_label = sub_columns.copy()
+#     sub_columns_label.append(label_compliance)
+#     fig = plt.figure(figsize=(10, 14))
+#     df_plot = solu_Space.data_X_Y[sub_columns_label]
+#     pairplot(df_plot, hue=label_compliance, markers=["o", "s"])
+#     plt.savefig(DIRS_DATA + r'\data_distribution_{}.png'.format(label_compliance), dpi=300)
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
 # X data.
@@ -132,7 +132,6 @@ plt.legend()
 plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
 
 
-
 # s_valid=0
 # s_fakevalid=0
 
@@ -151,6 +150,13 @@ plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
 
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 # Sub Section 3. KMeans
+
+# Add the initial design into the dataset.
+X.loc[-1] = list(solu_Space.ini_parameters.values())  # adding a row
+X.index = X.index + 1  # shifting index
+X = X.sort_index()
+y = np.insert(y, 0, 0, axis=0)
+
 # tested parameeters. n_clus, p_outlier.
 # to test: algorithm {“lloyd”, “elkan”, “auto”, “full”}, default=”lloyd”
 for n_clus in [2,10]:

@@ -10,30 +10,6 @@ from funct_data import *
 # from base_classes import Design
 from funct_plot import sobol_plot_sa_S1ST, sobol_plot_sa_S2, morris_sa_plot
 
-
-# def getRVTFilename(file_dir, outpath, remove_ext = True):
-#     """
-#     write the .rvt files into a csv for controling.
-#     """
-
-#     # list to store files
-#     res = []
-
-#     # Iterate directory
-#     for path in os.listdir(file_dir):
-#         # check if current path is a file
-#         if os.path.isfile(os.path.join(file_dir, path)):
-#             if path.endswith('.rvt'):
-#                 res.append(path)
-    
-#     if remove_ext:
-#         res = [x.replace('.rvt', '') for x in res]
-
-#     df_rvtids = pd.DataFrame(res)
-#     df_rvtids.to_csv(outpath, header=False, index=False)
-#     print('Extraction of duplicated RVT filenames (with student IDs) Succeed.')
-
-
 def collect_ini_sa_parameters(
         file_sa_parameter_list,
         k_level_parameter,

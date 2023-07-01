@@ -129,7 +129,11 @@ def KMeans_clusterings(
 
     # pca in 2D.
     pca_data_X_Y = build_pca_data(X, y, dim=n_pca)
-    
+
+    # initial design
+    clns_pca = [cl for cl in pca_data_X_Y.columns.values.tolist() if 'PC' in cl]
+    pca_x_y = pca_data_X_Y[clns_pca].to_numpy()
+
     # real Data (real values)
     clns_X_y = [cl for cl in pca_data_X_Y.columns.values.tolist() if not 'PC' in cl]
     X_y = pca_data_X_Y[clns_X_y].to_numpy()
@@ -237,13 +241,13 @@ def KMeans_clusterings(
         ax2.scatter(
             outlier_bad_X_pca_y[:,0], outlier_bad_X_pca_y[:,1],
             c=c_outlier, edgecolors=c_outlier_edge,
-            marker="o", lw=0.5, s=10,
+            marker="o", lw=0.25, s=8,
             label='outliers (invalid)',
             )
         ax2.scatter(
             outlier_good_X_pca_y[:,0], outlier_good_X_pca_y[:,1],
             c=c_outlier, edgecolors=c_outlier_edge,
-            marker="s", lw=0.5, s=10,
+            marker="s", lw=0.25, s=8,
             label='outliers (valid)',
             )
 
@@ -269,15 +273,19 @@ def KMeans_clusterings(
         ax2.scatter(c[0], c[1], marker="$%d$" % i, alpha=0.95, s=30, edgecolor="k")
     
     # # Draw the position of the initial design
-    # ax2.plot([], [], ' ', label="colors represent different clusters")
-    # ax2.hlines(
-    #     y=X_pca[0,1], xmin=-1.0, xmax=1.0,
-    #     color='grey', linestyles='dashed', linewidths=0.5,
-    #     label='locating lines of initial design')
-    # ax2.vlines(
-    #     x=X_pca[0,0], ymin=-1.0, ymax=1.0,
-    #     color='grey', linestyles='dashed', linewidths=0.5)
-    # ax2.legend(loc='upper right', fontsize ='small')
+    pc1_min, pc2_min = pca_x_y.min(axis=0)
+    pc1_max, pc2_max = pca_x_y.max(axis=0)
+    
+    ax2.plot([], [], ' ', label="colors represent different clusters")
+    ax2.vlines(
+        x=pca_x_y[0,0], ymin=pc2_min, ymax=pc2_max,
+        color='grey', linestyles='dashed', linewidths=0.5)
+    ax2.hlines(
+        y=pca_x_y[0,1], xmin=pc1_min, xmax=pc1_max,
+        color='grey', linestyles='dashed', linewidths=0.5,
+        label='locating lines of initial design')
+    
+    ax2.legend(loc='upper right', fontsize ='small')
 
     # - - - - - - - - - - - - - - - - - - - - 
     # Save the picture

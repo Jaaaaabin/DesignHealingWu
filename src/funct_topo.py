@@ -108,7 +108,7 @@ def flatten(list):
     return [item for sublist in list for item in sublist]
 
 
-def split_guids(guids, separator=','):
+def split_guids(guids, separator=',', remove_repeat=False):
 
     guid_multilist = copy.deepcopy(guids)
     for ii in range(len(guid_multilist)):
@@ -118,7 +118,10 @@ def split_guids(guids, separator=','):
             guid_multilist[ii] = [guid_multilist[ii]]
         else:
             continue
-
+    
+    if remove_repeat:
+        guid_multilist = [list(set(l)) for l in guid_multilist]
+        
     return guid_multilist
 
 
@@ -255,6 +258,27 @@ def propa_with_constraints(
     return nbr
 
 
+def propa_connection_limit(
+    G,
+    start,
+    connection_classification=None,
+    connection_n=5,
+    start_type='wall',):
+    """
+    """
+    
+    propa_decision = True
+
+    if connection_classification is not None and G.nodes[start]['classification'] == start_type: 
+        all_conns = G.adj[start]
+        connections = [G.nodes[conn]['classification'] for conn in all_conns]
+
+        if connections.count(connection_classification) >= connection_n:
+            propa_decision = False
+
+    return propa_decision
+
+
 def knbrs_subgraph(
         G,
         ini_starts,
@@ -298,19 +322,23 @@ def knbrs_subgraph(
 
         new_nbrs = []
         if isinstance(starts, list):
-
+            
             # if
             # there are multiple starting points as input for the current search round:
             for start in starts:
 
-                nbr = propa_with_constraints(
-                    G,
-                    start,
-                    k_class_link,
-                    k_link_exceptionname,
-                    k_link_exceptionvalue,
-                    )
-                new_nbrs = new_nbrs + nbr
+                # use <start>
+                # when k=1 no need to check.
+                if propa_connection_limit(G, start, connection_classification='space') or k_real == 2:
+
+                    nbr = propa_with_constraints(
+                        G,
+                        start,
+                        k_class_link,
+                        k_link_exceptionname,
+                        k_link_exceptionvalue,
+                        )
+                    new_nbrs = new_nbrs + nbr
 
                 # # -
                 # G_sub = nx.ego_graph(G, start, radius=k_seg, undirected=True)
@@ -323,14 +351,18 @@ def knbrs_subgraph(
             
             # if
             # there is only one single pointas input for the current search round:
-            nbr = propa_with_constraints(
-                G,
-                starts,
-                k_class_link,
-                k_link_exceptionname,
-                k_link_exceptionvalue,
-                )
-            new_nbrs = nbr
+            # use <starts>
+
+            if propa_connection_limit(G, starts, connection_classification='space') or k_real == 2:
+            
+                nbr = propa_with_constraints(
+                    G,
+                    starts,
+                    k_class_link,
+                    k_link_exceptionname,
+                    k_link_exceptionvalue,
+                    )
+                new_nbrs = nbr
 
             # # -
             # G_sub = nx.ego_graph(G, starts, radius=k_seg, undirected=True)
@@ -370,16 +402,16 @@ def update_graph_nodes(G, nn, label):
 
 
 def locate_failures_per_rule(
-        G_ini,
-        all_failures,
-        rule,
-        label_gps,
-        label_neighbors,
-        label_locations,
-        class_link,
-        link_exceptionname,
-        link_exceptionvalue,
-        level_neighbor=1,):
+    G_ini,
+    all_failures,
+    rule,
+    label_gps,
+    label_neighbors,
+    label_locations,
+    class_link,
+    link_exceptionname,
+    link_exceptionvalue,
+    level_neighbor=1,):
     """
     locate the 
     - failure locations;

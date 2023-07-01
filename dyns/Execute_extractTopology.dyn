@@ -249,6 +249,15 @@
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
+        },
+        {
+          "Id": "a842081dd26d428db032291390a69900",
+          "Name": "seplineJSON",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
@@ -268,7 +277,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "collected_topology_space_seplines.txt",
+      "InputValue": "collected_topology_space_separationlines.txt",
       "Id": "44666a9691b3485fb9f77c4d53900021",
       "Inputs": [],
       "Outputs": [
@@ -627,6 +636,26 @@
       ],
       "Replication": "Disabled",
       "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "collected_instances_separationline.json",
+      "Id": "ab1e23d48901442981328ab5c2609f27",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3cee668bd4574aaeb19e2fea7f7ff4d6",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
     }
   ],
   "Connectors": [
@@ -724,6 +753,11 @@
       "Start": "1463a93274ee41b3bc90eb0b2e45e200",
       "End": "159ee76d17924f4894d7c9e54533eda9",
       "Id": "422ea30d57ea489db761fdff9003250d"
+    },
+    {
+      "Start": "3cee668bd4574aaeb19e2fea7f7ff4d6",
+      "End": "a842081dd26d428db032291390a69900",
+      "Id": "041bc9a97286404dbd688da96081727e"
     }
   ],
   "Dependencies": [
@@ -786,8 +820,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 861.44692260671445,
-        "Y": -397.03108022029954
+        "X": 846.11529504228656,
+        "Y": -645.403446764037
       },
       {
         "ShowGeometry": true,
@@ -796,8 +830,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 545.80513156193842,
-        "Y": -371.03108022029954
+        "X": 530.47350399751053,
+        "Y": -619.403446764037
       },
       {
         "ShowGeometry": true,
@@ -806,8 +840,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 551.89341053287808,
-        "Y": -213.02735905844224
+        "X": 552.88755807772884,
+        "Y": -372.09687397590363
       },
       {
         "ShowGeometry": true,
@@ -816,8 +850,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 551.89341053287808,
-        "Y": -129.02735905844224
+        "X": 552.88755807772884,
+        "Y": -288.09687397590363
       },
       {
         "ShowGeometry": true,
@@ -826,8 +860,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 551.89341053287808,
-        "Y": -45.027359058442244
+        "X": 552.88755807772884,
+        "Y": -204.09687397590363
       },
       {
         "ShowGeometry": true,
@@ -836,8 +870,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 551.89341053287808,
-        "Y": 38.972640941557756
+        "X": 552.88755807772884,
+        "Y": -120.09687397590363
       },
       {
         "ShowGeometry": true,
@@ -846,8 +880,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 551.89341053287808,
-        "Y": 122.97264094155776
+        "X": 552.88755807772884,
+        "Y": -36.096873975903634
       },
       {
         "ShowGeometry": true,
@@ -866,8 +900,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 866.81878366720639,
-        "Y": -123.02735905844224
+        "X": 870.67860285384825,
+        "Y": -253.09687397590363
       },
       {
         "ShowGeometry": true,
@@ -998,6 +1032,16 @@
         "Excluded": true,
         "X": 122.74952458116172,
         "Y": -57.229339459167591
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "ab1e23d48901442981328ab5c2609f27",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 552.88755807772884,
+        "Y": 47.903126024096366
       }
     ],
     "Annotations": [
@@ -1010,15 +1054,16 @@
           "bc3fac74d4014fc18324089b540f10e0",
           "13cdb3f8141e4b9ebfbce3d4066e45d2",
           "cc245a3ac389446dbd9057598a1a7715",
-          "412fa3ee10b04f7aafe5ac12a3f73096"
+          "412fa3ee10b04f7aafe5ac12a3f73096",
+          "ab1e23d48901442981328ab5c2609f27"
         ],
-        "Left": 541.89341053287808,
-        "Top": -266.01243368530794,
-        "Width": 585.67164179104475,
-        "Height": 457.0,
+        "Left": 542.88755807772884,
+        "Top": -425.08194860276933,
+        "Width": 588.53731343283573,
+        "Height": 556.044776119403,
         "FontSize": 36.0,
-        "InitialTop": -213.02735905844224,
-        "InitialHeight": 481.0,
+        "InitialTop": -372.09687397590363,
+        "InitialHeight": 565.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
       },
@@ -1029,12 +1074,12 @@
           "48cd49d3ebbe48a7ab24926109c69652",
           "70fe747d2c474f30a1c9765244bd4d09"
         ],
-        "Left": 535.80513156193842,
-        "Top": -450.01615484716524,
+        "Left": 520.47350399751053,
+        "Top": -698.38852139090261,
         "Width": 586.38805970149247,
-        "Height": 171.8656716417911,
+        "Height": 171.86567164179098,
         "FontSize": 36.0,
-        "InitialTop": -397.03108022029954,
+        "InitialTop": -645.403446764037,
         "InitialHeight": 171.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
@@ -1081,8 +1126,8 @@
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": -7.9286087354012693,
-    "Y": 463.669009238762,
-    "Zoom": 0.77233157865735891
+    "X": -346.01971810952,
+    "Y": -236.31193058082175,
+    "Zoom": 1.3112150876393751
   }
 }
