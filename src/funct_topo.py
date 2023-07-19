@@ -328,7 +328,7 @@ def knbrs_subgraph(
             for start in starts:
 
                 # use <start>
-                # when k=1 no need to check.
+                # when k_real=2 no need to check.
                 if propa_connection_limit(G, start, connection_classification='space') or k_real == 2:
 
                     nbr = propa_with_constraints(

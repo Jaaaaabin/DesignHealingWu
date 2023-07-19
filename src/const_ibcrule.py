@@ -76,15 +76,15 @@ if LEVEL_FAILURE_NEIGHBOR == 1:
 elif LEVEL_FAILURE_NEIGHBOR == 3:
     EXCEPTION_LINK_SEQUENCE = [
         'wall_external',  #0
-        ['space_corridor','space_stairway','space_toilet'], #1
+        ['space_stairway','space_toilet'], #1
         ['wall_external','wall_stairway'] #1
         ]
 elif LEVEL_FAILURE_NEIGHBOR == 5:
     EXCEPTION_LINK_SEQUENCE = [
         'wall_external',  #0
-        ['space_corridor','space_stairway','space_toilet'], #1
+        ['space_stairway','space_toilet'], #1
         'wall_external', #1
-        ['space_corridor','space_stairway','space_toilet'], #2
+        ['space_stairway','space_toilet'], #2
         ['wall_external','wall_stairway'], #2
         ]
 

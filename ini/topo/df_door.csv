@@ -75,8 +75,6 @@ ifcguid,d_dr_ew,d_dr_sn,exit,height,id,rough_height,storey_exit,type_ifcguid,cla
 2$gFCyRLn3YxmJ7kU3eXB_,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2$gFCyRLn3YxmJ7kU3eXBv,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2$gFCyRLn3YxmJ7kU3eXBw,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
-2$gFCyRLn3YxmJ7kU3eX1c,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
-2$gFCyRLn3YxmJ7kU3eX7X,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWJOL,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWJOA,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWJO8,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
@@ -87,14 +85,11 @@ ifcguid,d_dr_ew,d_dr_sn,exit,height,id,rough_height,storey_exit,type_ifcguid,cla
 2ex5B8xFnEHumuJWUHWJO3,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWJO0,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWJO1,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
-2ex5B8xFnEHumuJWUHWJO6,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWIdu,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWIdv,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWIdh,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWIde,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWIdf,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
-2ex5B8xFnEHumuJWUHWIdk,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
-2ex5B8xFnEHumuJWUHWIe_,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 2ex5B8xFnEHumuJWUHWICV,,,,,,2.1,,0dwJ1JWsv3L8A_XhzwP5MW,door
 2ex5B8xFnEHumuJWUHWILW,,,0,,,,1,0h6TxHQWH8MRgS1iM36W8s,door
 2ex5B8xFnEHumuJWUHWIJF,,,,,,2.1,,0dwJ1JWsv3L8A_XhzwP5MW,door
@@ -102,7 +97,6 @@ ifcguid,d_dr_ew,d_dr_sn,exit,height,id,rough_height,storey_exit,type_ifcguid,cla
 0dwJ1JWsv3L8A_XhzwP5Dh,,,,,,2.1,,0dwJ1JWsv3L8A_XhzwP5MW,door
 1sWU2cMPP4xwRoAc3TXPWw,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 1sWU2cMPP4xwRoAc3TXPX5,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
-0uSIltprT0ehKtQtTiSI2s,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 0uSIltprT0ehKtQtTiSHbD,,,,,,,0,2NKTNbJKP36hSTtB23u7pq,door
 1G$Oue2H9DvAFpL2B$VZMR,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 1G$Oue2H9DvAFpL2B$VZO2,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
@@ -148,3 +142,9 @@ ifcguid,d_dr_ew,d_dr_sn,exit,height,id,rough_height,storey_exit,type_ifcguid,cla
 16sF2PP3fDW80DhY_ucSn0,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 16sF2PP3fDW80DhY_ucSod,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
 16sF2PP3fDW80DhY_ucSzZ,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
+2EhZIpA4H5B80taA5MD7$O,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
+2EhZIpA4H5B80taA5MD7zn,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
+2EhZIpA4H5B80taA5MD73G,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
+2EhZIpA4H5B80taA5MD72d,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
+2EhZIpA4H5B80taA5MD71e,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door
+2EhZIpA4H5B80taA5MD77J,,,,,,2.1,,1sWU2cMPP4xwRoAc3TXQKN,door

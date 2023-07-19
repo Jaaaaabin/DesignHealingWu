@@ -18,22 +18,7 @@ def graphEnrich(plot_graph=False):
     # collect the built Graph data.
     with open(FILE_INI_GRAPH, 'rb') as f:
         G_all = pickle.load(f)
-    
-    # def propa_connection_limit(G, start, connection_classification=None, connection_n=2):
-        
-    #     propa_decision = True
 
-    #     if connection_classification is not None:
-    #         all_conns = G.adj[start]
-    #         connections = [G.nodes[conn]['classification'] for conn in all_conns]
-
-    #         if connections.count(connection_classification) >= connection_n:
-    #             propa_decision = False
-
-    #     return propa_decision
-
-    # tempo = propa_connection_limit(G_all,'3575064', 'space')
-    
 
     # n_aj =  G_all.adj['3575064']
     # for k in n_aj:

@@ -122,6 +122,11 @@ def graphCreate():
     # space attributes
     df_spaceinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_space.csv', index_col ='ifcguid')
     attrs_space = df_spaceinstances.to_dict(orient = 'index')
+    for sp in attrs_space:
+        tempo_xyz = (attrs_space[sp]['xyz'].strip('][').split(', '))
+        attrs_space[sp]['xyz'] = [round(float(v),3) for v in tempo_xyz]
+        
+    # ini_list.strip('][').split(', ')
 
     # separation line attributes.
     df_separationlineinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_separationline.csv', index_col ='id', dtype={'id':str})
