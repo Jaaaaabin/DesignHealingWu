@@ -7,10 +7,12 @@ from const_project import FILE_INIT_RES, DIRS_DATA_TOPO, FILE_INI_GRAPH
 from const_project import FILE_LIST_GP, FILE_RELATED_GP_PERRULE, FILE_RELATED_FL_PERRULE, FILE_RELATED_NB_PERRULE, FILE_RELATED_GP_INI
 
 from const_ibcrule import BUILDING_RULES, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
-from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE, EXCEPTION_LINK_TYPES
+from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, dictRestriction
 
 from funct_data import get_data_from_h5
 from funct_topo import *
+
+from GraphNeighbor import GraphNeighbor
 
 def graphEnrich(plot_graph=False):
 
@@ -68,28 +70,25 @@ def graphEnrich(plot_graph=False):
         'IBC1207_3': list(failuresIBC1207_3.loc[failuresIBC1207_3['checkCompliance'] == False, 'spaceIfcGUID'].iloc[:]),
     }
 
-    # specify the propagration rule.
-
-    exception_class_linkage, exception_name_linkage, exception_value_linkage  = build_link_constraints(
-        EXCEPTION_LINK_TYPES, LEVEL_FAILURE_NEIGHBOR, EXCEPTION_LINK_SEQUENCE)
-
     # enrich per rule.
     for rule in BUILDING_RULES:
-        
-        # enrich the networkx with failure information.
-        dictGraphs[rule], dictFailureNeighbors[rule], dictAssociatedGPs[rule] = locate_failures_per_rule(
-            G_all,
-            dictFailures,
-            rule,
-            LABLE_ASSOCIATED_GP,
-            LABEL_FAILURE_NEIGHBOR,
-            LABEL_FAILURE_LOCATION,
-            exception_class_linkage,
-            exception_name_linkage,
-            exception_value_linkage,
-            LEVEL_FAILURE_NEIGHBOR,
-            )
-        
+
+        G = copy.deepcopy(G_all)
+        new_graph_neighbor = GraphNeighbor(G, rule)
+
+        new_graph_neighbor.__build__(dictFailures)
+        new_graph_neighbor.__restrict__(dictRestriction)
+        new_graph_neighbor.__maxconnection__(n_maxconnection=5)
+
+        new_graph_neighbor.search_all_neighbors(level_neighbor=LEVEL_FAILURE_NEIGHBOR)
+        new_graph_neighbor.update_graph()
+
+        dictGraphs[rule] = new_graph_neighbor.graph
+        dictFailureNeighbors[rule] = new_graph_neighbor.all_failure_neighbors
+        dictAssociatedGPs[rule] = new_graph_neighbor.all_associated_gps
+
+        print ("stop")
+
         # plot the networkx.
         if plot_graph:
             plot_networkx_per_rule(
@@ -99,7 +98,21 @@ def graphEnrich(plot_graph=False):
                 nodesize_map_by_object_type,
                 nodecolor_map_by_object_type,
                 )
-
+            
+        # # enrich the networkx with failure information.
+        # dictGraphs[rule], dictFailureNeighbors[rule], dictAssociatedGPs[rule] = locate_failures_per_rule(
+        #     G_all,
+        #     dictFailures,
+        #     rule,
+        #     LABLE_ASSOCIATED_GP,
+        #     LABEL_FAILURE_NEIGHBOR,
+        #     LABEL_FAILURE_LOCATION,
+        #     exception_class_linkage,
+        #     exception_name_linkage,
+        #     exception_value_linkage,
+        #     LEVEL_FAILURE_NEIGHBOR,
+        #     )
+        
     # - - - - - - - - - - - - - -
     # write to csv for the failure information.
     dfInitialFailures = pd.DataFrame(dict(

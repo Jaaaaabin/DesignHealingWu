@@ -17,8 +17,8 @@ if __name__ == "__main__":
     #                ini              #
     #=================================#
     # topoCollect()
-    graphCreate()
-    # graphEnrich(plot_graph=True)
+    # graphCreate()
+    graphEnrich(plot_graph=True)
     
     #=================================#
     #                 sa              #

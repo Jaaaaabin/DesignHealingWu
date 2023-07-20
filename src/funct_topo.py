@@ -5,6 +5,7 @@
 # import packages
 from base_external_packages import *
 
+
 def create_dictionary_key_mapping(dictionary):
     """
     """
@@ -182,41 +183,6 @@ def get_tempo_data(
         k_lst = lst
     return k_lst
 
-
-def build_link_constraints(
-    link_dict,
-    level=0,
-    link_type_seq=[],
-    ):
-    """
-    build link exceptions/constraints.
-    """
-
-    if len(link_type_seq) == level:
-        class_linkage, exception_name_linkage, exceptionvalue_linkage = [], [], []
-
-        for link_type in link_type_seq:
-
-            if isinstance(link_type, list) and len(link_type) != 1:
-                class_linkage.append(
-                    [link_dict[sub_link_type]['link_type'] for sub_link_type in link_type])
-                exception_name_linkage.append(
-                    [link_dict[sub_link_type]['property_type'] for sub_link_type in link_type])
-                exceptionvalue_linkage.append(
-                    [link_dict[sub_link_type]['property_value'] for sub_link_type in link_type])
-            else:
-                class_linkage.append(link_dict[link_type]['link_type'])
-                exception_name_linkage.append(
-                    link_dict[link_type]['property_type'])
-                exceptionvalue_linkage.append(
-                    link_dict[link_type]['property_value'])
-
-        return class_linkage, exception_name_linkage, exceptionvalue_linkage
-
-    else:
-        return [], [], []
-
-
 def propa_with_constraints(
     G,
     start,
@@ -277,6 +243,115 @@ def propa_connection_limit(
             propa_decision = False
 
     return propa_decision
+
+
+def knbrs_subgraph_old(
+        G,
+        ini_starts,
+        class_link,
+        link_exceptionname,
+        link_exceptionvalue,
+        classname='classification',
+        class_target='parameter',
+        k=1,
+        ):
+    """
+    search neighbors of specified nodes within subgraphs of a graph.
+    G: the whole Graph;
+    ini_strats: starting points.
+    set_link_exception:
+    class_link: the class(es) of the linking components;
+    link_exceptionname:
+    link_exceptionvalue:
+    classname: name of the attribute which is used as node class identity;
+    class_target: the class of the final targets that we search for;
+    k: level of neighborhood;
+    """
+
+    starts = ini_starts
+    k_real = 1  # count the accumulated level.
+    k_seg = 1  # control the propagation always as 1 for each neighbor search.
+
+    # search neighbors (initial ifc.).
+    nbrs = []
+
+    # track the linking class at current level of neighborhood.
+    k_track = 0
+
+    while k_real <= k:
+
+        # if class_link includes a sequential data.
+        k_class_link = get_tempo_data(class_link, k_track, k)
+        k_link_exceptionname = get_tempo_data(link_exceptionname, k_track, k)
+        k_link_exceptionvalue = get_tempo_data(link_exceptionvalue, k_track, k)
+        k_track += 1
+
+        new_nbrs = []
+        if isinstance(starts, list):
+            
+            # if
+            # there are multiple starting points as input for the current search round:
+            for start in starts:
+
+                # use <start>
+                # when k_real=2 no need to check.
+                if propa_connection_limit(G, start, connection_classification='space') or k_real == 2:
+
+                    nbr = propa_with_constraints(
+                        G,
+                        start,
+                        k_class_link,
+                        k_link_exceptionname,
+                        k_link_exceptionvalue,
+                        )
+                    new_nbrs = new_nbrs + nbr
+
+                # # -
+                # G_sub = nx.ego_graph(G, start, radius=k_seg, undirected=True)
+                # G_sub_nodes = G_sub.nodes()
+                # nbr = [n for n in G_sub._node if G_sub_nodes[n][classname] ==
+                #        k_class_link and G_sub_nodes[n][k_link_exceptionname] != k_link_exceptionvalue]
+                # # -
+
+        else:
+            
+            # if
+            # there is only one single pointas input for the current search round:
+            # use <starts>
+
+            if propa_connection_limit(G, starts, connection_classification='space') or k_real == 2:
+            
+                nbr = propa_with_constraints(
+                    G,
+                    starts,
+                    k_class_link,
+                    k_link_exceptionname,
+                    k_link_exceptionvalue,
+                    )
+                new_nbrs = nbr
+
+            # # -
+            # G_sub = nx.ego_graph(G, starts, radius=k_seg, undirected=True)
+            # G_sub_nodes = G_sub.nodes()
+            # nbr = [n for n in G_sub._node if G_sub_nodes[n][classname] ==
+            #        k_class_link and G_sub_nodes[n][k_link_exceptionname] != k_link_exceptionvalue]
+            # # -
+
+        nbrs += new_nbrs    # all neighbors.
+        starts = new_nbrs   # new starting points.
+        k_real += k_seg
+
+    # search associated Parameter neighbors.(initial included).
+    gp_nbrs = []
+    gp_starts = starts + [ini_starts]
+    for start in gp_starts:
+        G_sub = nx.ego_graph(G, start, radius=k_seg, undirected=True)
+        G_sub_nodes = G_sub.nodes()
+        gp_nbr = [n for n in G_sub._node if G_sub_nodes[n]
+                  [classname] == class_target]
+        gp_nbrs = gp_nbrs + gp_nbr
+
+    return nbrs, gp_nbrs
 
 
 def knbrs_subgraph(
@@ -444,6 +519,7 @@ def locate_failures_per_rule(
     all_failure_neighbors = list(set(all_failure_neighbors))
     all_associated_gps = list(set(all_associated_gps))
 
+
     update_graph_nodes(G, all_associated_gps, label_gps)
     update_graph_nodes(G, all_failure_neighbors,
                        label_neighbors)  # add failure neighbors
@@ -508,3 +584,37 @@ def createDictGlobalParametersPerRule(rules, df_gps):
         dictGPperRule[rule] = lst_gps_per_rule
 
     return dictGPperRule
+
+
+def build_link_constraints(
+    link_dict,
+    level=0,
+    link_type_seq=[],
+    ):
+    """
+    build link exceptions/constraints.
+    """
+
+    if len(link_type_seq) == level:
+        class_linkage, exception_name_linkage, exceptionvalue_linkage = [], [], []
+
+        for link_type in link_type_seq:
+
+            if isinstance(link_type, list) and len(link_type) != 1:
+                class_linkage.append(
+                    [link_dict[sub_link_type]['link_type'] for sub_link_type in link_type])
+                exception_name_linkage.append(
+                    [link_dict[sub_link_type]['property_type'] for sub_link_type in link_type])
+                exceptionvalue_linkage.append(
+                    [link_dict[sub_link_type]['property_value'] for sub_link_type in link_type])
+            else:
+                class_linkage.append(link_dict[link_type]['link_type'])
+                exception_name_linkage.append(
+                    link_dict[link_type]['property_type'])
+                exceptionvalue_linkage.append(
+                    link_dict[link_type]['property_value'])
+
+        return class_linkage, exception_name_linkage, exceptionvalue_linkage
+
+    else:
+        return [], [], []

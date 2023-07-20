@@ -69,24 +69,37 @@ LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
 #         ['wall_external','wall_stairway'], #2
 #         ]
     
-if LEVEL_FAILURE_NEIGHBOR == 1:
-    EXCEPTION_LINK_SEQUENCE = [
-        'wall_external' #0
-        ]
-elif LEVEL_FAILURE_NEIGHBOR == 3:
-    EXCEPTION_LINK_SEQUENCE = [
-        'wall_external',  #0
-        ['space_stairway','space_toilet'], #1
-        ['wall_external','wall_stairway'] #1
-        ]
-elif LEVEL_FAILURE_NEIGHBOR == 5:
-    EXCEPTION_LINK_SEQUENCE = [
-        'wall_external',  #0
-        ['space_stairway','space_toilet'], #1
-        'wall_external', #1
-        ['space_stairway','space_toilet'], #2
-        ['wall_external','wall_stairway'], #2
-        ]
+# if LEVEL_FAILURE_NEIGHBOR == 1:
+#     EXCEPTION_LINK_SEQUENCE = [
+#         'wall_external' #0
+#         ]
+# elif LEVEL_FAILURE_NEIGHBOR == 3:
+#     EXCEPTION_LINK_SEQUENCE = [
+#         'wall_external',  #0
+#         ['space_stairway','space_toilet'], #1
+#         ['wall_external','wall_stairway'] #1
+#         ]
+# elif LEVEL_FAILURE_NEIGHBOR == 5:
+#     EXCEPTION_LINK_SEQUENCE = [
+#         'wall_external',  #0
+#         ['space_stairway','space_toilet'], #1
+#         'wall_external', #1
+#         ['space_stairway','space_toilet'], #2
+#         ['wall_external','wall_stairway'], #2
+#         ]
+
+dictRestriction= {
+    'belonging': {
+        'link_type': 'wall',
+        'property_type': 'isexternal',
+        'property_value': 1,
+    },
+    'propagating': {
+        'link_type': 'space',
+        'property_type': 'name',
+        'property_value': ['Stairway','Toilet'],
+    }}
+
 
 # sweep target
 APPROACH_TARGET = 'IBC_selected'
