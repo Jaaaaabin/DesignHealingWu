@@ -55,6 +55,10 @@ class GraphNeighbor():
     @property
     def strLabelTypeAttribute(self):
         return 'classification'
+
+    @property
+    def lengthLimitation(self):
+        return 12
     
     def search_belonging(self, starts):
         
@@ -76,10 +80,10 @@ class GraphNeighbor():
             belongs = [n for n in G_sub._node if 
                     G_sub_nodes[n][self.strLabelTypeAttribute] in self.label_search_belonging]
             all_belongs = belongs
-        return belongs
+        return all_belongs
     
 
-    def search_restricting_connection(self, belongs):
+    def search_restricting_byconnection(self, belongs):
 
         new_belongs =[]
 
@@ -98,7 +102,18 @@ class GraphNeighbor():
 
         return new_belongs
 
+    def search_restricting_bylength(self, belongs):
 
+        new_belongs =[]
+
+        for node in belongs:
+            if self.graph.nodes[node]['length'] > self.lengthLimitation:
+                continue
+            else:
+                new_belongs.append(node)
+
+        return new_belongs
+    
     def property_restriction(self, nn, restriction):
 
         decision = False
@@ -183,15 +198,14 @@ class GraphNeighbor():
         nbrs = [] # search neighbors (initial ifc.).
 
         while k_real <= level_neighbor:
-            
-            new_nbrs = []
 
             # search space belongings.
-            ini_belongs = self.search_belonging(starts)
+            belongs = self.search_belonging(starts)
             # tempo_space = starts
 
             # restrict the space belongings.
-            belongs = self.search_restricting_connection(ini_belongs) # via connection amount.
+            belongs = self.search_restricting_bylength(belongs) # via length value.
+            # belongs = self.search_restricting_byconnection(belongs) # via connection amount.
             belongs = self.search_restricting_property(belongs) # via object property.
 
             # propagate to new spaces and refresh the previous belongings.
@@ -228,6 +242,10 @@ class GraphNeighbor():
             
         self.all_failure_neighbors = list(set(self.all_failure_neighbors))
         self.all_associated_gps = list(set(self.all_associated_gps))
+
+        # additional step: only display walls but not seplines.
+        self.all_failure_neighbors = [item for item in self.all_failure_neighbors \
+        if self.graph.nodes[item][self.strLabelTypeAttribute]=='wall']
    
     def update_graph_nodes(self, nn, label:str):
 
