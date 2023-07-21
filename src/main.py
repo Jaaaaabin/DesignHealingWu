@@ -17,15 +17,15 @@ if __name__ == "__main__":
     #                ini              #
     #=================================#
     # topoCollect()
-    # graphCreate()
-    graphEnrich(plot_graph=False)
+    graphCreate()
+    # graphEnrich(plot_graph=False)
     
     #=================================#
     #                 sa              #
     #=================================#
-    # EXECUTION_NR = 14, 54
+    # # EXECUTION_NR = 14, 54
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
-    # testSensi_morris(build_design=False, calc_index=True, plot_index=True)
+    # testSensi_morris(build_design=True, calc_index=True, plot_index=True)
 
     # EXECUTION_NR = 19, 59
     # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)

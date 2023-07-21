@@ -13,42 +13,19 @@ LABEL_FAILURE_LOCATION = 'failure'
 LABEL_FAILURE_NEIGHBOR = 'failure_neighbor'
 LABLE_ASSOCIATED_GP = 'parameter_associated'
 
-# neighbor search parameters.
-# exceptions during linking.
-EXCEPTION_LINK_TYPES = {
-    'wall_external': {
+LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
+
+dictRestriction= {
+    'belonging': {
         'link_type': 'wall',
         'property_type': 'isexternal',
-        'property_value': 1
+        'property_value': 1,
     },
-    'wall_stairway': {
-        'link_type': 'wall',
-        'property_type': 'isstairwaywall',
-        'property_value': 1
-    },
-    'wall_corridor': {
-        'link_type': 'wall',
-        'property_type': 'iscorridorwall',
-        'property_value': 1
-    },
-    'space_corridor': {
+    'propagating': {
         'link_type': 'space',
         'property_type': 'name',
-        'property_value': 'Corridor'
-    },
-    'space_stairway': {
-        'link_type': 'space',
-        'property_type': 'name',
-        'property_value': 'Stairway'
-    },
-    'space_toilet': {
-        'link_type': 'space',
-        'property_type': 'name',
-        'property_value': 'Toilet'
-    }
-}
-
-LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
+        'property_value': ['Stairway','Toilet'],
+    }}
 
 # if LEVEL_FAILURE_NEIGHBOR == 1:
 #     EXCEPTION_LINK_SEQUENCE = [
@@ -87,19 +64,5 @@ LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
 #         ['space_stairway','space_toilet'], #2
 #         ['wall_external','wall_stairway'], #2
 #         ]
-
-dictRestriction= {
-    'belonging': {
-        'link_type': 'wall',
-        'property_type': 'isexternal',
-        'property_value': 1,
-    },
-    'propagating': {
-        'link_type': 'space',
-        'property_type': 'name',
-        'property_value': ['Stairway','Toilet'],
-    }}
-
-
 # sweep target
 APPROACH_TARGET = 'IBC_selected'

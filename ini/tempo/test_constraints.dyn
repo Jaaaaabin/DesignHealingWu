@@ -1,0 +1,235 @@
+{
+  "Uuid": "cd86d5f0-1db2-4d24-8a5f-056d0a7845ca",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "test_constraints",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"U1_OK_d_wl_sn19\";",
+      "Id": "7c3d5a47225f4c1d9a0c65a70596bda3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "62a2b4ebc47e4a90b89c466f00ce5876",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"U1_OK_d_wl_sn1\";",
+      "Id": "8e96349141984a52bb033d892fcd190c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fd3b316c01ca43dd9cf42223821bb2bd",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.GlobalParameter.FindByName@string",
+      "Id": "a34ce5a52cc4444bae5eec10e12f74be",
+      "Inputs": [
+        {
+          "Id": "de2a59b3ec9746129081a1318d84bc81",
+          "Name": "name",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3dd17d46b9354bf6aad8218274e46bd2",
+          "Name": "GlobalParameter",
+          "Description": "GlobalParameter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Find Global Parameter by Name\n\nGlobalParameter.FindByName (name: string): GlobalParameter"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('RevitAPI')\r\nfrom Autodesk.Revit.DB import *\r\n\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\n\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\ndef toList(e):\r\n\tif not isinstance(e, list):\r\n\t\treturn [e]\r\n\telse:\r\n\t\treturn e\r\ndef un(e):\r\n\treturn UnwrapElement(e)\r\n\r\ngloPar = un(toList(IN[0]))\r\nexpres = toList(IN[1])\r\n\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\nfor i,k in zip(gloPar,expres):\r\n\tif i.IsValidFormula(k):\r\n\t\ti.SetFormula(k)\r\n\t\tOUT = \"It's over, it's done\"\r\n\telse:\r\n\t\tOUT = \"Invalid expression\"\r\n\t\t\r\nTransactionManager.Instance.TransactionTaskDone()",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "bdc960d96047417bb100713d5ad74abe",
+      "Inputs": [
+        {
+          "Id": "2186c11d4a8d4824aa5f2b48e4e47f9e",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "efe221c3e78445c8995be0593d7b2f19",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9c72c4b7e52040bbbc99b7a771f442af",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "62a2b4ebc47e4a90b89c466f00ce5876",
+      "End": "de2a59b3ec9746129081a1318d84bc81",
+      "Id": "c42c5d4168194acc976d4c85232f2b4e"
+    },
+    {
+      "Start": "fd3b316c01ca43dd9cf42223821bb2bd",
+      "End": "efe221c3e78445c8995be0593d7b2f19",
+      "Id": "b1ddf5690b6243d39e18ab20cda39185"
+    },
+    {
+      "Start": "3dd17d46b9354bf6aad8218274e46bd2",
+      "End": "2186c11d4a8d4824aa5f2b48e4e47f9e",
+      "Id": "dd31da0b24df4273aa92aee01b4e5458"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.10",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7c3d5a47225f4c1d9a0c65a70596bda3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 346.0,
+        "Y": 130.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "8e96349141984a52bb033d892fcd190c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 350.69445911039526,
+        "Y": 271.44335841585035
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "GlobalParameter.FindByName",
+        "Id": "a34ce5a52cc4444bae5eec10e12f74be",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 627.17312699915044,
+        "Y": 138.49467214456703
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "bdc960d96047417bb100713d5ad74abe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 988.24077803971772,
+        "Y": 146.92975565428543
+      }
+    ],
+    "Annotations": [],
+    "X": -172.846254936195,
+    "Y": 136.69282858938385,
+    "Zoom": 0.91006380393143882
+  }
+}

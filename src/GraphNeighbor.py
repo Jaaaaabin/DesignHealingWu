@@ -24,7 +24,8 @@ class GraphNeighbor():
         self.all_failure_neighbors = []
         self.all_associated_gps = []
 
-        self.label_search_belonging = ['wall','separationline']
+        self.label_search_belonging = ['wall']
+        # self.label_search_belonging = ['wall','separationline'] # much faster.
         self.label_search_propagating = ['space']
         self.label_search_targeting = ['parameter']
 
@@ -188,6 +189,7 @@ class GraphNeighbor():
     def search_neighbors(self, ini_failed_id: str, level_neighbor: int):
         """
         search neighbors from an initial failure location.(space ifcguid)
+        problem : very slow after level>=5.
         """
         
         # components
@@ -197,7 +199,7 @@ class GraphNeighbor():
 
         nbrs = [] # search neighbors (initial ifc.).
 
-        while k_real <= level_neighbor:
+        while k_real <= level_neighbor: 
 
             # search space belongings.
             belongs = self.search_belonging(starts)
@@ -205,7 +207,9 @@ class GraphNeighbor():
 
             # restrict the space belongings.
             belongs = self.search_restricting_bylength(belongs) # via length value.
+
             # belongs = self.search_restricting_byconnection(belongs) # via connection amount.
+
             belongs = self.search_restricting_property(belongs) # via object property.
 
             # propagate to new spaces and refresh the previous belongings.
