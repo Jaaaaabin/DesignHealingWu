@@ -367,6 +367,12 @@ class GraphNeighbor():
         def flatten(list):
             return [item for sublist in list for item in sublist]
         
+        def get_close_value_idx(mylist, threshold=0.05):
+
+            idx_mylist = range(len(mylist))
+            combs = set(combinations(idx_mylist, 2))
+
+            return set(filter(lambda x: abs(mylist[x[0]] - mylist[x[1]]) < threshold, combs))
 
         # from building elements find global parameters.
         for ct in self.search_restriction.keys():
@@ -412,11 +418,12 @@ class GraphNeighbor():
                 for group_params in all_group_params:
 
                     group_param_values = [self.df_map_from_gp.loc[param, 'value'] for param in group_params]
-                    collision = set([v for v in group_param_values if group_param_values.count(v) > 1])
+
+                    all_collision = get_close_value_idx(group_param_values)
+                    # collision = set([v for v in group_param_values if group_param_values.count(v) > 1])
                     
-                    for v in collision:
-                        collision_idx = [i for i, x in enumerate(group_param_values) if x == v]
-                        
+                    for collision_idx in all_collision:
+
                         if collision_idx:
 
                             # idx0 in, idx1 not in.    
