@@ -10,7 +10,7 @@
 # EXECUTION_NR  = 19(first)
 #               or 59(second)
 
-EXECUTION_NR = 11 #SA
+EXECUTION_NR = 31 #SA
 SOLUTION_NR = EXECUTION_NR + 100 #SS
 
 # directory: overall
@@ -35,6 +35,7 @@ FILE_RELATED_NB_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureneighbor.cs
 FILE_RELATED_GP_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_parameter.csv'
 FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter_values.csv'
 
+FILE_CONSTRAINTS = DIRS_DATA_TOPO + r'\constraints.json'
 FILE_INI_GRAPH = DIRS_DATA_TOPO + r'\res_graph.txt'
 
 NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter','separationline']

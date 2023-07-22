@@ -30,8 +30,10 @@ class Design():
             self.results.update({rl: newdict[rl]})
             
         # transpose the first two levels of the initial checking results. and rewrite into self.data.
-        tempo_dict = pd.DataFrame(self.results).transpose().to_dict()           
+        tempo_dict = pd.DataFrame(self.results).transpose().to_dict()
+
         for i in tempo_dict.keys():
+            
             tempo_failures = []
             for j in tempo_dict[i].keys():
                 if not isinstance(tempo_dict[i][j], dict) and np.isnan(tempo_dict[i][j]):

@@ -16,16 +16,36 @@ LABLE_ASSOCIATED_GP = 'parameter_associated'
 LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
 
 dictRestriction= {
-    'belonging': {
-        'link_type': 'wall',
+
+    'belonging': {       
+        'constraint_object': 'wall',
         'property_type': 'isexternal',
         'property_value': 1,
-    },
-    'propagating': {
-        'link_type': 'space',
+        'constraint_level': 'hard', 
+        'constraint_type': ('location', 'fix'),
+        },
+    'propagating': {      
+        'constraint_object': 'space',
         'property_type': 'name',
         'property_value': ['Stairway','Toilet'],
-    }}
+        'constraint_level': 'hard', 
+        'constraint_type': ('location', 'fix'),
+        },
+    'supplementing': {      
+        'constraint_object': 'space',
+        'property_type': 'name',
+        'property_value': 'Corridor',
+        'constraint_level': 'hard',  
+        'constraint_type': ('boundary','align'),
+        },
+    'selecting': {      
+        'constraint_object': 'space',
+        'property_type': 'name',
+        'property_value': 'Power supply room',
+        'constraint_level': 'soft',  
+        'constraint_type': ('area', 'fix'),
+        },
+        }
 
 # if LEVEL_FAILURE_NEIGHBOR == 1:
 #     EXCEPTION_LINK_SEQUENCE = [
