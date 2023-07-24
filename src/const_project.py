@@ -31,12 +31,16 @@ DIRS_DATA_TOPO = DIRS_INIT + r'\topo'
 FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_parameter.csv'
 
 FILE_RELATED_FL_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failure.csv'
-FILE_RELATED_NB_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureneighbor.csv'
+FILE_RELATED_EL_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureelement.csv'
 FILE_RELATED_GP_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_parameter.csv'
+FILE_RELATED_EL_CONSTRAINT_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failureelement_constraint.csv'
+FILE_RELATED_GP_CONSTRAINT_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_parameter_constraint.csv'
+
 FILE_RELATED_GP_INI = DIRS_DATA_TOPO + r'\res_ini_parameter_values.csv'
 
-FILE_CONSTRAINTS = DIRS_DATA_TOPO + r'\constraints.json'
 FILE_INI_GRAPH = DIRS_DATA_TOPO + r'\res_graph.txt'
+FILE_CONSTRAINTS = DIRS_DATA_TOPO + r'\res_ini_constraints.json'
+FILE_CONSTRAINTS_APPLY = DIRS_DATA_TOPO + r'\res_ini_constraints_applied.json'
 
 NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter','separationline']
 NAME_INSTANCE_COLLECTION = r'\collected_instances_'

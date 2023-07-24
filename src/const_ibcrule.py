@@ -43,7 +43,7 @@ dictRestriction= {
         'property_type': 'name',
         'property_value': 'Power supply room',
         'constraint_level': 'soft',  
-        'constraint_type': ('area', 'fix'),
+        'constraint_type': ('totalarea', 'fix'),
         },
         }
 

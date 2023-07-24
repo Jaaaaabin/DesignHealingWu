@@ -3,13 +3,15 @@
 #
 
 # import modules
-from const_project import FILE_INIT_RES, DIRS_DATA_TOPO, FILE_INI_GRAPH, FILE_CONSTRAINTS
-from const_project import FILE_LIST_GP, FILE_RELATED_GP_PERRULE, FILE_RELATED_FL_PERRULE, FILE_RELATED_NB_PERRULE, FILE_RELATED_GP_INI
+from const_project import FILE_INIT_RES, DIRS_DATA_TOPO, FILE_INI_GRAPH, FILE_CONSTRAINTS, FILE_CONSTRAINTS_APPLY
+from const_project import FILE_RELATED_EL_CONSTRAINT_PERRULE, FILE_RELATED_GP_CONSTRAINT_PERRULE
+
+from const_project import FILE_LIST_GP, FILE_RELATED_GP_PERRULE, FILE_RELATED_FL_PERRULE, FILE_RELATED_EL_PERRULE, FILE_RELATED_GP_INI
 
 from const_ibcrule import BUILDING_RULES, LABEL_FAILURE_LOCATION, LABEL_FAILURE_NEIGHBOR, LABLE_ASSOCIATED_GP
 from const_ibcrule import LEVEL_FAILURE_NEIGHBOR, dictRestriction
 
-from funct_data import get_data_from_h5
+from funct_data import get_data_from_h5, write_dict_tocsv
 from funct_topo import *
 
 from GraphNeighbor import GraphNeighbor
@@ -22,7 +24,7 @@ def graphEnrich(plot_graph=False):
         G_all = pickle.load(f)
 
     file_mapping = DIRS_DATA_TOPO+'\df_parameter.csv'
-    
+
     # n_aj =  G_all.adj['3575064']
     # for k in n_aj:
     #     print (G_all.nodes[k]['classification'])
@@ -58,8 +60,10 @@ def graphEnrich(plot_graph=False):
     # - - - - - - - - - - - - - -
     # create a dictory covering a specific graph per rule.
     dictGraphs = dict()
-    dictFailureNeighbors = dict()
-    dictAssociatedGPs = dict()
+    dictFailureElements = dict()
+    dictFailureGlobalParameters = dict()
+    dictFailureElementsConstrained = dict()
+    dictFailureGlobalParametersConstrained = dict()
 
     # Add failure information and search neighbors related to the failure.
     failuresIBC1020_2 = get_data_from_h5(FILE_INIT_RES, 'IBC1020_2')
@@ -70,6 +74,8 @@ def graphEnrich(plot_graph=False):
         'IBC1207_1': list(failuresIBC1207_1.loc[failuresIBC1207_1['checkCompliance'] == False, 'spaceIfcGUID'].iloc[:]),
         'IBC1207_3': list(failuresIBC1207_3.loc[failuresIBC1207_3['checkCompliance'] == False, 'spaceIfcGUID'].iloc[:]),
     }
+
+    dictConstraints = {}
 
     # enrich per rule.
     for rule in BUILDING_RULES:
@@ -83,20 +89,23 @@ def graphEnrich(plot_graph=False):
 
         graphNeighborhood.__maxconnection__(n_maxconnection=5)
         
+        # search neighbor.
         graphNeighborhood.search_all_neighbors(level_neighbor=LEVEL_FAILURE_NEIGHBOR)
+
+        # analyze constraints as .json
+        # till now we use the results from IBC1020_2 to apply constraints (for all three rule checking parts via looping).
+        if rule == BUILDING_RULES[0]:
+            graphNeighborhood.analyze_constraints()
+            graphNeighborhood.create_constraints(FILE_CONSTRAINTS)
+        
+        dictConstraints.update({rule: graphNeighborhood.apply_constraints(FILE_CONSTRAINTS)})
         graphNeighborhood.update_graph()
 
         dictGraphs[rule] = graphNeighborhood.graph
-        dictFailureNeighbors[rule] = graphNeighborhood.all_failure_neighbors
-        dictAssociatedGPs[rule] = graphNeighborhood.all_associated_gps
-
-        print ("inter stop")
-
-        # save constraints as .json
-        if rule == BUILDING_RULES[0]:
-
-            graphNeighborhood.analyze_constraints()
-            graphNeighborhood.ouput_constraints(FILE_CONSTRAINTS)
+        dictFailureElements[rule] = graphNeighborhood.all_failure_elements
+        dictFailureGlobalParameters[rule] = graphNeighborhood.all_associated_gps
+        dictFailureElementsConstrained[rule] = graphNeighborhood.constrained_neighbor_elements
+        dictFailureGlobalParametersConstrained[rule] = graphNeighborhood.constrained_neighbor_gps
 
         # plot the networkx.
         if plot_graph:
@@ -107,36 +116,23 @@ def graphEnrich(plot_graph=False):
                 nodesize_map_by_object_type,
                 nodecolor_map_by_object_type,
                 )
-            
-        # # enrich the networkx with failure information.
-        # dictGraphs[rule], dictFailureNeighbors[rule], dictAssociatedGPs[rule] = locate_failures_per_rule(
-        #     G_all,
-        #     dictFailures,
-        #     rule,
-        #     LABLE_ASSOCIATED_GP,
-        #     LABEL_FAILURE_NEIGHBOR,
-        #     LABEL_FAILURE_LOCATION,
-        #     exception_class_linkage,
-        #     exception_name_linkage,
-        #     exception_value_linkage,
-        #     LEVEL_FAILURE_NEIGHBOR,
-        #     )
-        
+    
     # - - - - - - - - - - - - - -
-    # write to csv for the failure information.
-    dfInitialFailures = pd.DataFrame(dict(
-        [(k,pd.Series(v)) for k,v in dictFailures.items()]))
-    dfFailureNeighbors = pd.DataFrame(dict(
-        [(k,pd.Series(v)) for k,v in dictFailureNeighbors.items()]))
-    dfAssociatedGPs = pd.DataFrame(dict(
-        [(k,pd.Series(v)) for k,v in dictAssociatedGPs.items()]))
-    dfInitialFailures.to_csv(FILE_RELATED_FL_PERRULE)
-    dfFailureNeighbors.to_csv(FILE_RELATED_NB_PERRULE)
-    dfAssociatedGPs.to_csv(FILE_RELATED_GP_PERRULE)
+    # write the applied constraints
+    with open(FILE_CONSTRAINTS_APPLY, "w") as outfile:
+        json.dump(dictConstraints, outfile)
 
     # - - - - - - - - - - - - - -
-    # to improve.
-    # import Global Parameter related data.
+    # write to csv for the failure information.
+
+    write_dict_tocsv(dictFailures, FILE_RELATED_FL_PERRULE)
+    write_dict_tocsv(dictFailureElements, FILE_RELATED_EL_PERRULE)
+    write_dict_tocsv(dictFailureGlobalParameters, FILE_RELATED_GP_PERRULE)
+    write_dict_tocsv(dictFailureElementsConstrained, FILE_RELATED_EL_CONSTRAINT_PERRULE)
+    write_dict_tocsv(dictFailureGlobalParametersConstrained, FILE_RELATED_GP_CONSTRAINT_PERRULE)
+
+    # - - - - - - - - - - - - - -
+    # import Global Parameter related data (to improve.)
     df_gps = pd.read_csv(FILE_RELATED_GP_PERRULE, index_col = 0)                # list of related GPs.
     df_gp_values = pd.read_csv(FILE_LIST_GP, index_col = 'name')                # values of all GPs.
     df_gp_values = df_gp_values['value']
@@ -155,28 +151,3 @@ def graphEnrich(plot_graph=False):
     for file in filesToMove:
         new_path = DIRS_DATA_TOPO + r'\neighbor_'+ str(LEVEL_FAILURE_NEIGHBOR) + '\\' + file
         shutil.move(os.path.join(DIRS_DATA_TOPO, file), new_path)
-
-
-def graphConstrain():
-    
-    with open(FILE_CONSTRAINTS) as json_file:
-        dictConstrants = json.load(json_file)
-
-    df_GlobalParameters = pd.read_csv(DIRS_DATA_TOPO+'\df_parameter.csv', index_col ='elementifcguid')
-
-    for item in dictConstrants.keys():
-        constrained_nodes = dictConstrants[item]['constrained_nodes']
-
-        all_items_map = []
-
-        for nodes in constrained_nodes:
-            items_map = []
-            if isinstance(nodes,list):
-                [items_map.append(df_GlobalParameters.loc[node,'name']) for node in nodes]
-            else:
-                items_map = df_GlobalParameters.loc[nodes,'name']
-            all_items_map.append(items_map)
-
-        dictConstrants[item].update({'constrained_parameters':all_items_map})
-        with open(FILE_CONSTRAINTS, "w") as outfile:
-                json.dump(graphNeighborhood.search_restriction, outfile)

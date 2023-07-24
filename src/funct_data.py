@@ -114,6 +114,14 @@ def analyze_h5s(directory, rules):
     return dictCheckResult_h5s
 
 
+def write_dict_tocsv(d, file_csv):
+    """
+    """
+    
+    df = pd.DataFrame(dict([(k,pd.Series(v)) for k,v in d.items()]))
+    df.to_csv(file_csv)
+
+
 def save_dict(dt, filename):
     """
     save dictionary / object

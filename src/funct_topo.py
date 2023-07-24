@@ -105,6 +105,7 @@ def build_instance_df(
             lambda x: 'Space_' + x['classification'], axis=1)
     return df
 
+
 def flatten(list):
     return [item for sublist in list for item in sublist]
 
