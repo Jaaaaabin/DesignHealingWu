@@ -44,7 +44,6 @@ def collect_ini_sa_parameters(
 def execute_sa_sobol(
         dirs_fig,
         problem,
-        target,
         rule,
         y_result_txt,
         sa_calc_second_order=True,
@@ -77,12 +76,12 @@ def execute_sa_sobol(
         
         # 1st and total-order indices are anyway alwayes calculated.
         if plot_res_1_T:
-            sobol_plot_sa_S1ST(dirs_fig, target, rule, first, total)
+            sobol_plot_sa_S1ST(dirs_fig, rule, first, total)
 
         # only if 2nd sensitivity indices are calculated.
         if sa_calc_second_order:
             if plot_res_2:
-                sobol_plot_sa_S2(dirs_fig, target, rule, second)
+                sobol_plot_sa_S2(dirs_fig, rule, second)
     
     return total, first, second
 
@@ -90,7 +89,6 @@ def execute_sa_sobol(
 def execute_sa_morris(
     dirs_fig,
     problem,
-    target,
     rule,
     input_x_txt,
     y_result_txt,
@@ -112,7 +110,6 @@ def execute_sa_morris(
     if plot_res:
         morris_sa_plot(
             dirs_fig,
-            target,
             rule,
             Si,
             input_sample=X,

@@ -7,7 +7,7 @@ from Design import Design
 from const_project import DIRS_INI_RES, FILE_SA_PARAM_LIST
 from const_sensi import FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS, DIRS_DATA_SA, DIRS_DATA_SA_RES, DIRS_DATA_SA_FIG
 from const_sensi import SA_CALC_SECOND_ORDER, DIRS_DATA_SA, NAME_FAILURES, N_LEVEL_MORRIS
-from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR, EXCEPTION_GP
+from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR
 from const_ibcrule import BUILDING_RULES
 
 from funct_data import analyze_h5s, save_dict, load_dict
@@ -30,7 +30,7 @@ def buildDesigns(
         # create the initial design: "DesignIni"
         DesignIni = Design(list(ini_dictCheckResult_h5s.keys())[0], BUILDING_RULES)
         ini_parameter_names, ini_parameter_values, ini_parameter_num = collect_ini_sa_parameters(
-            FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER, set_floor=NAME_FLOOR, exclude_gp = EXCEPTION_GP)
+            FILE_SA_PARAM_LIST, K_LEVEL_PARAMETER, set_floor=NAME_FLOOR)
         DesignIni.set_parameters({k:v for k,v in zip(ini_parameter_names,ini_parameter_values)})
         DesignIni.set_checkresults(ini_dictCheckResult_h5s[0])
     
@@ -55,14 +55,13 @@ def buildDesigns(
         save_dict(DesignsNew, newdesigns_out_path + r'\DesignsNew.pickle')
 
 
-def calIndex_sobol(sa_problem, tgt, rl, plot_index=False):
+def calIndex_sobol(sa_problem, rl, plot_index=False):
 
-    result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + tgt + '_' + rl + '.txt'
+    result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '.txt'
 
     total, first, second = execute_sa_sobol(
         DIRS_DATA_SA_FIG,
         sa_problem,
-        tgt,
         rl,
         result_y_txt,
         sa_calc_second_order=SA_CALC_SECOND_ORDER,
@@ -110,15 +109,14 @@ def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
 
 
-def calIndex_morris(sa_problem, tgt, rl, plot_index=False):
+def calIndex_morris(sa_problem, rl, plot_index=False):
 
     input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
-    result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + tgt + '_' + rl + '.txt'
+    result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '.txt'
 
     all_indices = execute_sa_morris(
         DIRS_DATA_SA_FIG,
         sa_problem,
-        tgt,
         rl,
         input_x_txt,
         result_y_txt,
@@ -132,7 +130,7 @@ def calIndex_morris(sa_problem, tgt, rl, plot_index=False):
 def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
-        buildDesigns(FILE_SA_VARY_SOBOL, DIRS_DATA_SA_RES, DIRS_DATA_SA)
+        buildDesigns(FILE_SA_VARY_MORRIS, DIRS_DATA_SA_RES, DIRS_DATA_SA)
     
     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
@@ -160,4 +158,87 @@ def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices.pickle')
 
 
+#new---------------------------------------------------------------------------------
+def testSensi_sobol_weighted(build_design=False, calc_index=False, plot_index=False):
+    
+    if build_design:
+        buildDesigns(FILE_SA_VARY_SOBOL, DIRS_DATA_SA_RES, DIRS_DATA_SA)
+    
+    DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
+    DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
+
+    sa_problem = load_dict(DIRS_DATA_SA+"/sa_problem.pickle")
+
+    sa_indices_all = dict()
+
+    for rl in DesignIni.rules:
+        
+        tuned_y_per_rule = []
+        sa_indices_one = {}
+
+        for new_design in DesignsNew:
+            
+            tuned_y_per_design = 0
+
+            for tgt in DesignIni.results[rl].keys():
+                
+                if DesignIni.results[rl][tgt]['distance']>=0 and new_design.results[rl][tgt]['distance']>=0:
+                    new_design.results[rl][tgt]['distance'] *= 0 # ignore the always positive part.
+                elif DesignIni.results[rl][tgt]['distance'] * new_design.results[rl][tgt]['distance'] < 0:
+                    new_design.results[rl][tgt]['distance'] *= 1 # 
+                    
+                tuned_y_per_design += new_design.results[rl][tgt]['distance']
+
+            tuned_y_per_rule.append(tuned_y_per_design)
+
+        result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '.txt'
+        np.savetxt(result_y_txt, tuned_y_per_rule)
+
+        if calc_index:
+            tempo_indices = calIndex_morris(sa_problem, rl, plot_index)
+            sa_indices_one.update({rl: tempo_indices})
+
+    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
+
+
+def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=False):
+    
+    if build_design:
+        buildDesigns(FILE_SA_VARY_MORRIS, DIRS_DATA_SA_RES, DIRS_DATA_SA)
+    
+    DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
+    DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
+
+    sa_problem = load_dict(DIRS_DATA_SA+"/sa_problem.pickle")
+
+    sa_indices_all = dict()
+
+    for rl in DesignIni.rules:
+        
+        tuned_y_per_rule = []
+        sa_indices_one = {}
+
+        for new_design in DesignsNew:
+            
+            tuned_y_per_design = 0
+
+            for tgt in DesignIni.results[rl].keys():
+
+                if DesignIni.results[rl][tgt]['distance']>=0 and new_design.results[rl][tgt]['distance']>=0:
+                    new_design.results[rl][tgt]['distance'] *= 0 # ignore the always positive part.
+                elif DesignIni.results[rl][tgt]['distance'] * new_design.results[rl][tgt]['distance'] < 0:
+                    new_design.results[rl][tgt]['distance'] *= 1 # 
+
+                tuned_y_per_design += new_design.results[rl][tgt]['distance']
+
+            tuned_y_per_rule.append(tuned_y_per_design)
+
+        result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '.txt'
+        np.savetxt(result_y_txt, tuned_y_per_rule)
+
+        if calc_index:
+            tempo_indices = calIndex_morris(sa_problem, rl, plot_index)
+            sa_indices_one.update({rl: tempo_indices})
+
+    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices.pickle')
 

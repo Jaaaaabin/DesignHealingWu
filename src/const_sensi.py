@@ -11,7 +11,6 @@ SET_SA_DISTRIBUTION ="unif"         # "unif", "norm"
     
 NAME_FLOOR = 'U1_OK'
 NAME_FAILURES = ['2SzsE5m8T4h9JlM6XpBSn3','2SzsE5m8T4h9JlM6XpBSnd']
-EXCEPTION_GP = 'U1_OK_d_wl_sn25'
 
 #=================================#
 #           graphEnrich           #
@@ -47,7 +46,7 @@ N_LEVEL_MORRIS = 6
 # total trajs
 N_TRAJ_MORRIS = 1000
 # 8 for level 1..; 32 for level 5..
-N_OPT_TRAJ_MORRIS = 8
+N_OPT_TRAJ_MORRIS = 32
 
 # how to choose Num_level and Num_traj.
 # https://www.researchgate.net/post/How_to_choose_number_of_trajectories_in_Elementary_Effects_Test_Morris_Screening

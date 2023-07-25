@@ -112,7 +112,6 @@ def extract_singleorder_indices(Si_df, filter_name, relevant_number):
 # new
 def sobol_plot_sa_S1ST(
     dirs_fig,
-    tgt,
     rl,
     first_df,
     total_df,
@@ -208,12 +207,11 @@ def sobol_plot_sa_S1ST(
     ax.grid(True)
 
     # save
-    plt.savefig(dirs_fig + '/SA_{}_{}_sobol_S1ST_indices.png'.format(tgt, rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_{}_sobol_S1ST_indices.png'.format(rl), dpi=200)
 
 # new
 def sobol_plot_sa_S2(
     dirs_fig,
-    tgt,
     rl,
     second):
     """
@@ -257,7 +255,7 @@ def sobol_plot_sa_S2(
         if z != 0:
             ax1.text(j, i, '{:0.3f}'.format(z), ha='center', va='center')
 
-    plt.savefig(dirs_fig + '/SA_{}_{}_sobol_S2_indices.png'.format(tgt, rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_{}_sobol_S2_indices.png'.format(rl), dpi=200)
 
 
 # new
@@ -390,7 +388,6 @@ def morris_covariance_plot(
 
 def morris_sa_plot(
     dirs_fig,
-    tgt,
     rl,
     Si,
     input_sample=[],
@@ -403,7 +400,7 @@ def morris_sa_plot(
     fig = plt.figure(figsize=(10,5))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_horizontal_bar_plot(ax, Si, plotmu='mu')
-    plt.savefig(dirs_fig + '/SA_mu_{}_{}_morris_Si_indices_horbar.png'.format(tgt, rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_horbar.png'.format(rl), dpi=200)
 
     # covariance_plot(ax, Si, opts=None, unit=''): 
     
@@ -411,7 +408,7 @@ def morris_sa_plot(
     fig = plt.figure(figsize=(10,5))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_covariance_plot(ax, Si, plotmu='mu')
-    plt.savefig(dirs_fig + '/SA_mu_{}_{}_morris_Si_indices_convar.png'.format(tgt, rl), dpi=200)
+    plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_convar.png'.format(rl), dpi=200)
 
     # sample_histograms:
     # fig = plt.figure(figsize=(8,5))  # unit of inch

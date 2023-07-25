@@ -455,7 +455,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "14",
+      "InputValue": "34",
       "Id": "42d363434a2f40bcb5cabcabc2e64f17",
       "Inputs": [],
       "Outputs": [
@@ -844,14 +844,19 @@
       "Id": "7e3fcbce975d4f54b090a16742ab0756"
     },
     {
-      "Start": "77e24791cf8f48daaae8cf84f2d4b346",
-      "End": "25e7c159a4ce4ca0a1eebc032ba123d6",
-      "Id": "f58df0cb121f4c2eb698c7a72bf97e8a"
+      "Start": "1e8681ce1305455ca77858bf18bca361",
+      "End": "67dbab1ac9bd4314b2cc4731f8257f58",
+      "Id": "59a49a7b6e4d48cc887968b99601312a"
     },
     {
-      "Start": "dc6222e47337431db4b5d03323fcc6ad",
-      "End": "67dbab1ac9bd4314b2cc4731f8257f58",
-      "Id": "bb4b77346f484b90afe50ef209dc7f27"
+      "Start": "025e9c2c2caf49c887eff6f1fd7e055c",
+      "End": "409fc40ea11645d993ebc5eeb264886c",
+      "Id": "e0c02478a4a14e11b40a4bc771657e88"
+    },
+    {
+      "Start": "3d6d08c2a35441cb9828c50742929eae",
+      "End": "25e7c159a4ce4ca0a1eebc032ba123d6",
+      "Id": "1ef34f392f5e421ab2e7efd253a81c93"
     },
     {
       "Start": "bbeb4f9fde2544fbb8168cd224cf1816",
@@ -872,11 +877,6 @@
       "Start": "ba1c58e830dc4de78af59c902a9879aa",
       "End": "55056e9c3a694a8ebc20ba19e3417747",
       "Id": "4ec6a77241eb4988af0665ba0ecc1dfc"
-    },
-    {
-      "Start": "26ca1062b3624e58a0f59ec17b00b388",
-      "End": "409fc40ea11645d993ebc5eeb264886c",
-      "Id": "63e5df60e87c418a913a94ef4a268274"
     },
     {
       "Start": "6e9077ad348f4880a04fe542997f618f",
@@ -940,241 +940,241 @@
     },
     "NodeViews": [
       {
+        "ShowGeometry": true,
+        "Name": "IBC Rules",
         "Id": "1fd5bff113e6480b9073ea7c9e11031d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IBC Rules",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -285.28787406733204,
         "Y": -38.688196076682289
       },
       {
+        "ShowGeometry": false,
+        "Name": "autoCheck",
         "Id": "2eb4f63376dc458886ee97114f73c7c2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "autoCheck",
-        "ShowGeometry": false,
         "Excluded": false,
         "X": 656.29956563686869,
         "Y": -282.45504746136709
       },
       {
+        "ShowGeometry": true,
+        "Name": "String.ToNumber",
         "Id": "35049fc63a284756a51e5a40feecf88b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String.ToNumber",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 518.290429996837,
         "Y": 187.60319329828428
       },
       {
+        "ShowGeometry": true,
+        "Name": "Boolean",
         "Id": "821378de27da446b8a984593517b8683",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Boolean",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -102.96330134644654,
         "Y": 260.60319329828428
       },
       {
+        "ShowGeometry": true,
+        "Name": "FileSystem.FileName",
         "Id": "bf33ddf7d7074799ac4b189977a9856e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "FileSystem.FileName",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 185.45460910131465,
         "Y": 187.60319329828428
       },
       {
+        "ShowGeometry": true,
+        "Name": "Code Block",
         "Id": "e3b4680ccec74340bc905ad7eba7fc4d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Code Block",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -757.17225657032714,
         "Y": 209.81652663161765
       },
       {
+        "ShowGeometry": true,
+        "Name": "Directory From Path",
         "Id": "9a5e2517c5e041959ed3676fd05a46c6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Directory From Path",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -757.17225657032714,
         "Y": 101.6031932982843
       },
       {
+        "ShowGeometry": true,
+        "Name": "FileSystem.GetDirectoryContents",
         "Id": "72e09ca489b84f1685748e9f28b4b84f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "FileSystem.GetDirectoryContents",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -510.30658492853604,
         "Y": 140.60319329828428
       },
       {
+        "ShowGeometry": true,
+        "Name": "sortStrListbyNumber",
         "Id": "4a7f9b025c4244878643a8bc56bd01a0",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "sortStrListbyNumber",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -102.96330134644654,
         "Y": 140.60319329828428
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "85da74ba730140569792e2d3656ac46c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -602.00019817944531,
         "Y": -122.47413805490487
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "8761c732899147979579cffe02319c79",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -602.00019817944531,
         "Y": -444.07683923001844
       },
       {
+        "ShowGeometry": true,
+        "Name": "variations (input)",
         "Id": "4066acbfb15c45adae74a2c9efc9b32a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "variations (input)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -302.11960116451991,
         "Y": -242.47413805490487
       },
       {
+        "ShowGeometry": true,
+        "Name": "compliance checking (output)",
         "Id": "7eab3551299f47bd83c538de7ab6a7c9",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "compliance checking (output)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -302.11960116451991,
         "Y": -410.07683923001844
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "665791dd155944d3baf12a87d7ee32fd",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -761.46288474660946,
         "Y": -282.2754886424616
       },
       {
+        "ShowGeometry": true,
+        "Name": "Nr (SA)",
         "Id": "42d363434a2f40bcb5cabcabc2e64f17",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Nr (SA)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1551.7768386036457,
         "Y": -357.07721490399632
       },
       {
+        "ShowGeometry": true,
+        "Name": "sub-Nr(SAboundary)",
         "Id": "ddd4a697546643a481299818927eb18d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "sub-Nr(SAboundary)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1555.2836741246504,
         "Y": -248.5948540410771
       },
       {
+        "ShowGeometry": true,
+        "Name": "Name(SA)",
         "Id": "f9f4dbd00363447cb18e1957a87c7f52",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Name(SA)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1554.4051333043951,
         "Y": -442.58353392411647
       },
       {
+        "ShowGeometry": true,
+        "Name": "Name(SS)",
         "Id": "bda3ab367591449f84d882300d7ff717",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Name(SS)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1553.7936060977925,
         "Y": -10.742590359048222
       },
       {
+        "ShowGeometry": true,
+        "Name": "Nr(SS)",
         "Id": "073d1ad73aeb45c59a23d3feb23f955e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Nr(SS)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1553.4570500858047,
         "Y": 78.284282588088786
       },
       {
+        "ShowGeometry": true,
+        "Name": "🧡　rerunNodes　🧡",
         "Id": "b12129662e99439d86d671aa82db5206",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "🧡　rerunNodes　🧡",
-        "ShowGeometry": true,
         "Excluded": true,
         "X": -1107.5125658609936,
         "Y": -379.10414842881414
       },
       {
+        "ShowGeometry": true,
+        "Name": "String",
         "Id": "fe596b108cb749fc8bbce991bdb24dd7",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1111.0500488829066,
         "Y": -272.82600561168886
       },
       {
+        "ShowGeometry": true,
+        "Name": "🧡SA or SS Processor🧡",
         "Id": "30a0fa5493f9409abcdaa055d760c716",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "🧡SA or SS Processor🧡",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1108.3090591731816,
         "Y": -172.67302375959207
       },
       {
+        "ShowGeometry": true,
+        "Name": "sub-Nr(SSIteration)",
         "Id": "0425987f9f444327a7dfedf59ad98b79",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "sub-Nr(SSIteration)",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1550.8443818115661,
         "Y": 161.54009202475481
       },
       {
+        "ShowGeometry": true,
+        "Name": "String.Concat",
         "Id": "6c813a191d0a48d7b047376a3b074130",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "String.Concat",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -602.00019817944531,
         "Y": -360.2754886424616
@@ -1279,8 +1279,8 @@
         "Background": "#FFFF7BAC"
       }
     ],
-    "X": 1233.8529259814029,
-    "Y": 421.42261453866217,
-    "Zoom": 0.605012182002529
+    "X": 1733.4617732285744,
+    "Y": 534.80547980196184,
+    "Zoom": 0.9488025363447179
   }
 }

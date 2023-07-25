@@ -8,7 +8,7 @@ from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
 from prepareVariation import prepareSAVariants
-from testSensitivity import testSensi_sobol, testSensi_morris
+from testSensitivity import testSensi_morris_weighted, testSensi_sobol_weighted
 from formSpace import formSolutionSpace, buildDesignInSpace
 
 if __name__ == "__main__":
@@ -18,18 +18,18 @@ if __name__ == "__main__":
     #=================================#
     # topoCollect()
     # graphCreate()
-    graphEnrich(plot_graph=True)
+    # graphEnrich(plot_graph=False)
     
     #=================================#
     #                 sa              #
     #=================================#
-    # # EXECUTION_NR = 14, 54
+    # # EXECUTION_NR = 34
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
-    # testSensi_morris(build_design=True, calc_index=True, plot_index=True)
+    testSensi_morris_weighted(build_design=True, calc_index=True, plot_index=True)
 
-    # EXECUTION_NR = 19, 59
+    # EXECUTION_NR = 39
     # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)
-    # testSensi_sobol(build_design=True, calc_index=True, plot_index=True)
+    # testSensi_sobol_weighted(build_design=True, calc_index=True, plot_index=True)
 
     #=================================#
     #                 ss              #
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # EXECUTION_NR = 100 + (14, 54, 19, 59)
     
     # ITERATION-1
-    # formSolutionSpace(['\sa-14-0.3'], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
+    # formSolutionSpace(['\sa-34-0.3'], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
     # buildDesignInSpace()
 
     # ITERATION-2
