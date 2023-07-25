@@ -405,8 +405,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
       "Code": "rules[0];",
+      "NodeType": "CodeBlockNode",
       "Id": "f5a87d7be2c64348a770467524246adb",
       "Inputs": [
         {
@@ -436,7 +436,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\nimport healVisual\r\nimportlib.reload(healVisual)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\ngp_names = IN[0]\r\ngp_expresses = IN[1]\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\nout = []\r\n\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nhealParameters.setConstraints(doc, gp_names, gp_expresses)\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out",
+      "Code": "###############################################################\r\n# Import general packages.\r\nimport clr\r\nimport sys\r\nimport math\r\nimport System\r\nimport io\r\nimport os\r\nimport importlib\r\n\r\n# Import Revit/Dynamo API related packages.\r\nclr.AddReference('DynamoRevitDS')\r\nimport Dynamo\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager \r\nfrom RevitServices.Transactions import TransactionManager \r\nclr.AddReference(\"RevitAPI\")\r\nclr.AddReference('ProtoGeometry')\r\nimport Autodesk \r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom Autodesk.DesignScript import *\r\nfrom Autodesk.Revit.DB import *\r\nfrom Autodesk.Revit.DB import Parameter\r\nfrom Autodesk.Revit.DB.Architecture import *\r\nfrom Autodesk.Revit.DB import IFailuresPreprocessor\r\n\r\n# Import external python packages.\r\nlocalapp = os.getenv(r'LOCALAPPDATA')\r\nsys.path.append(os.path.join(localapp, r'python-3.8.3-embed-amd64\\Lib\\site-packages'))\r\n\r\n# Import customized python packgaes.\r\nsys.path.append(r'C:\\dev\\phd\\jw\\healing\\src\\godyn')\r\n\r\nimport healBasics\r\nimportlib.reload(healBasics)\r\nimport healChecks\r\nimportlib.reload(healChecks)\r\nimport healParameters\r\nimportlib.reload(healParameters)\r\nimport healVisual\r\nimportlib.reload(healVisual)\r\n\r\n###############################################################\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n\r\n###############################################################\r\n# Temporary functions\r\n\r\n###############################################################\r\n# Prepare the input (of the Python Node)\r\ngps = UnwrapElement(IN[0])\r\ngp_expresses = IN[1]\r\n\r\n##############################################################\r\n# Prepare the output (of the Python Node)\r\n\r\n###############################################################\r\n# Start Transaction in Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n\r\n###############################################################\r\n# Main part\r\nout = healParameters.setConstraints(gps, gp_expresses)\r\n\r\n###############################################################\r\n# End Transaction in Revit\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n\r\n###############################################################\r\n# End\r\nOUT = out",
       "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "ad6dbe41f5b34fd38ad83167dbd99edc",
@@ -616,8 +616,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
       "Code": "\"=\";",
+      "NodeType": "CodeBlockNode",
       "Id": "2ee64521712140768978936f99876337",
       "Inputs": [],
       "Outputs": [
@@ -696,8 +696,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
       "Code": "list[1];",
+      "NodeType": "CodeBlockNode",
       "Id": "8ab41c1ffdec44d0bc4a37c5d71d8a4e",
       "Inputs": [
         {
@@ -755,6 +755,36 @@
       ],
       "Replication": "Disabled",
       "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.GlobalParameter.FindByName@string",
+      "Id": "5596380d000646aab5d4b4ab1dcaf176",
+      "Inputs": [
+        {
+          "Id": "be85fc270c7641979ca088765351da4e",
+          "Name": "name",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "be01d905b97b40918969b7e6f04240b9",
+          "Name": "GlobalParameter",
+          "Description": "GlobalParameter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Find Global Parameter by Name\n\nGlobalParameter.FindByName (name: string): GlobalParameter"
     }
   ],
   "Connectors": [
@@ -865,8 +895,8 @@
     },
     {
       "Start": "be5c7fccf67c4e678e82badc7abbe9ff",
-      "End": "6f26e86a2a9a46c18fa4868cc6ec6cef",
-      "Id": "d307888237af45eab2dd3121da1de0a1"
+      "End": "be85fc270c7641979ca088765351da4e",
+      "Id": "b042f80b9b77453b817a98b73551cf2d"
     },
     {
       "Start": "18c9f6fc370d41238a4ee74f7bcbe83c",
@@ -876,7 +906,12 @@
     {
       "Start": "11e6432c18bc45d399ecf4b9dddf3860",
       "End": "ef391a11051546b6ae85e078788e5fdf",
-      "Id": "559c606e97c84741bdd7467b114fb008"
+      "Id": "ae1a882056e0468badf8388aecd8ffa0"
+    },
+    {
+      "Start": "be01d905b97b40918969b7e6f04240b9",
+      "End": "6f26e86a2a9a46c18fa4868cc6ec6cef",
+      "Id": "53e73ef45a15456fb9ff754c41c7505f"
     }
   ],
   "Dependencies": [],
@@ -946,8 +981,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 322.81652447156182,
-        "Y": -479.0895230970425
+        "X": 157.89868503327102,
+        "Y": -502.259798059447
       },
       {
         "ShowGeometry": true,
@@ -956,8 +991,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 558.93592745663648,
-        "Y": -534.0895230970425
+        "X": 394.01808801834568,
+        "Y": -557.259798059447
       },
       {
         "ShowGeometry": true,
@@ -966,8 +1001,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 876.72697223275588,
-        "Y": -597.0895230970425
+        "X": 711.80913279446509,
+        "Y": -620.259798059447
       },
       {
         "ShowGeometry": true,
@@ -976,8 +1011,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 322.81652447156182,
-        "Y": -563.0895230970425
+        "X": 157.89868503327102,
+        "Y": -586.259798059447
       },
       {
         "ShowGeometry": true,
@@ -986,8 +1021,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 558.93592745663648,
-        "Y": -634.0895230970425
+        "X": 394.01808801834568,
+        "Y": -657.259798059447
       },
       {
         "ShowGeometry": true,
@@ -996,8 +1031,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1121.4433901432035,
-        "Y": -543.0895230970425
+        "X": 956.5255507049128,
+        "Y": -566.259798059447
       },
       {
         "ShowGeometry": true,
@@ -1006,8 +1041,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 876.72697223275588,
-        "Y": -463.0895230970425
+        "X": 711.80913279446509,
+        "Y": -486.259798059447
       },
       {
         "ShowGeometry": true,
@@ -1016,8 +1051,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 552.48999981744146,
-        "Y": -194.12228165928249
+        "X": 387.57216037915077,
+        "Y": -217.292556621687
       },
       {
         "ShowGeometry": true,
@@ -1026,8 +1061,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 552.48999981744146,
-        "Y": -110.12228165928249
+        "X": 387.57216037915077,
+        "Y": -133.292556621687
       },
       {
         "ShowGeometry": true,
@@ -1036,8 +1071,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 742.04223862341166,
-        "Y": -136.12228165928249
+        "X": 577.12439918512086,
+        "Y": -159.292556621687
       },
       {
         "ShowGeometry": true,
@@ -1046,8 +1081,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 552.48999981744146,
-        "Y": -26.122281659282493
+        "X": 387.57216037915077,
+        "Y": -49.292556621687027
       },
       {
         "ShowGeometry": true,
@@ -1056,8 +1091,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -208.25418293307803,
-        "Y": -453.92098139462513
+        "X": -249.3024172538403,
+        "Y": -512.07264668237167
       },
       {
         "ShowGeometry": true,
@@ -1066,8 +1101,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 23.806193298315065,
-        "Y": 183.88470618692656
+        "X": 35.511463017598658,
+        "Y": 141.37242624070461
       },
       {
         "ShowGeometry": true,
@@ -1076,8 +1111,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -284.67141864198311,
-        "Y": 209.88470618692656
+        "X": -272.96614892269986,
+        "Y": 167.37242624070461
       },
       {
         "ShowGeometry": true,
@@ -1086,18 +1121,18 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 962.40044757863552,
-        "Y": -131.90894832594913
+        "X": 797.48260814034484,
+        "Y": -155.07922328835366
       },
       {
         "ShowGeometry": true,
-        "Name": "Python Script",
+        "Name": "setConstraints",
         "Id": "ad6dbe41f5b34fd38ad83167dbd99edc",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2227.5673873281667,
-        "Y": 190.38470618692656
+        "X": 2596.4666868981958,
+        "Y": 167.87242624070461
       },
       {
         "ShowGeometry": true,
@@ -1106,8 +1141,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 268.522611208763,
-        "Y": 183.88470618692656
+        "X": 280.22788092804649,
+        "Y": 141.37242624070461
       },
       {
         "ShowGeometry": true,
@@ -1116,8 +1151,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 571.26887986547968,
-        "Y": 183.88470618692656
+        "X": 582.97414958476293,
+        "Y": 141.37242624070461
       },
       {
         "ShowGeometry": true,
@@ -1126,8 +1161,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 997.23902911921118,
-        "Y": 216.38470618692656
+        "X": 1008.9442988384942,
+        "Y": 180.87242624070461
       },
       {
         "ShowGeometry": true,
@@ -1136,8 +1171,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1319.3285813580167,
-        "Y": 255.38470618692656
+        "X": 1331.0338510773001,
+        "Y": 205.87242624070461
       },
       {
         "ShowGeometry": true,
@@ -1146,8 +1181,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 997.23902911921118,
-        "Y": 324.59803952025987
+        "X": 1008.9442988384942,
+        "Y": 289.08575957403792
       },
       {
         "ShowGeometry": true,
@@ -1156,8 +1191,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1916.9405216565244,
-        "Y": 151.38470618692654
+        "X": 1928.6457913758074,
+        "Y": 101.87242624070461
       },
       {
         "ShowGeometry": true,
@@ -1166,8 +1201,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1650.0151485221957,
-        "Y": 255.38470618692656
+        "X": 1661.7204182414791,
+        "Y": 205.87242624070461
       },
       {
         "ShowGeometry": true,
@@ -1176,8 +1211,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1916.9405216565244,
-        "Y": 259.59803952025987
+        "X": 1928.6457913758074,
+        "Y": 210.08575957403795
       },
       {
         "ShowGeometry": true,
@@ -1186,8 +1221,18 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -240.25033820815383,
-        "Y": -83.197169582799461
+        "X": -220.86644977890523,
+        "Y": -371.67503855926753
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "GlobalParameter.FindByName",
+        "Id": "5596380d000646aab5d4b4ab1dcaf176",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2239.2726570474497,
+        "Y": 125.87242624070461
       }
     ],
     "Annotations": [
@@ -1208,13 +1253,13 @@
           "d2465f30c7c94ba0957218bc0a6cb595",
           "f5a87d7be2c64348a770467524246adb"
         ],
-        "Left": 312.81652447156182,
-        "Top": -687.07459772390814,
-        "Width": 963.34328358208938,
+        "Left": 147.89868503327102,
+        "Top": -710.24487268631265,
+        "Width": 963.3432835820895,
         "Height": 728.96724143776,
         "FontSize": 36.0,
-        "InitialTop": -634.0895230970425,
-        "InitialHeight": 705.98216681089423,
+        "InitialTop": -657.259798059447,
+        "InitialHeight": 752.96724143776,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFC1D676"
       },
@@ -1232,15 +1277,16 @@
           "0287c3cd88db4ebcb2391b3b87af09ac",
           "2e532f5a73414bf98623656afcdcd33c",
           "8ab41c1ffdec44d0bc4a37c5d71d8a4e",
-          "ad6dbe41f5b34fd38ad83167dbd99edc"
+          "ad6dbe41f5b34fd38ad83167dbd99edc",
+          "5596380d000646aab5d4b4ab1dcaf176"
         ],
-        "Left": -294.67141864198311,
-        "Top": 98.399631560060868,
-        "Width": 2656.8955223880603,
-        "Height": 319.287960199005,
+        "Left": -282.96614892269986,
+        "Top": 48.887351613838938,
+        "Width": 3037.0149253731342,
+        "Height": 333.287960199005,
         "FontSize": 36.0,
-        "InitialTop": 151.38470618692654,
-        "InitialHeight": 241.452704768528,
+        "InitialTop": 101.87242624070461,
+        "InitialHeight": 318.21333333333337,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFA4E1FF"
       },
@@ -1250,19 +1296,19 @@
         "Nodes": [
           "325b1305f8044ece859d2645b6472412"
         ],
-        "Left": -250.25033820815383,
-        "Top": -136.18224420966513,
+        "Left": -230.86644977890523,
+        "Top": -424.66011318613323,
         "Width": 144.65671641791045,
         "Height": 156.82089552238807,
         "FontSize": 36.0,
-        "InitialTop": -83.197169582799461,
-        "InitialHeight": 133.83582089552237,
+        "InitialTop": -371.67503855926753,
+        "InitialHeight": 145.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFFF7BAC"
       }
     ],
-    "X": 345.66136789243257,
-    "Y": 451.48608587003133,
-    "Zoom": 0.365720974469637
+    "X": 403.88185499780047,
+    "Y": 573.50817791877341,
+    "Zoom": 0.63252770086584842
   }
 }

@@ -1,4 +1,4 @@
 ,IBC1020_2,IBC1207_1,IBC1207_3
-0,E1_OK_d_wl_sn25,E0_OK_d_wl_sn24,E0_OK_d_wl_sn24
-1,U1_OK_d_wl_sn25,U1_OK_d_wl_sn25,U1_OK_d_wl_sn25
-2,E0_OK_d_wl_sn24,E1_OK_d_wl_sn25,E1_OK_d_wl_sn25
+0,E0_OK_d_wl_sn24,E1_OK_d_wl_sn25,E1_OK_d_wl_sn25
+1,U1_OK_d_wl_sn25,E0_OK_d_wl_sn24,E0_OK_d_wl_sn24
+2,E1_OK_d_wl_sn25,U1_OK_d_wl_sn25,U1_OK_d_wl_sn25

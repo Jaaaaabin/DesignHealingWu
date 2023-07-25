@@ -18,7 +18,7 @@ if __name__ == "__main__":
     #=================================#
     # topoCollect()
     # graphCreate()
-    graphEnrich(plot_graph=False)
+    graphEnrich(plot_graph=True)
     
     #=================================#
     #                 sa              #

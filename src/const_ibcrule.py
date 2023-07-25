@@ -10,7 +10,7 @@ BUILDING_RULES_4REGION = ['IBC1020_2', 'IBC1207_1', 'IBC1207_3', 'IBC_selected']
 
 # failure analysis
 LABEL_FAILURE_LOCATION = 'failure'
-LABEL_FAILURE_NEIGHBOR = 'failure_neighbor'
+LABEL_FAILURE_NEIGHBOR = 'failure_element'
 LABLE_ASSOCIATED_GP = 'parameter_associated'
 
 LEVEL_FAILURE_NEIGHBOR = K_LEVEL_PARAMETER
