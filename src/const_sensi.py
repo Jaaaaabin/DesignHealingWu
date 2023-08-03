@@ -44,9 +44,9 @@ SALTELLI_SKIP = 1024
 # fix to 6 levels.
 N_LEVEL_MORRIS = 6
 # total trajs
-N_TRAJ_MORRIS = 1000
+N_TRAJ_MORRIS = 200
 # 8 for level 1..; 32 for level 5..
-N_OPT_TRAJ_MORRIS = 32
+N_OPT_TRAJ_MORRIS = 64
 
 # how to choose Num_level and Num_traj.
 # https://www.researchgate.net/post/How_to_choose_number_of_trajectories_in_Elementary_Effects_Test_Morris_Screening

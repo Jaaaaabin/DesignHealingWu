@@ -25,7 +25,7 @@ if __name__ == "__main__":
     #=================================#
     # # EXECUTION_NR = 34
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
-    testSensi_morris_weighted(build_design=True, calc_index=True, plot_index=True)
+    testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, pad_constant_sign=0)
 
     # EXECUTION_NR = 39
     # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)

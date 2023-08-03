@@ -5,24 +5,14 @@
 # import modules
 
 from base_external_packages import *
-from const_sensi import N_LEVEL_MORRIS
-from funct_data import load_dict
+from const_sensi import N_LEVEL_MORRIS, DIRS_DATA
+from funct_data import load_dict, save_dict
+from const_ibcrule import BUILDING_RULES
 
-
-sa_morris_nr = 12
-sa_morris_bdry = [0.02, 0.05, 0.1, 0.3]
-sa_morris_bdry_labels = [str(bdry) for bdry in sa_morris_bdry]
-sa_morris_bdry_colors = ['navy', 'royalblue', 'cyan', 'orange']
-y_locs = [-0.3, -0.1, 0.1, 0.3]
-
-check_failures = ['2SzsE5m8T4h9JlM6XpBSn3_IBC1020_2', '2SzsE5m8T4h9JlM6XpBSnd_IBC1207_1','2SzsE5m8T4h9JlM6XpBSnd_IBC1207_3']
-sa_paths = [r'C:\dev\phd\ModelHealer\data\sa-'+str(sa_morris_nr)+'-'+str(bdry) for bdry in sa_morris_bdry]
-sa_problems = [sa_path + r'\sa_problem.pickle' for sa_path in sa_paths]
-input_x = [sa_path + r'\sa_values_morris.txt' for sa_path in sa_paths]
-result_ys = [[sa_path + r'\res\results_y_' +  fl + '.txt' for sa_path in sa_paths] for fl in check_failures]
 
 def _sort_Si(Si, key, sortby='mu_star'):
     return np.array([Si[key][x] for x in np.argsort(Si[sortby])])
+
 
 def morris_horizontal_bar_plot(
     ax,
@@ -30,8 +20,8 @@ def morris_horizontal_bar_plot(
     plotmu,
     bcolor,
     bheight,
+    y_loc,
     lwidth=0.25,
-    y_loc=0,
     alpah=1,
     opts=None,
     sortby='mu_star',
@@ -84,25 +74,38 @@ def morris_horizontal_bar_plot(
     return out
 
 
-for fl, ys in zip(check_failures, result_ys):
+sa_morris_nr = 34
+sa_pads = [0, 0.1, 0.25, 0.5]
+sa_morris_bdry_colors = ['navy', 'royalblue', 'cyan', 'orange'] #'darkgoldenrod'
+y_limit_c = 0.30
+y_height = (y_limit_c*2)/(len(sa_morris_bdry_colors)-1)
+y_locs = np.linspace(-y_limit_c, y_limit_c, num=len(sa_morris_bdry_colors)).tolist()
+print (y_locs)
+
+sa_path = r'C:\dev\phd\ModelHealer\data\sa-34-0.3'
+sa_problem = sa_path + r'\sa_problem.pickle'
+input_x = sa_path + r'\sa_values_morris.txt'
+result_ys = [[sa_path + r'\res\results_y_' +  rl  + '_pad_' + str(pad) + '.txt' for pad in sa_pads] for rl in BUILDING_RULES]
+
+X = np.loadtxt(input_x)
+
+sa_indices_all = dict()
+
+for rl, ys in zip(BUILDING_RULES, result_ys):
     
     fig = plt.figure(figsize=(10,5))  # unit of inch
     ax = plt.axes((0.15, 0.05, 0.80, 0.90))  # in range (0,1)
-    
-    for i, (sa_problem, x, y, y_loc, bdry_label, bdry_color) in enumerate(zip(
-        sa_problems, input_x, ys, y_locs, sa_morris_bdry_labels, sa_morris_bdry_colors)):
+    sa_indices = dict()
 
-        # widths = data[:, i]
-        # starts = data_cum[:, i] - widths
+    for i, (y, y_loc, pad, bdry_color) in enumerate(zip(ys, y_locs, sa_pads, sa_morris_bdry_colors)):
 
         # load
         problem = load_dict(sa_problem)
-        X = np.loadtxt(x)
         Y = np.loadtxt(y, float)
 
         # calculate Si
         Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=N_LEVEL_MORRIS)
-        
+
         # sort type.
         plot_mu = 'mu_star'
         
@@ -111,14 +114,26 @@ for fl, ys in zip(check_failures, result_ys):
             ax,
             Si,
             plot_mu, # plot by mu or mu_star
-            bcolor=bdry_color,
-            bheight=0.2,
-            lwidth=0.5,
             y_loc=y_loc,
+            bcolor=bdry_color,
+            bheight=y_height,
+            lwidth=0.5,
             alpah=0.80,
             )
-        
+        sa_indices.update({pad: Si})
+
         # refine plot
-        bar.set_label(bdry_label)
+        bar.set_label(pad)
         plt.legend(loc='lower right')
-        plt.savefig(r'C:\dev\phd\ModelHealer\data\{nr}_{sort}_{failure}.png'.format(nr=sa_morris_nr,sort=plot_mu,failure=fl), dpi=200)
+        plt.savefig(r'C:\dev\phd\ModelHealer\data\{nr}_{sort}_{failure}.png'.format(nr=sa_morris_nr,sort=plot_mu,failure=rl), dpi=200)
+    
+    sa_indices_all.update({rl: sa_indices})
+    save_dict(sa_indices_all, DIRS_DATA + r'\sa_morris_indices_' + str(plot_mu) + '.pickle')
+
+    # next step is to compare
+    # C:\dev\phd\ModelHealer\data\sa_morris_indices_mu.pickle
+    # with
+    # C:\dev\phd\ModelHealer\data\sa-34-0.3\sa_morris_indices_pad_0.pickle
+    # C:\dev\phd\ModelHealer\data\sa-34-0.3\sa_morris_indices_pad_0.1.pickle
+    # C:\dev\phd\ModelHealer\data\sa-34-0.3\sa_morris_indices_pad_0.25.pickle
+    # C:\dev\phd\ModelHealer\data\sa-34-0.3\sa_morris_indices_pad_0.5.pickle
