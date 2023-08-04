@@ -24,12 +24,13 @@ def morris_horizontal_bar_plot(
     lwidth=0.25,
     alpah=1,
     opts=None,
-    sortby='mu_star',
     unit=''):
 
     '''Updates a matplotlib axes instance with a horizontal bar plot
     of mu_star, with error bars representing mu_star_conf.
     '''
+
+    sortby = plotmu
     assert sortby in ['mu_star', 'mu_star_conf', 'sigma', 'mu']
 
     if opts is None:
@@ -107,8 +108,9 @@ for rl, ys in zip(BUILDING_RULES, result_ys):
         Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=N_LEVEL_MORRIS)
 
         # sort type.
+        plot_mu = 'mu'
         plot_mu = 'mu_star'
-        
+
         # default plot
         bar = morris_horizontal_bar_plot(
             ax,

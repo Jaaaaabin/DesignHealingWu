@@ -109,10 +109,7 @@ def calIndex_sobol(sa_problem, rl, plot_index=False):
 #     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
 
 
-def calIndex_morris(sa_problem, rl, plot_index=False):
-
-    input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
-    result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '.txt'
+def calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index=False):
 
     all_indices = execute_sa_morris(
         DIRS_DATA_SA_FIG,
@@ -252,15 +249,15 @@ def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=F
             tuned_comp_per_rule.append(tuned_comp_per_design) # compliance results:
         
         # the overall y value.
+        input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
         result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '_pad_' + str(pad_constant_sign) + '.txt'
         np.savetxt(result_y_txt, tuned_y_per_rule)
 
         # the the overall compliance results.
         result_comp_txt = DIRS_DATA_SA_RES + '/results_compliance_' + rl + '.txt'
         np.savetxt(result_comp_txt, tuned_comp_per_rule)
-
         if calc_index:
-            tempo_indices = calIndex_morris(sa_problem, rl, plot_index)
+            tempo_indices = calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index)
             sa_indices_all.update({rl: tempo_indices})
 
     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices_pad_' + str(pad_constant_sign) + '.pickle')

@@ -257,11 +257,9 @@ def sobol_plot_sa_S2(
 
     plt.savefig(dirs_fig + '/SA_{}_sobol_S2_indices.png'.format(rl), dpi=200)
 
-
 # new
 def _sort_Si(Si, key, sortby='mu_star'):
     return np.array([Si[key][x] for x in np.argsort(Si[sortby])])
-
 
 def morris_horizontal_bar_plot(
     ax,
@@ -273,12 +271,12 @@ def morris_horizontal_bar_plot(
     y_loc=0,
     alpah=0.75,
     opts=None,
-    sortby='mu_star',
     unit=''):
 
     '''Updates a matplotlib axes instance with a horizontal bar plot
     of mu_star, with error bars representing mu_star_conf.
     '''
+    sortby = plotmu
     assert sortby in ['mu_star', 'mu_star_conf', 'sigma', 'mu']
 
     if opts is None:
@@ -316,7 +314,7 @@ def morris_horizontal_bar_plot(
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(plot_names)
-    ax.set_xlabel(r'$\mu^\star$' + unit)
+    ax.set_xlabel(r'$\mu$' + unit)
 
     ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
 

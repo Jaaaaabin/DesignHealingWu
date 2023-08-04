@@ -92,7 +92,7 @@ def execute_sa_morris(
     rule,
     input_x_txt,
     y_result_txt,
-    num_levels=4,
+    num_levels=6,
     plot_res=False,
     ):
 
