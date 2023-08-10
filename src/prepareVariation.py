@@ -3,7 +3,7 @@
 #
 
 # import modules
-from const_project import FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST
+from const_project import FILE_INIT_SKL_RVT, FILE_SA_PARAM_LIST, DIRS_DATA_TOPO
 
 from const_sensi import DIRS_DATA_SA, DIRS_DATA_SA_DUP, FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS
 from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR
@@ -77,3 +77,9 @@ def prepareSAVariants(
         
         if set_dup_rvt:
             duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_morris.shape[0], clear_destination=True)
+
+
+# filter the building elements to a specific floor (for now only for space.)
+element_filter_bylevel = pd.read_csv(DIRS_DATA_TOPO + r'\df_space.csv', index_col ='ifcguid')
+element_filter_bylevel_ids = element_filter_bylevel.index[element_filter_bylevel['level'] == NAME_FLOOR].tolist()
+save_dict(element_filter_bylevel_ids, DIRS_DATA_TOPO + "/filtered_id.pickle")

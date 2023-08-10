@@ -4,7 +4,7 @@
 
 from Design import Design
 
-from const_project import DIRS_INI_RES, FILE_SA_PARAM_LIST
+from const_project import DIRS_INI_RES, FILE_SA_PARAM_LIST, DIRS_DATA_TOPO
 from const_sensi import FILE_SA_VARY_SOBOL, FILE_SA_VARY_MORRIS, DIRS_DATA_SA, DIRS_DATA_SA_RES, DIRS_DATA_SA_FIG
 from const_sensi import SA_CALC_SECOND_ORDER, DIRS_DATA_SA, N_LEVEL_MORRIS
 from const_sensi import K_LEVEL_PARAMETER, NAME_FLOOR
@@ -197,7 +197,7 @@ def testSensi_sobol_weighted(build_design=False, calc_index=False, plot_index=Fa
     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
 
 
-def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=False, pad_constant_sign=0):
+def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=False, beta_coef_reduction=1):
     
     if build_design:
         buildDesigns(FILE_SA_VARY_MORRIS, DIRS_DATA_SA_RES, DIRS_DATA_SA)
@@ -208,6 +208,11 @@ def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=F
     sa_problem = load_dict(DIRS_DATA_SA+"/sa_problem.pickle")
 
     sa_indices_all = dict()
+    
+    filtered_ids = load_dict(DIRS_DATA_TOPO + "/filtered_id.pickle")
+
+    tuned_y_all_rules = []
+    tuned_comp_all_rules = []
 
     for rl in DesignIni.rules:
         
@@ -221,43 +226,69 @@ def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=F
 
             for tgt in DesignIni.results[rl].keys():
                 
-                # tune the overall y value.
+                # only for the specific floor.
+                if tgt in filtered_ids:
+                    
+                    # tune the overall y value.
+                    # ini True & new True.
+                    if DesignIni.results[rl][tgt]['distance'] >= 0 and new_design.results[rl][tgt]['distance'] >= 0:
+                        tuned_y = (new_design.results[rl][tgt]['distance']) * (beta_coef_reduction)
 
-                # ini True & new True.
-                if DesignIni.results[rl][tgt]['distance'] >= 0 and new_design.results[rl][tgt]['distance'] >= 0:
-                    tuned_y = (new_design.results[rl][tgt]['distance']) * (1-pad_constant_sign)
+                    else:
+                        tuned_y = (new_design.results[rl][tgt]['distance']) * 1
 
-                # ini True & new False. or  ini False & new True. 
-                elif DesignIni.results[rl][tgt]['distance'] * new_design.results[rl][tgt]['distance'] < 0:
-                    tuned_y = (new_design.results[rl][tgt]['distance']) * 1
+                    # # ini True & new False. or  ini False & new True. 
+                    # elif DesignIni.results[rl][tgt]['distance'] * new_design.results[rl][tgt]['distance'] < 0:
+                    #     tuned_y = (new_design.results[rl][tgt]['distance']) * 1
 
-                # ini False & new False.
-                elif DesignIni.results[rl][tgt]['distance'] < 0 and new_design.results[rl][tgt]['distance'] < 0:
-                    tuned_y = (new_design.results[rl][tgt]['distance']) * (1-pad_constant_sign)
+                    # # ini False & new False.
+                    # elif DesignIni.results[rl][tgt]['distance'] < 0 and new_design.results[rl][tgt]['distance'] < 0:
+                    #     tuned_y = (new_design.results[rl][tgt]['distance']) * (beta_coef_reduction)
 
-                # # only count when they're different.
-                # if DesignIni.results[rl][tgt]['distance'] != new_design.results[rl][tgt]['distance']:
-                tuned_y_per_design += tuned_y
+                    tuned_y_per_design += tuned_y
 
-                # summarize the compliance results.
-                if new_design.results[rl][tgt]['compliance'] == True:
-                    continue
+                    # summarize the compliance results.
+                    if new_design.results[rl][tgt]['compliance'] == True:
+                        continue
+                    else:
+                        tuned_comp_per_design = 0
+
                 else:
-                    tuned_comp_per_design = 0
-
-            tuned_y_per_rule.append(tuned_y_per_design) #  y value: do sth here to improve the 'deviation data'.
+                    # not for other floors.
+                    continue
+            
+            # sum for each rule. so each tgt is counted as equal weight.
+            tuned_y_per_rule.append(tuned_y_per_design)
             tuned_comp_per_rule.append(tuned_comp_per_design) # compliance results:
         
         # the overall y value.
         input_x_txt = DIRS_DATA_SA + '/sa_values_morris.txt'
-        result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '_pad_' + str(pad_constant_sign) + '.txt'
+        result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '_beta_' + str(beta_coef_reduction) + '.txt'
         np.savetxt(result_y_txt, tuned_y_per_rule)
 
-        # the the overall compliance results.
+        # the overall compliance results.
         result_comp_txt = DIRS_DATA_SA_RES + '/results_compliance_' + rl + '.txt'
         np.savetxt(result_comp_txt, tuned_comp_per_rule)
+
+        # calculate the sensitivity indices per rules.
         if calc_index:
             tempo_indices = calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index)
             sa_indices_all.update({rl: tempo_indices})
 
-    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices_pad_' + str(pad_constant_sign) + '.pickle')
+        # append to all rules
+        tuned_y_all_rules.append(tuned_y_per_rule)
+        tuned_comp_all_rules.append(tuned_comp_per_rule)
+    
+    # calculated for all rules
+    rl = 'IBC_all'
+    tuned_y_all_rules_T = pd.DataFrame(tuned_y_all_rules).T.values.tolist()
+    tuned_y_all_rules_T = [sum(sublist)/len(sublist) for sublist in tuned_y_all_rules_T]
+    result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + rl + '_beta_' + str(beta_coef_reduction) + '.txt'
+    np.savetxt(result_y_txt, tuned_y_all_rules_T)
+    
+    tuned_comp_all_rules_T = pd.DataFrame(tuned_comp_all_rules).T.values.tolist()
+    tuned_comp_all_rules_T = [int(all(sublist)) for sublist in tuned_comp_all_rules_T]
+    result_comp_txt = DIRS_DATA_SA_RES + '/results_compliance_' + rl + '.txt'
+    np.savetxt(result_comp_txt, tuned_comp_all_rules_T)
+
+    save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices_beta_' + str(beta_coef_reduction) + '.pickle')

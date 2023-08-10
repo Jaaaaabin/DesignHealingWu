@@ -350,12 +350,12 @@ def morris_covariance_plot(
             ax.annotate(
                 txt,
                 (Si[plotmu][i], y[i]),
-                xytext=(Si[plotmu][i]*0.95, y[i]*0.95),
+                xytext=(Si[plotmu][i]*0.85, y[i]*0.85),
                 fontsize=annotate_size)
 
         ax.set_ylabel(r'$\sigma$')
 
-        ax.set_xlim(-0.875,0.875)
+        ax.set_xlim(-1.0,1.0)
         ax.set_ylim(0.0,)
 
         x_axis_bounds = np.array(ax.get_xlim())

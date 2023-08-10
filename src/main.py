@@ -25,7 +25,11 @@ if __name__ == "__main__":
     #=================================#
     # # EXECUTION_NR = 34
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
-    testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, pad_constant_sign=0.5)
+    
+    # testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=0)
+
+    for beta in [1, 0.5, 0]: # final figures are for the last element.
+        testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta)
 
     # EXECUTION_NR = 39
     # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)

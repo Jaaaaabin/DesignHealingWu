@@ -10,13 +10,12 @@ BOUNDARY_VALUES = BOUNDARY_VALUES_LIST[int(EXECUTION_NR%5-1)]
 SET_SA_DISTRIBUTION ="unif"         # "unif", "norm"
     
 NAME_FLOOR = 'U1_OK'
-NAME_FAILURES = ['2SzsE5m8T4h9JlM6XpBSn3','2SzsE5m8T4h9JlM6XpBSnd']
 
 #=================================#
 #           graphEnrich           #
 #=================================#
 # initial parameter selction via neighborhood levels.
-K_LEVEL_PARAMETER = int(EXECUTION_NR/10) #= 1 , 3 , 5
+K_LEVEL_PARAMETER = int(EXECUTION_NR/10) #= 1 2 3
 
 DIRS_DATA_SA = DIRS_DATA + r'\sa-' + str(EXECUTION_NR) + '-' + str(BOUNDARY_VALUES)
 FILE_SA_VARY_SOBOL = DIRS_DATA_SA + r'\sa_vary_sobol.csv'
