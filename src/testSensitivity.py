@@ -78,84 +78,6 @@ def calIndex_sobol(sa_problem, rl, plot_index=False):
     return all_indices
 
 
-# def testSensi_sobol(build_design=False, calc_index=False, plot_index=False):
-    
-#     if build_design:
-#         buildDesigns(FILE_SA_VARY_SOBOL, DIRS_DATA_SA_RES, DIRS_DATA_SA)
-
-#     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
-#     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
-
-#     sa_problem = load_dict(DIRS_DATA_SA+"/sa_problem.pickle")
-
-#     sa_indices_all = dict()
-#     for tgt in DesignIni.failures.keys():
-
-#         if tgt in NAME_FAILURES:
-
-#             sa_indices_one = dict()
-#             for rl in DesignIni.failures[tgt]:
-#                 tempo_result = [design.data[tgt][rl]['distance'] for design in DesignsNew]
-#                 result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + tgt + '_' + rl + '.txt'
-#                 np.savetxt(result_y_txt,tempo_result)
-                
-#                 # for every pair of target & rule.
-#                 if calc_index:
-#                     tempo_indices = calIndex_sobol(sa_problem, tgt, rl, plot_index)
-#                     sa_indices_one.update({rl: tempo_indices})
-
-#             sa_indices_all.update({tgt: sa_indices_one})
-        
-#     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
-
-
-def calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index=False):
-
-    all_indices = execute_sa_morris(
-        DIRS_DATA_SA_FIG,
-        sa_problem,
-        rl,
-        input_x_txt,
-        result_y_txt,
-        N_LEVEL_MORRIS,
-        plot_index,
-        )
-
-    return all_indices
-
-
-# def testSensi_morris(build_design=False, calc_index=False, plot_index=False):
-    
-#     if build_design:
-#         buildDesigns(FILE_SA_VARY_MORRIS, DIRS_DATA_SA_RES, DIRS_DATA_SA)
-    
-#     DesignIni = load_dict(DIRS_DATA_SA + r'\DesignIni.pickle')
-#     DesignsNew = load_dict(DIRS_DATA_SA + r'\DesignsNew.pickle')
-
-#     sa_problem = load_dict(DIRS_DATA_SA+"/sa_problem.pickle")
-
-#     sa_indices_all = dict()
-#     for tgt in DesignIni.failures.keys():
-
-#         if tgt in NAME_FAILURES:
-
-#             sa_indices_one = dict()
-#             for rl in DesignIni.failures[tgt]:
-#                 tempo_result = [design.data[tgt][rl]['distance'] for design in DesignsNew]
-#                 result_y_txt = DIRS_DATA_SA_RES + '/results_y_' + tgt + '_' + rl + '.txt'
-#                 np.savetxt(result_y_txt,tempo_result)
-                
-#                 # for every pair of target & rule.
-#                 if calc_index:
-#                     tempo_indices = calIndex_morris(sa_problem, tgt, rl, plot_index)
-#                     sa_indices_one.update({rl: tempo_indices})
-
-#             sa_indices_all.update({tgt: sa_indices_one})
-    
-#     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_morris_indices.pickle')
-
-
-#new---------------------------------------------------------------------------------
 def testSensi_sobol_weighted(build_design=False, calc_index=False, plot_index=False):
     
     if build_design:
@@ -195,6 +117,25 @@ def testSensi_sobol_weighted(build_design=False, calc_index=False, plot_index=Fa
             sa_indices_all.update({rl: tempo_indices})
 
     save_dict(sa_indices_all, DIRS_DATA_SA + r'\sa_sobol_indices.pickle')
+
+
+#new---------------------------------------------------------------------------------
+
+
+def calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index=False, beta=1):
+
+    all_indices = execute_sa_morris(
+        DIRS_DATA_SA_FIG,
+        sa_problem,
+        rl,
+        input_x_txt,
+        result_y_txt,
+        N_LEVEL_MORRIS,
+        plot_index,
+        beta=beta,
+        )
+
+    return all_indices
 
 
 def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=False, beta_coef_reduction=1):
@@ -272,7 +213,7 @@ def testSensi_morris_weighted(build_design=False, calc_index=False, plot_index=F
 
         # calculate the sensitivity indices per rules.
         if calc_index:
-            tempo_indices = calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index)
+            tempo_indices = calIndex_morris(sa_problem, rl, input_x_txt, result_y_txt, plot_index, beta=beta_coef_reduction)
             sa_indices_all.update({rl: tempo_indices})
 
         # append to all rules

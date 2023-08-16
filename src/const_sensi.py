@@ -47,5 +47,7 @@ N_TRAJ_MORRIS = 200
 # 8 for level 1..; 32 for level 5..
 N_OPT_TRAJ_MORRIS = 64
 
+# totoal number  = 9*64 = 576.
+
 # how to choose Num_level and Num_traj.
 # https://www.researchgate.net/post/How_to_choose_number_of_trajectories_in_Elementary_Effects_Test_Morris_Screening

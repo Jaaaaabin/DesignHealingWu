@@ -6,10 +6,9 @@
 
 from base_external_packages import *
 from const_project import EXECUTION_NR
-from const_sensi import N_LEVEL_MORRIS, DIRS_DATA, DIRS_DATA_SA
+from const_sensi import N_LEVEL_MORRIS, DIRS_DATA_SA, DIRS_DATA_SA_FIG
 from funct_data import load_dict, save_dict, stnd_nrml
 from const_ibcrule import BUILDING_RULES, BUILDING_RULES_ALL
-
 
 # standarlization and normalization will not help.
 # pd_X = pd.DataFrame(X)
@@ -87,66 +86,68 @@ def morris_horizontal_bar_plot(
 
     return out
 
-sa_betas = [1, 0.5, 0]
-sa_bdry_colors = ['navy', 'royalblue', 'cyan'] # 'orange' #'darkgoldenrod'
-y_limit_c = 0.30
-y_height = (y_limit_c*2)/(len(sa_bdry_colors)-1)
-y_locs = np.linspace(-y_limit_c, y_limit_c, num=len(sa_bdry_colors)).tolist()
+
+# calculation.
+def summarizeSensi():
+
+    # summarizing plot settings.
+    sa_betas = [1, 0.5, 0]
+    sa_bdry_colors = ['navy', 'royalblue', 'cyan'] # 'orange' #'darkgoldenrod'
+    y_limit_c = 0.30
+    y_height = (y_limit_c*2)/(len(sa_bdry_colors)-1)
+    y_locs = np.linspace(-y_limit_c, y_limit_c, num=len(sa_bdry_colors)).tolist()
+
+    # data extraction
+    sa_problem = DIRS_DATA_SA + r'\sa_problem.pickle'
+    X = np.loadtxt(DIRS_DATA_SA + r'\sa_values_morris.txt')
+    Ys = [[DIRS_DATA_SA + r'\res\results_y_' +  rl  + '_beta_' + str(beta) + '.txt' for beta in sa_betas] for rl in BUILDING_RULES_ALL]
+    sa_indices_all = dict()
+
+    for plot_mu in ['mu', 'mu_star']:
+
+        sa_indices_type = dict()
+        
+        for rl, ys in zip(BUILDING_RULES_ALL, Ys):
+            
+            fig = plt.figure(figsize=(10,5))  # unit of inch
+            ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
+            sa_indices = dict()
+
+            for (y, y_loc, beta, bdry_color) in zip(ys, y_locs, sa_betas, sa_bdry_colors):
+
+                # load
+                problem = load_dict(sa_problem)
+                Y = np.loadtxt(y, float)
+
+                # calculate Si
+                Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=N_LEVEL_MORRIS)
+
+                # default plot
+                bar = morris_horizontal_bar_plot(
+                    ax,
+                    Si,
+                    plot_mu, # plot by mu or mu_star
+                    y_loc=y_loc,
+                    bcolor=bdry_color,
+                    bheight=y_height,
+                    lwidth=0.5,
+                    alpah=0.80,
+                    )
+                sa_indices.update({beta: Si})
+
+                bar.set_label(r'$\beta = {}$'.format(beta))
+                plt.legend(loc='lower right')
+                plt.savefig(DIRS_DATA_SA_FIG + r'\{nr}_{sort}_{failure}.png'.format(
+                    nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=200)
+            
+            sa_indices_type.update({rl: sa_indices})
+            save_dict(sa_indices_type, DIRS_DATA_SA + r'\sa_morris_indices_' + str(plot_mu) + '.pickle')
+
+        sa_indices_all.update({plot_mu: sa_indices_type})
+
 
 # sa_sum_dict = dict()
 # for bt in sa_betas:
 #     test_dict = load_dict(DIRS_DATA_SA+r'\sa_morris_indices_beta_'+str(bt) + r'.pickle')
 #     test_dict_bt = {test_dict['IBC1020_2']['names'][k]: test_dict['IBC1020_2']['mu'][k] +test_dict['IBC1207_1']['mu'][k] + test_dict['IBC1207_3']['mu'][k] for k in np.arange(len(test_dict['IBC1020_2']['names']))}
 #     sa_sum_dict.update({bt: test_dict_bt})
-
-sa_problem = DIRS_DATA_SA + r'\sa_problem.pickle'
-input_x = DIRS_DATA_SA + r'\sa_values_morris.txt'
-X = np.loadtxt(input_x)
-
-result_ys = [[DIRS_DATA_SA + r'\res\results_y_' +  rl  + '_beta_' + str(beta) + '.txt' for beta in sa_betas] for rl in BUILDING_RULES_ALL]
-
-sa_indices_all = dict()
-
-for plot_mu in ['mu', 'mu_star']:
-
-    sa_indices_type = dict()
-    
-    for rl, ys in zip(BUILDING_RULES_ALL, result_ys):
-        
-        fig = plt.figure(figsize=(10,5))  # unit of inch
-        ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
-        sa_indices = dict()
-
-        for i, (y, y_loc, beta, bdry_color) in enumerate(zip(ys, y_locs, sa_betas, sa_bdry_colors)):
-
-            # load
-            problem = load_dict(sa_problem)
-            Y = np.loadtxt(y, float)
-
-            # calculate Si
-            Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=N_LEVEL_MORRIS)
-
-            # default plot
-            bar = morris_horizontal_bar_plot(
-                ax,
-                Si,
-                plot_mu, # plot by mu or mu_star
-                y_loc=y_loc,
-                bcolor=bdry_color,
-                bheight=y_height,
-                lwidth=0.5,
-                alpah=0.80,
-                )
-            sa_indices.update({beta: Si})
-
-            bar.set_label(r'$\beta = {}$'.format(beta))
-            plt.legend(loc='lower right')
-            plt.savefig(r'C:\dev\phd\ModelHealer\data\{nr}_{sort}_{failure}.png'.format(
-                nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=200)
-        
-        sa_indices_type.update({rl: sa_indices})
-        save_dict(sa_indices_type, DIRS_DATA + r'\sa_morris_indices_' + str(plot_mu) + '.pickle')
-
-    sa_indices_all.update({plot_mu: sa_indices_type})
-
-print('edn')

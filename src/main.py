@@ -8,8 +8,9 @@ from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
 from prepareVariation import prepareSAVariants
-from testSensitivity import testSensi_morris_weighted, testSensi_sobol_weighted
-from formSpace import formSolutionSpace, buildDesignInSpace
+from testSensitivity import testSensi_morris_weighted
+from summarizeSensitivity import summarizeSensi
+from formSpace import formSolutionSpaceNew, buildDesignInSpace
 
 if __name__ == "__main__":
 
@@ -23,13 +24,17 @@ if __name__ == "__main__":
     #=================================#
     #                 sa              #
     #=================================#
-    # # EXECUTION_NR = 34
-    # prepareSAVariants(sa_type = 'morris', set_dup_rvt = True)
-    
-    # testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=0)
+    # EXECUTION_NR = 34
 
-    for beta in [1, 0.5, 0]: # final figures are for the last element.
-        testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta)
+    # prepareSAVariants(sa_type = 'morris', set_dup_rvt = False)
+
+    # for beta in [1, 0.5, 0]: # final figures are for the last element.
+    #     testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta)
+
+    # summarizeSensi()
+    # formSolutionSpaceNew(['\sa-34-0.3'], set_evolve_space = False, set_dup_rvt = True, set_new_space = True)
+    buildDesignInSpace()
+    # formSolutionSpaceNew(['\sa-34-0.3', '\ss-134-1'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
 
     # EXECUTION_NR = 39
     # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)
@@ -40,18 +45,9 @@ if __name__ == "__main__":
     #=================================#
     # EXECUTION_NR = 100 + (14, 54, 19, 59)
     
-    # ITERATION-1
-    # formSolutionSpace(['\sa-34-0.3'], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
-    # buildDesignInSpace()
-
-    # ITERATION-2
     # formSolutionSpace(['\sa-14-0.3', '\ss-114-1'], sweep_config = [4, 0.1], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
     # buildDesignInSpace()
     
-    # ITERATION-3
-    # formSolutionSpace(['\sa-14-0.3', '\ss-114-1', '\ss-114-2'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
-    # buildDesignInSpace()
-
     #=================================#
     #                cls              #
     #=================================#

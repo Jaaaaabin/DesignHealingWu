@@ -30,17 +30,17 @@ def load_ndarray_txt(filename):
 
 
 def get_problems_from_paths(
-    paths, file_end='.txt', file_start = 'results_y_', file_sep = '_'):
+    paths, file_end='.txt', file_start = 'results_compliance_', file_sep = '_'):
 
     problems = []
 
     for file in os.listdir(paths):
-        if file.endswith(file_end):
+        if file.endswith(file_end) and file.startswith(file_start):
             problems.append(os.path.join(file))
 
     problems = [txt.replace(file_start,'') for txt in problems]
     problems = [txt.replace(file_end,'') for txt in problems]
-    problems = [txt.split(file_sep, 1) for txt in problems]
+    # problems = [txt.split(file_sep, 1) for txt in problems]
 
     return problems
 

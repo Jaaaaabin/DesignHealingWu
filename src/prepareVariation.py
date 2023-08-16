@@ -13,6 +13,14 @@ from const_sensi import SA_CALC_SECOND_ORDER, BOUNDARY_VALUES, SET_SA_DISTRIBUTI
 from funct_data import  create_directory, duplicateRVT, checkSampleDuplication
 from funct_sensi import *
 
+
+def filterFloorLevel():
+    # filter the building elements to a specific floor (for now only for space.)
+    element_filter_bylevel = pd.read_csv(DIRS_DATA_TOPO + r'\df_space.csv', index_col ='ifcguid')
+    element_filter_bylevel_ids = element_filter_bylevel.index[element_filter_bylevel['level'] == NAME_FLOOR].tolist()
+    save_dict(element_filter_bylevel_ids, DIRS_DATA_TOPO + "/filtered_id.pickle")
+
+
 def prepareSAVariants(
     sa_type=[], set_dup_rvt=False):
     
@@ -77,9 +85,3 @@ def prepareSAVariants(
         
         if set_dup_rvt:
             duplicateRVT(FILE_INIT_SKL_RVT, DIRS_DATA_SA_DUP, amount=sa_values_morris.shape[0], clear_destination=True)
-
-
-# filter the building elements to a specific floor (for now only for space.)
-element_filter_bylevel = pd.read_csv(DIRS_DATA_TOPO + r'\df_space.csv', index_col ='ifcguid')
-element_filter_bylevel_ids = element_filter_bylevel.index[element_filter_bylevel['level'] == NAME_FLOOR].tolist()
-save_dict(element_filter_bylevel_ids, DIRS_DATA_TOPO + "/filtered_id.pickle")

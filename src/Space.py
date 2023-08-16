@@ -22,8 +22,7 @@ class SolutionSpace():
         
         problem = np.array(problem).T.tolist() if len(problem) > 1 else problem
 
-        self.guid = problem[0]                          # ifcguid.
-        self.rule = problem[1]                          # rule.
+        self.rule = problem                             # rule.
         self.ini_parameters = dict()                    # initial parameters and their values.
         self.ini_results = []                           # initial checking results.
         self.data_X_Y = pd.DataFrame()                  # major database.
@@ -32,6 +31,11 @@ class SolutionSpace():
         self.evolve_samples = pd.DataFrame()            # new samples within the evolvement.
         self.sweep_density = 2
         self.sweep_ext_pad = 0.1
+        self.sensitivity = dict()
+        self.sensitivity_sign = dict()
+        self.samples_by_skewnormal = pd.DataFrame()
+        self.samples_by_lhs = pd.DataFrame()
+
 
         # self.data_X = np.empty(1, dtype=np.float32)
         # self.data_Y = np.empty(1, dtype=np.float32)
@@ -54,25 +58,60 @@ class SolutionSpace():
           Initial Results: {self.ini_results}
       """  
     
+    def _calculate_cosine_distance(self, a, b):
+        cosine_distance = float(spatial.distance.cosine(list(a), list(b)))
+        return cosine_distance
+
+
+    def _skewnormal_sampling(self, param_name, delta_loc, alpha, random_seed, num_samples=100, plot_sampling=False, plot_dirs=[]):
+        
+        np.random.seed(random_seed)
+        loc = self.ini_parameters[param_name]
+        samples = skewnorm.rvs(alpha, loc=loc, scale=delta_loc/3, size=num_samples, random_state=random_seed)
+
+        if plot_sampling:
+
+            # # Plot a histogram of the generated samples
+            fig = plt.figure(figsize=(10,5))  # unit of inch
+            ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
+
+            plt.hist(samples, bins=25, density=True, color='g', label='Sampled Data')
+            x = np.linspace(min(samples), max(samples), 100)
+            pdf = skewnorm.pdf(x, alpha, loc=loc, scale=delta_loc/3)
+            plt.plot(x, pdf, 'r', label='Skew Normal PDF')
+            plt.axvline(x=loc-delta_loc,c='black')
+            plt.axvline(x=loc+delta_loc,c='black')
+            plt.axvline(x=loc,c='blue')
+            plt.xlabel(str(param_name) + 'values')
+            plt.ylabel('Probability Density')
+            plt.title('Sampling from Skew Normal Distribution')
+            plt.legend()
+            plt.savefig(plot_dirs + '/sampling_skewnormal_delta_{}_alpha_{}_param_{}.png'.format(delta_loc, alpha, param_name), dpi=200)
+            
+
+        return samples
+
 
     def set_center(self, iniDesign):
 
         self.ini_parameters = iniDesign.parameters
         
-        if not isinstance(self.guid, list) and not isinstance(self.rule, list):
+        # if not isinstance(self.guid, list) and not isinstance(self.rule, list):
 
-            self.ini_results = iniDesign.data[self.guid][self.rule]
-            self.ini_results = [self.guid, self.rule, self.ini_results]
+        #     self.ini_results = iniDesign.data[self.guid][self.rule]
+        #     self.ini_results = [self.guid, self.rule, self.ini_results]
 
-        elif isinstance(self.guid, list) and isinstance(self.rule, list):
-            if len(self.guid) == len(self.rule):
-                self.ini_results = []
-                for gd, rl in zip(self.guid, self.rule):
-                    self.ini_results.append([gd, rl, iniDesign.data[gd][rl]])
-            else:
-                print ('number of IfcGUID and Rule should be equal')
-    
+        # elif isinstance(self.guid, list) and isinstance(self.rule, list):
+        #     if len(self.guid) == len(self.rule):
+        #         self.ini_results = []
+        #         for gd, rl in zip(self.guid, self.rule):
+        #             self.ini_results.append([gd, rl, iniDesign.data[gd][rl]])
+        #     else:
+        #         print ('number of IfcGUID and Rule should be equal')
 
+
+    # ----------------------
+    # to improve.
     def form_space(self, newDesigns):
 
         columns_X = list(self.ini_parameters.keys())
@@ -112,7 +151,80 @@ class SolutionSpace():
         for cl in columns_Y_qual:
             self.valid_idx.update({
                 cl: self.data_X_Y.index[self.data_X_Y[cl]].tolist()})
+    # ----------------------
 
+    def enrich_sensitivity(self, indicesSA=dict(), key_sign_rule=[], val_tol = 1e-3):
+
+        # self.sensitivity
+        for rl in self.rule:
+            
+            sensi_per_rule = dict()
+            sensi_per_rule.update(
+                {param: [param_mu, sigma] for (param, param_mu, sigma, param_mu_star) in \
+                 zip(indicesSA[rl]['names'],indicesSA[rl]['mu'],indicesSA[rl]['sigma'],indicesSA[rl]['mu_star']) if param_mu_star > val_tol})
+            
+            self.sensitivity.update({rl: sensi_per_rule})
+        
+        # self.sensitivity_sign
+        if key_sign_rule in self.rule:
+
+            for k,v in self.sensitivity[key_sign_rule].items():
+                if (v[0]+v[1])*(v[0]-v[1])>=0 or abs(abs(v[0])-abs(v[1])) <= val_tol:
+                    sensi_sign = v[0]/abs(v[0])
+                else:
+                    sensi_sign = 0
+                self.sensitivity_sign.update({k: sensi_sign})
+
+
+    def explore_space_by_skewnormal(self, alpha_ratio=3, explore_range=0.3, num_samples=200, random_seed=1996, plot_dirs=[]):
+
+        k_list , v_list= [],[]
+
+        for k,v in self.sensitivity_sign.items():
+
+            k_list.append(k)
+            v_alpha = v*alpha_ratio
+
+            np.random.seed(random_seed)
+            new_v = self._skewnormal_sampling(
+                param_name=k,
+                delta_loc=explore_range,
+                alpha=v_alpha,
+                random_seed=random_seed,
+                num_samples=num_samples,
+                plot_sampling=True,
+                plot_dirs=plot_dirs)
+            
+            np.random.shuffle(new_v)
+            
+            random_seed+=1
+            v_list.append(new_v)
+
+        self.samples_by_skewnormal = pd.DataFrame(np.array(v_list).T,columns=k_list).T
+
+
+    def explore_space_by_lhs(self, explore_range=0.3, num_samples=200, random_seed=1996, plot_dirs=[]):
+
+        np.random.seed(random_seed)
+
+        explore_ranges_l, explore_ranges_u = [], []
+        for k,v in self.sensitivity_sign.items():
+
+            if v==0:
+                explore_ranges_l.append(self.ini_parameters[k]-explore_range)
+                explore_ranges_u.append(self.ini_parameters[k]+explore_range)
+            elif v>0:
+                explore_ranges_l.append(self.ini_parameters[k])
+                explore_ranges_u.append(self.ini_parameters[k]+explore_range)
+            elif v<0:
+                explore_ranges_l.append(self.ini_parameters[k]-explore_range)
+                explore_ranges_u.append(self.ini_parameters[k])
+        
+        lh = qmc.LatinHypercube(d=len(explore_ranges_l), scramble=False, optimization='random-cd', seed=random_seed)
+        lhs_samples = lh.random(n=num_samples)
+        samples = qmc.scale(lhs_samples, explore_ranges_l, explore_ranges_u)
+        
+        self.samples_by_lhs = pd.DataFrame(samples, columns=self.sensitivity_sign.keys()).T
 
     def enrich_space(self, divide_label_x=[], divide_label_y=[]):
 
@@ -145,7 +257,7 @@ class SolutionSpace():
             samples         [number_of_targets * sweep_density, n_parameter]
             """
             def random_even_samp_vm2vn(vm, vn, amount, ext_pad): # np.random.uniform
-                random.seed(2023)
+                random.seed(1996)
                 random_factors = np.random.uniform(
                     low=0-ext_pad, high=1+ext_pad, size=amount) 
                 samples =  np.array([vm + random_factor*(vn-vm) for random_factor in random_factors])

@@ -30,6 +30,8 @@ from sklearn.cluster import KMeans
 from sklearn import svm, metrics
 from sklearn.metrics import silhouette_samples, silhouette_score
 from collections import namedtuple
+from scipy.stats import skewnorm, truncnorm, qmc
+from scipy import spatial
 
 import copy
 import csv

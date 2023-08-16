@@ -94,6 +94,7 @@ def execute_sa_morris(
     y_result_txt,
     num_levels=6,
     plot_res=False,
+    beta=1,
     ):
 
     X = np.loadtxt(input_x_txt)
@@ -114,6 +115,7 @@ def execute_sa_morris(
             Si,
             input_sample=X,
             problem=problem,
+            beta=beta,
             )
           
     return Si
