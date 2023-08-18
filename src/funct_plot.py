@@ -56,25 +56,24 @@ def boxplot_sample_variation(dirs_fig, sa_samples_df):
     plt.savefig(dirs_fig+'/SA_sample_variations.png', dpi=200)
 
 
-def plot_sa_parallel_parameters(dirs_fig, sa_samples_df):
+# new
+def plot_parallel_parameters(dirs_fig, samples_df):
     """
     Plot parallel coordinates.
 
     """
 
     tm_identity = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-    plot_name = '/SA_parallel_parameters_' + tm_identity
+    plot_name = r'\Parallel_parameters_' + tm_identity
 
-    tempo_sa_samples_df = copy.deepcopy(sa_samples_df)
-    clmns = tempo_sa_samples_df.columns
+    tempo_samples_df = copy.deepcopy(samples_df)
+    clmns = tempo_samples_df.columns
     
-    # label the initial design.
-    type_s = pd.Series(np.array(['initial']+['adjusted']*(tempo_sa_samples_df.shape[0]-1)), name='type')
-    tempo_sa_samples_df = pd.concat([tempo_sa_samples_df,type_s], axis=1) # model type (initial or adjusted)
+    # label the initial design
 
     fig = px.parallel_coordinates(
-        tempo_sa_samples_df,
-        # color='type',
+        tempo_samples_df,
+        color='type',
         dimensions=clmns,
         color_continuous_scale=px.colors.diverging.RdYlGn,
         width=1500,

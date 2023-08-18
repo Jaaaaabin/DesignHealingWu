@@ -22,6 +22,7 @@ class SolutionSpace():
         
         problem = np.array(problem).T.tolist() if len(problem) > 1 else problem
 
+        self.guids = []                                 # filtered guids. (including spaces and all other building elements)
         self.rule = problem                             # rule.
         self.ini_parameters = dict()                    # initial parameters and their values.
         self.ini_results = []                           # initial checking results.
@@ -35,10 +36,14 @@ class SolutionSpace():
         self.sensitivity_sign = dict()
         self.samples_by_skewnormal = pd.DataFrame()
         self.samples_by_lhs = pd.DataFrame()
+        self.valid_set_x = dict()
 
+    def ___setcenter__(self, iniDesign):
 
-        # self.data_X = np.empty(1, dtype=np.float32)
-        # self.data_Y = np.empty(1, dtype=np.float32)
+        self.ini_parameters = iniDesign.parameters
+
+    def ___setguids__(self, guidlist):
+        self.guids = guidlist
 
     @property
     def strQuant(self):
@@ -52,7 +57,7 @@ class SolutionSpace():
     def __str__(self):
       return f"""
       Solution Space:
-          IfcGUID: {self.guid}
+          IfcGUID: {self.guids}
           Rule: {self.rule}
           Initial Parameters: {self.ini_parameters}
           Initial Results: {self.ini_results}
@@ -87,71 +92,9 @@ class SolutionSpace():
             plt.title('Sampling from Skew Normal Distribution')
             plt.legend()
             plt.savefig(plot_dirs + '/sampling_skewnormal_delta_{}_alpha_{}_param_{}.png'.format(delta_loc, alpha, param_name), dpi=200)
-            
-
+    
         return samples
 
-
-    def set_center(self, iniDesign):
-
-        self.ini_parameters = iniDesign.parameters
-        
-        # if not isinstance(self.guid, list) and not isinstance(self.rule, list):
-
-        #     self.ini_results = iniDesign.data[self.guid][self.rule]
-        #     self.ini_results = [self.guid, self.rule, self.ini_results]
-
-        # elif isinstance(self.guid, list) and isinstance(self.rule, list):
-        #     if len(self.guid) == len(self.rule):
-        #         self.ini_results = []
-        #         for gd, rl in zip(self.guid, self.rule):
-        #             self.ini_results.append([gd, rl, iniDesign.data[gd][rl]])
-        #     else:
-        #         print ('number of IfcGUID and Rule should be equal')
-
-
-    # ----------------------
-    # to improve.
-    def form_space(self, newDesigns):
-
-        columns_X = list(self.ini_parameters.keys())
-        columns_Y_quant, columns_Y_qual = [], []
-
-        for ini_result in self.ini_results:
-            columns_Y_quant.append(
-                self.strQuant + '-' + ini_result[0] + '-' + ini_result[1])
-            columns_Y_qual.append(
-                self.strQual + '-' + ini_result[0] + '-' + ini_result[1])
-
-        columns_X_Y = columns_X.copy()
-        columns_X_Y += columns_Y_quant
-        columns_X_Y += columns_Y_qual
-        
-        data_X, data_Y_quant, data_Y_qual = [], [], []
-        for i, design in enumerate(newDesigns):
-
-            data_X.append(list(design.parameters.values()))
-            data_y_quant, data_y_qual = [], []
-            for gd, rl in zip(self.guid, self.rule):
-                data_y_quant.append(design.data[gd][rl][self.strQuant])
-                data_y_qual.append(design.data[gd][rl][self.strQual])
-            data_Y_quant.append(data_y_quant)
-            data_Y_qual.append(data_y_qual)
-        
-        data_Y_quant_sum = [sum(data_y_quant) for data_y_quant in data_Y_quant]
-        data_Y_qual_sum = [all(data_y_qual) for data_y_qual in data_Y_qual]
-        list_X_Y = [[*X, *Y_quant, *Y_qual] for X, Y_quant, Y_qual in zip(data_X, data_Y_quant, data_Y_qual)]
-        
-        self.data_X_Y = pd.DataFrame(list_X_Y, columns=columns_X_Y)
-        self.data_X_Y[self.strQuant] = data_Y_quant_sum
-        self.data_X_Y[self.strQual] = data_Y_qual_sum
-
-        self.valid_idx.update({
-            self.strQual: self.data_X_Y.index[self.data_X_Y[self.strQual]].tolist()})
-        for cl in columns_Y_qual:
-            self.valid_idx.update({
-                cl: self.data_X_Y.index[self.data_X_Y[cl]].tolist()})
-    # ----------------------
 
     def enrich_sensitivity(self, indicesSA=dict(), key_sign_rule=[], val_tol = 1e-3):
 
@@ -203,44 +146,156 @@ class SolutionSpace():
         self.samples_by_skewnormal = pd.DataFrame(np.array(v_list).T,columns=k_list).T
 
 
-    def explore_space_by_lhs(self, explore_range=0.3, num_samples=200, random_seed=1996, plot_dirs=[]):
+    def explore_space_by_lhs(self, explore_range, lhs_optimization, num_samples, random_seed=1996, plot_dirs=[]):
 
         np.random.seed(random_seed)
 
         explore_ranges_l, explore_ranges_u = [], []
-        for k,v in self.sensitivity_sign.items():
 
-            if v==0:
-                explore_ranges_l.append(self.ini_parameters[k]-explore_range)
-                explore_ranges_u.append(self.ini_parameters[k]+explore_range)
-            elif v>0:
-                explore_ranges_l.append(self.ini_parameters[k])
-                explore_ranges_u.append(self.ini_parameters[k]+explore_range)
-            elif v<0:
-                explore_ranges_l.append(self.ini_parameters[k]-explore_range)
-                explore_ranges_u.append(self.ini_parameters[k])
+        # if the exploration range is from a determined list.
+        if isinstance(explore_range, str):
+
+            with open(explore_range, 'rb') as handle:
+                explore_range_dict = pickle.load(handle)
+            for k in self.sensitivity_sign.keys():
+                explore_ranges_l.append(explore_range_dict[k][0])
+                explore_ranges_u.append(explore_range_dict[k][1])
+
+        # if the exploration range is an assumed fixed value.
+        else:
+
+            for k,v in self.sensitivity_sign.items():
+                if v==0:
+                    explore_ranges_l.append(self.ini_parameters[k]-explore_range)
+                    explore_ranges_u.append(self.ini_parameters[k]+explore_range)
+                elif v>0:
+                    explore_ranges_l.append(self.ini_parameters[k])
+                    explore_ranges_u.append(self.ini_parameters[k]+explore_range)
+                elif v<0:
+                    explore_ranges_l.append(self.ini_parameters[k]-explore_range)
+                    explore_ranges_u.append(self.ini_parameters[k])
         
-        lh = qmc.LatinHypercube(d=len(explore_ranges_l), scramble=False, optimization='random-cd', seed=random_seed)
+        lh = qmc.LatinHypercube(d=len(explore_ranges_l), scramble=False, optimization=lhs_optimization, seed=random_seed)
         lhs_samples = lh.random(n=num_samples)
         samples = qmc.scale(lhs_samples, explore_ranges_l, explore_ranges_u)
         
         self.samples_by_lhs = pd.DataFrame(samples, columns=self.sensitivity_sign.keys()).T
 
-    def enrich_space(self, divide_label_x=[], divide_label_y=[]):
 
-        if not divide_label_x and not divide_label_y:
+    def form_space(self, iniDesign, newDesigns, diff_dims= True):
 
-            self.data_X_df = self.data_X_Y[list(self.ini_parameters.keys())]
-            self.data_X_np = self.data_X_Y[list(self.ini_parameters.keys())].to_numpy()
+        columns_Y_quant, columns_Y_qual = [], []
+        data_Y_quant, data_Y_qual = [], []
+        data_X = []
 
-            self.data_Y_dict = dict()
-            self.data_Y_dict.update({
-                self.strQual: self.data_X_Y[self.strQual].to_numpy().astype(int)})
+        for i, design in enumerate(newDesigns):
+
+            # x values
+
+            # if the solution space covers different multi dimensional options
+            if diff_dims:
             
-            tempo_cls = [cl for cl in self.data_X_Y.columns.values.tolist()if self.strQual in cl]
+                # if the dimensions are the same.
+                if design.parameters.keys() == iniDesign.parameters.keys():
+
+                    design_x = list(design.parameters.values())
+                
+                # if the dimensions are reduced.
+                elif (all(x in iniDesign.parameters.keys() for x in design.parameters.keys())):
+
+                    add_keys = list(set(iniDesign.parameters.keys()) - set(design.parameters.keys())) # add the unsensitive keys.
+
+                    design.parameters.update({key:iniDesign.parameters[key] for key in add_keys}) # use the initial designs.
+
+                    design.parameters = {k: design.parameters[k] for k in iniDesign.parameters.keys()} # reorder.
+
+                    design_x = list(design.parameters.values())
+
+            else:
+
+                design_x = list(design.parameters.values())
+
+            data_X.append(design_x)
+            
+            # y values
+            
+            data_y_quant, data_y_qual = [], []
+            design_failure_dict = dict((guid, design.failures[guid]) for guid in design.failures.keys() if guid in self.guids)
+            design_failure_clean = [sublist for sublist in list(design_failure_dict.values()) if any(sublist)]
+            design_failure_clean = [item for sublist in design_failure_clean for item in sublist]
+
+            for rl in self.rule:
+                if rl in design.rules:
+                    if rl not in design_failure_clean:
+                        data_y_qual.append(True)
+                    else:
+                        data_y_qual.append(False)
+                else:
+                    continue
+            data_Y_qual.append(data_y_qual)
+        
+        # columns_Y_quant += [self.strQuant+'-'+rl for rl in design.rules]
+        columns_Y_qual += [self.strQual+'-'+rl for rl in design.rules]
+        columns_Y_qual += [self.strQual]
+
+        columns_X_Y = list(self.ini_parameters.keys()).copy()
+        columns_X_Y += columns_Y_qual
+        
+        data_y_qual_sum = [all(data_y_qual) for data_y_qual in data_Y_qual]
+        data_Y_qual = [i+[j] for i,j in zip(data_Y_qual, data_y_qual_sum)]
+        list_X_Y = [[*X, *Y_qual] for X, Y_qual in zip(data_X, data_Y_qual)]
+
+        self.data_X_Y = pd.DataFrame(list_X_Y, columns=columns_X_Y)
+        for cl in columns_Y_qual:
+            self.valid_idx.update({
+                cl: self.data_X_Y.index[self.data_X_Y[cl]].tolist()})
+
+
+    def __buildxy__(self, dir = [], build_valid_subset=False):
+
+        # to rearrange---
+        self.data_X_df = self.data_X_Y[list(self.ini_parameters.keys())]
+        self.data_X_np = self.data_X_Y[list(self.ini_parameters.keys())].to_numpy()
+
+        self.data_Y_dict = dict()
+        self.data_Y_dict.update({
+            self.strQual: self.data_X_Y[self.strQual].to_numpy().astype(int)})
+        
+        tempo_cls = [cl for cl in self.data_X_Y.columns.values.tolist()if self.strQual in cl]
+        for cl in tempo_cls:
+            self.data_Y_dict.update({cl: self.data_X_Y[cl].to_numpy().astype(int)})
+        # to rearrange---
+
+        if build_valid_subset:
+
             for cl in tempo_cls:
-                self.data_Y_dict.update({
-                    cl: self.data_X_Y[cl].to_numpy().astype(int)})
+                
+                valid_subset = self.data_X_df.iloc[self.valid_idx[cl]]
+                self.valid_set_x.update({cl: valid_subset})
+
+                # summarize the validity ranges for the overall compliance.
+                if cl == 'compliance':
+                    
+                    # Drop all columns that have constant value by the parameter names.
+                    valid_subset_tempo = copy.deepcopy(valid_subset)
+                    param_to_drop = valid_subset_tempo.columns[valid_subset_tempo.nunique() <= 1].tolist()
+                    valid_subset_tempo = valid_subset_tempo.drop(param_to_drop, axis=1)
+                    validity_dict = dict()
+
+                    for param in valid_subset_tempo.columns.tolist():
+                        validity_dict.update({param:[valid_subset[param].min(), valid_subset[param].max()]})
+
+                    # save the validity ranges to an external dictionary.
+                    filename_dict = dir + r'\compliance_valid_ranges.pickle'
+                    with open(filename_dict, 'wb') as handle:
+                        pickle.dump(validity_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+                # output along with the initial design values.
+                valid_subset.loc[-1] = self.ini_parameters.values() # adding the initial desing.
+                valid_subset.index = valid_subset.index + 1  # shifting index
+                valid_subset.sort_index(inplace=True)
+                
+                valid_subset.to_csv(dir + r'\valid_subset_{}.csv'.format(cl), header=True)
 
 
     def _sweeping_from_initotargets(self, sweep_density, ext_pad):

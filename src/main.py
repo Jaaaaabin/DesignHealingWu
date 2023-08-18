@@ -3,6 +3,7 @@
 #
 
 from const_project import EXECUTION_NR
+from const_solus import FILE_SS_VARY_LHS
 
 from topoCollection import topoCollect
 from graphCreation import graphCreate
@@ -10,7 +11,7 @@ from graphEnricher import graphEnrich
 from prepareVariation import prepareSAVariants
 from testSensitivity import testSensi_morris_weighted
 from summarizeSensitivity import summarizeSensi
-from formSpace import formSolutionSpaceNew, buildDesignInSpace
+from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace
 
 if __name__ == "__main__":
 
@@ -25,37 +26,41 @@ if __name__ == "__main__":
     #                 sa              #
     #=================================#
     # EXECUTION_NR = 34
-
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = False)
-
     # for beta in [1, 0.5, 0]: # final figures are for the last element.
     #     testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta)
-
     # summarizeSensi()
-    # formSolutionSpaceNew(['\sa-34-0.3'], set_evolve_space = False, set_dup_rvt = True, set_new_space = True)
-    buildDesignInSpace()
-    # formSolutionSpaceNew(['\sa-34-0.3', '\ss-134-1'], set_evolve_space = False, set_dup_rvt = False, set_new_space = True)
-
-    # EXECUTION_NR = 39
-    # prepareSAVariants(sa_type = 'sobol', set_dup_rvt = True)
-    # testSensi_sobol_weighted(build_design=True, calc_index=True, plot_index=True)
-
+    
     #=================================#
     #                 ss              #
     #=================================#
-    # EXECUTION_NR = 100 + (14, 54, 19, 59)
+    # EXECUTION_NR = 34
+    # ITERATION_VALUES = 1
+    # exploreLHS(
+    #     '\sa-34-0.3',
+    #     num_samples=1000,
+    #     explore_range=0.6,
+    #     lhs_optimization='random-cd',
+    #     set_dup_rvt = False,
+    #     set_new_space = True)
+    # buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
+    # formSolutionSpace(['\sa-34-0.3', '\ss-134-1'], set_new_space = False)
     
-    # formSolutionSpace(['\sa-14-0.3', '\ss-114-1'], sweep_config = [4, 0.1], set_evolve_space = True, set_dup_rvt = True, set_new_space = True)
-    # buildDesignInSpace()
+    #-================================#
+    # ITERATION_VALUES = 2
+    # exploreLHS(
+    #     '\sa-34-0.3',
+    #     num_samples=500,
+    #     explore_range = r'C:\dev\phd\ModelHealer\data\ss-134-1\compliance_valid_ranges.pickle',
+    #     lhs_optimization='lloyd',
+    #     set_dup_rvt = True,
+    #     set_new_space = True)
+    buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
+    formSolutionSpace(['\sa-34-0.3', '\ss-134-1', '\ss-134-2'], set_new_space = False)
     
     #=================================#
-    #                cls              #
+    #                 rs              #
     #=================================#
-
-
-
-
-
 
 
 

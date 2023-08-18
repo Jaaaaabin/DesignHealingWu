@@ -8,7 +8,7 @@ from base_external_packages import *
 from funct_data import *
 from funct_classifier import KMeans_clusterings
 
-from funct_svm import evaluateLinearSVC_prediction, evaluateLinearSVC_decision, displaySVCinPC, stnd_nrml
+from funct_svm import evaluateLinearSVC_prediction, evaluateLinearSVC_decision, displaySVC, displaySVCinPC, stnd_nrml
 from Space import SolutionSpace
 from const_project import DIRS_DATA
 
@@ -20,8 +20,7 @@ from sklearn.datasets import make_blobs
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.model_selection import train_test_split, KFold, cross_val_score, cross_validate
 from sklearn.metrics import recall_score
-
-from seaborn import pairplot, move_legend
+from itertools import combinations
 
 # - Import the dataset
 # - Explore the data to figure out what they look like
@@ -32,104 +31,167 @@ from seaborn import pairplot, move_legend
 # - Make some predictions 
 # - Evaluate the results of the algorithm
 
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# write this to the formSpace Chapter.
+
+# then plot the results for 
+# r'C:\dev\phd\ModelHealer\data\ss-134-1\Space_sa-34-0.3_ss-134-1.pickle'
+# and
+# r'C:\dev\phd\ModelHealer\data\ss-134-2\Space_sa-34-0.3_ss-134-1_ss-134-2.pickle'
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+
 # https://www.analyticsvidhya.com/blog/2021/03/beginners-guide-to-support-vector-machine-svm/
 # https://towardsdatascience.com/support-vector-machines-svm-clearly-explained-a-python-tutorial-for-classification-problems-29c539f3ad8
 # https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
 # http://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote09.html
 
-
-# set the approaching target (one of the rules or the sum of the rules).
-# feasible_data_df = feasible_data[APPROACH_TARGET]
-# feasible_data_df = feasible_data_df.reset_index(drop=True)
-# approach_params = get_approach_parameters(feasible_data_df)
-
-# # values via evenly sampling.
-# sweeping_values = build_sweeping_values(
-#     feasible_data_df,
-#     approach_params,
-#     sweep_density=2,)
-# save_ndarray_2txt(sweeping_values, dirs_res+"/sweeping_values.txt")
-
-# # build sweeping_samples and sweeping_samples_df 
-# sweeping_samples, sweeping_samples_df = build_sweeping_samples(
-#     initial_design,
-#     sweeping_values,
-#     approach_params)
-
-
-# ['\sa-14-0.3','\sa-19-0.3','\sa-54-0.3','\sa-59-0.3',]
-file_solutionspace = r'C:\dev\phd\ModelHealer\data\ss-114-3\Space_sa-14-0.3_ss-114-1_ss-114-2.pickle'
+file_solutionspace = r'C:\dev\phd\ModelHealer\data\ss-134-2\Space_sa-34-0.3_ss-134-1_ss-134-2.pickle'
 solu_Space = load_dict(file_solutionspace)
 y_keys = list(solu_Space.data_Y_dict.keys())
 
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
-# Sub Section 1. INPUT Data distribution.
-# sub_columns = list(solu_Space.ini_parameters.keys())
-# for label_compliance in list(solu_Space.valid_idx.keys()):
-#     sub_columns_label = sub_columns.copy()
-#     sub_columns_label.append(label_compliance)
-#     fig = plt.figure(figsize=(10, 14))
-#     df_plot = solu_Space.data_X_Y[sub_columns_label]
-#     pairplot(df_plot, hue=label_compliance, markers=["o", "s"])
-#     plt.savefig(DIRS_DATA + r'\data_distribution_{}.png'.format(label_compliance), dpi=300)
+# pre-processing
+
+sub_columns = list(solu_Space.ini_parameters.keys())
+sub_columns = [col for col in sub_columns if col not in ['U1_OK_d_wl_ew9', 'U1_OK_d_wl_sn9', 'U1_OK_d_wl_sn23']]
+
+# INPUT Data distribution.
+# Kaggle plot link:
+# https://www.kaggle.com/code/sunaysawant/iris-pair-plot-palettes-all-170-visualisations
+
+for label_compliance in list(solu_Space.valid_idx.keys()):
+
+    sub_columns_label = sub_columns.copy()
+    sub_columns_label.append(label_compliance)
+
+    fig = plt.figure(figsize=(10, 10))
+    df_plot = solu_Space.data_X_Y[sub_columns_label]
+
+    df_plot=df_plot.replace(True,'Valid')
+    df_plot=df_plot.replace(False,'Invalid')
+
+    g = sns.pairplot(
+        df_plot,
+        hue=label_compliance,
+        markers=["o", "s"],
+        plot_kws={"s": 5},
+        palette='seismic_r')
+    
+    for ax in g.axes.ravel():
+        
+        param_x = ax.get_xlabel()
+        param_y = ax.get_ylabel()
+        
+        if param_x and param_y:
+            param_x_v = solu_Space.ini_parameters[param_x]
+            param_y_v = solu_Space.ini_parameters[param_y]
+            ax.axvline(x=param_x_v, ls='--', linewidth=1, c='dimgray', label='initial values')
+            ax.axhline(y=param_y_v, ls='--', linewidth=1, c='dimgray')
+
+    sns.move_legend(g, "upper center", bbox_to_anchor=(.45, 1), ncol=2, title=None)
+    
+    # g.map_lower(sns.kdeplot, levels=4, color=".8")
+    
+    plt.savefig(DIRS_DATA + r'\data_distribution_{}.png'.format(label_compliance), dpi=300)
+    # g = pairplot(
+    #     df_plot,
+    #     hue=label_compliance,
+    #     height = 20,
+    #     )
+
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
-# X data.
+# X data
 # access the X data from the solution space.
 X = solu_Space.data_X_df
-# normalization of the X data.
-X_stnl, X_α_β = stnd_nrml(X)
 
-# Y data.
-# pick the aspect for y.
+# Add the initial design (X and y) into the dataset.
+# X.loc[-1] = list(solu_Space.ini_parameters.values())  # adding a row
+# X.index = X.index + 1  # shifting index
+# X = X.sort_index()
+
 y = solu_Space.data_Y_dict[y_keys[0]]
+y = np.insert(y, 0, 0, axis=0)
 
-# split ratio.
-test_size = 0.25
-X_train, X_test, y_train, y_test = train_test_split(X_stnl, y, test_size=test_size, random_state=2023)
+X = X.drop(['U1_OK_d_wl_ew9', 'U1_OK_d_wl_sn9', 'U1_OK_d_wl_sn23'], axis=1)
 
-
-# okokokokokokokokokokokokokokokokokokokokokokokokokokok
-# Plot in PCs.
+# # okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# # Plot in PCs.
 y_rule_all = solu_Space.data_Y_dict[y_keys[0]]
 y_rule_10202 = solu_Space.data_Y_dict[y_keys[1]]
 y_rule_12071 = solu_Space.data_Y_dict[y_keys[2]]
 y_rule_12073 = solu_Space.data_Y_dict[y_keys[3]]
 
-displaySVCinPC(X_stnl, y_rule_all, path=DIRS_DATA, rule_label='all')
-displaySVCinPC(X_stnl, y_rule_10202, path=DIRS_DATA, rule_label='1020_2')
-displaySVCinPC(X_stnl, y_rule_12071, path=DIRS_DATA, rule_label='1207_3')
-displaySVCinPC(X_stnl, y_rule_12073, path=DIRS_DATA, rule_label='1207_3')
-
+displaySVCinPC(X, y_rule_all, path=DIRS_DATA, rule_label='all')
+displaySVCinPC(X, y_rule_10202, path=DIRS_DATA, rule_label='1020_2')
+displaySVCinPC(X, y_rule_12071, path=DIRS_DATA, rule_label='1207_1')
+displaySVCinPC(X, y_rule_12073, path=DIRS_DATA, rule_label='1207_3')
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+# KMeans: tested parameeters. n_clus, p_outlier.
+# to test: algorithm {“lloyd”, “elkan”, “auto”, “full”}, default=”lloyd”
+# for n_clus in [2, 4, 6, 8, 10]:
+#     for p_outlier in [0, 0.05, 0.20]:
+#         KMeans_clusterings(
+#             DIRS_DATA,
+#             X,
+#             y,
+#             p_outlier=p_outlier,
+#             outlier_sort_type='cluster',
+#             n_clus=n_clus)
+# okokokokokokokokokokokokokokokokokokokokokokokokokokok
+
+# normalization of the X data.
+# X_stnl, X_α_β = stnd_nrml(X)
+# y = solu_Space.data_Y_dict[y_keys[0]]
+# split ratio.
+# test_size = 0.25
+# X_train, X_test, y_train, y_test = train_test_split(X_stnl, y, test_size=test_size, random_state=2023)
+# X_np = X.to_numpy()
+
+# from sklearn.manifold import TSNE
+
+# # Apply t-SNE for dimensionality reduction (t-distributed stochastic neighbor embedding)
+# tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+# X_tsne = tsne.fit_transform(X_np)
+
+# for y in [y_rule_all,y_rule_10202,y_rule_12071,y_rule_12073]:
+#     # Create a scatter plot to visualize the reduced data
+#     plt.figure(figsize=(8, 6))
+#     plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap='viridis', marker='o', s=50)
+#     plt.title("t-SNE Visualization of High-Dimensional Data")
+#     plt.xlabel("t-SNE Component 1")
+#     plt.ylabel("t-SNE Component 2")
+#     plt.colorbar(label='Cluster')
+#     plt.show()
 
 # okokokokokokokokokokokokokokokokokokokokokokokokokokok
-# Sub Section 2. normal SVM
+# Sub Section 3. normal SVM
 
 # Build the svm model.
-C = 1
-model = svm.SVC(kernel="linear", C=C, probability=True, class_weight='balanced')
-clf_svm = model.fit(X_train, y_train)
+# C = 1
+# model = svm.SVC(kernel="linear", C=C, probability=True, class_weight='balanced')
+# clf_svm = model.fit(X_train, y_train)
 
-# Evaluation A .predict
-evaluateLinearSVC_prediction(clf_svm, X_test, y_test) 
+# # Evaluation A .predict
+# evaluateLinearSVC_prediction(clf_svm, X_test, y_test) 
 
-# Evaluation B .decision_function
-# The clf.decision_function tells us on which side of the hyperplane generated by the classifier, and how far away from it.
-y_dist = evaluateLinearSVC_decision(clf_svm, X_stnl)
+# # Evaluation B .decision_function
+# # The clf.decision_function tells us on which side of the hyperplane generated by the classifier, and how far away from it.
+# y_dist = evaluateLinearSVC_decision(clf_svm, X_stnl)
 
-# Plot the decisions.
-ori_dist = solu_Space.data_X_Y['distance'].values.tolist()
-ori_comp = solu_Space.data_X_Y['compliance'].values.tolist()
+# # Plot the decisions.
+# # ori_dist = solu_Space.data_X_Y['distance'].values.tolist()
+# ori_comp = solu_Space.data_X_Y['compliance'].values.tolist()
 
-svm_dist = y_dist.tolist()
-fig = plt.figure(figsize=(25, 4))  # unit of inch
-plt.plot(ori_dist, 'g', label="distance_quasi_true")        # this is not true since distance is a simple sum of the three rules.
-plt.plot(svm_dist, 'r', label="distance_pred")              # this should be compared with the true compliance...
-plt.axhline(y = 0., color = 'black', linestyle = '-')
-plt.legend()
-plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
+# svm_dist = y_dist.tolist()
+# fig = plt.figure(figsize=(25, 4))  # unit of inch
+# # plt.plot(ori_dist, 'g', label="distance_quasi_true")        # this is not true since distance is a simple sum of the three rules.
+# plt.plot(svm_dist, 'r', label="distance_pred")              # this should be compared with the true compliance...
+# plt.axhline(y = 0., color = 'black', linestyle = '-')
+# plt.legend()
+# plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
 
 
 # s_valid=0
@@ -147,28 +209,6 @@ plt.savefig(DIRS_DATA + r'\ratio.png', dpi=200)
 #         s_invalid+=1
 #     elif ori_c == True and svm_d < 0:
 #         s_fakeinvalid+=1
-
-# okokokokokokokokokokokokokokokokokokokokokokokokokokok
-# Sub Section 3. KMeans
-
-# Add the initial design into the dataset.
-X.loc[-1] = list(solu_Space.ini_parameters.values())  # adding a row
-X.index = X.index + 1  # shifting index
-X = X.sort_index()
-y = np.insert(y, 0, 0, axis=0)
-
-# tested parameeters. n_clus, p_outlier.
-# to test: algorithm {“lloyd”, “elkan”, “auto”, “full”}, default=”lloyd”
-for n_clus in [2,10]:
-    for p_outlier in [0, 0.05, 0.20]:
-        KMeans_clusterings(
-            DIRS_DATA,
-            X,
-            y,
-            p_outlier=p_outlier,
-            outlier_sort_type='cluster',
-            n_clus=n_clus)
-# okokokokokokokokokokokokokokokokokokokokokokokokokokok
 
 
 # # okokokokokokokokokokokokokokokokokokokokokokokokokokok

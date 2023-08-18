@@ -71,14 +71,19 @@ def plot_contours(ax, clf, xx, yy, **params):
     out = ax.contourf(xx, yy, Z, **params)
     return out
 
-def displaySVC(clf, X, y):
+def displaySVC(X, y, path, rule_label, svckernel="linear"):
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # set-up grid for plotting.
-    X0, X1 = X[:, 0], X[:, 1]
+    X0 = X[:, 0]
+    X1 = X[:, 1]
     xx, yy = make_meshgrid(X0, X1)
 
+    model = svm.SVC(kernel=svckernel)
+    clf = model.fit(X, y)
+    plot_name = svckernel
+    
     # plot the contours between classifications
     plot_contours(ax, clf, xx, yy, cmap=plt.cm.coolwarm, alpha=0.8)
 
@@ -93,8 +98,10 @@ def displaySVC(clf, X, y):
     plt.yticks(yticks)
     ax.set_title(
         f'Decision surface of SVC with the first two principal components')
+    
+    plot_name = path + '\\' + plot_name + '_{}.png'.format(rule_label)
 
-    plt.savefig('test.png', dpi=200)
+    plt.savefig(plot_name, dpi=200)
 
 
 def displaySVCinPC(X, y, path, rule_label, svckernel="linear", nu_nu=0.05):
@@ -137,18 +144,3 @@ def displaySVCinPC(X, y, path, rule_label, svckernel="linear", nu_nu=0.05):
     plot_name = path + '\\' + plot_name + '_{}.png'.format(rule_label)
 
     plt.savefig(plot_name, dpi=200)
-
-
-# old
-def convert_rela_df(df, df_init):     
-    """
-    convert to relative values
-    """
-
-    clmns = df.columns.tolist()
-    df_rela = df.copy()
-
-    for clmn in clmns:
-        df_rela[clmn] = df_rela[clmn].apply(lambda x: df_init[clmn].iloc[0]-x)
-
-    return df_rela

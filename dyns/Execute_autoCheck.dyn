@@ -178,8 +178,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "\"*.rvt\";",
       "NodeType": "CodeBlockNode",
+      "Code": "\"*.rvt\";",
       "Id": "e3b4680ccec74340bc905ad7eba7fc4d",
       "Inputs": [],
       "Outputs": [
@@ -606,8 +606,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "name;\nnr;\nsubnr;",
       "NodeType": "CodeBlockNode",
+      "Code": "name;\nnr;\nsubnr;",
       "Id": "30a0fa5493f9409abcdaa055d760c716",
       "Inputs": [
         {
@@ -673,7 +673,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "7",
+      "InputValue": "11",
       "Id": "0425987f9f444327a7dfedf59ad98b79",
       "Inputs": [],
       "Outputs": [
@@ -765,16 +765,6 @@
       ],
       "Replication": "Auto",
       "Description": "Concatenates multiple strings into a single string.\n\nString.Concat (strings: string[]): string"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Code": "",
-      "NodeType": "CodeBlockNode",
-      "Id": "82f5b7914b7d43889f9886fbbf8fdd44",
-      "Inputs": [],
-      "Outputs": [],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
     }
   ],
   "Connectors": [
@@ -1188,16 +1178,6 @@
         "Excluded": false,
         "X": -602.00019817944531,
         "Y": -360.2754886424616
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "82f5b7914b7d43889f9886fbbf8fdd44",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -1272.0,
-        "Y": 106.0
       }
     ],
     "Annotations": [
@@ -1299,8 +1279,8 @@
         "Background": "#FFFF7BAC"
       }
     ],
-    "X": 1476.8848802986165,
-    "Y": 280.61582139591349,
-    "Zoom": 0.899609261588403
+    "X": 1281.4906729667584,
+    "Y": 317.92309464794556,
+    "Zoom": 0.75691689550411356
   }
 }
