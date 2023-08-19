@@ -28,10 +28,15 @@ from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.cluster import KMeans
 from sklearn import svm, metrics
-from sklearn.metrics import silhouette_samples, silhouette_score
+from sklearn.metrics import silhouette_samples, silhouette_score, accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, Normalizer
+from sklearn.manifold import TSNE
+
 from collections import namedtuple
 from scipy.stats import skewnorm, truncnorm, qmc
 from scipy import spatial
+
 
 import copy
 import csv

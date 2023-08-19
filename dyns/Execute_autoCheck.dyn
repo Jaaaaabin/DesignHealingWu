@@ -673,7 +673,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "11",
+      "InputValue": "0",
       "Id": "0425987f9f444327a7dfedf59ad98b79",
       "Inputs": [],
       "Outputs": [

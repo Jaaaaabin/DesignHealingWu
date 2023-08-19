@@ -11,7 +11,7 @@ from graphEnricher import graphEnrich
 from prepareVariation import prepareSAVariants
 from testSensitivity import testSensi_morris_weighted
 from summarizeSensitivity import summarizeSensi
-from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace
+from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reasonSolutionSpace
 
 if __name__ == "__main__":
 
@@ -35,6 +35,19 @@ if __name__ == "__main__":
     #                 ss              #
     #=================================#
     # EXECUTION_NR = 34
+
+    # ITERATION_VALUES = 0
+    # exploreLHS(
+    #     '\sa-34-0.3',
+    #     num_samples=250,
+    #     explore_range=0.3,
+    #     lhs_optimization='random-cd',
+    #     set_dup_rvt = True,
+    #     set_new_space = True)
+    # buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
+    # formSolutionSpace(['\sa-34-0.3', '\ss-134-0'], set_new_space = False)
+
+    #-================================#
     # ITERATION_VALUES = 1
     # exploreLHS(
     #     '\sa-34-0.3',
@@ -44,7 +57,15 @@ if __name__ == "__main__":
     #     set_dup_rvt = False,
     #     set_new_space = True)
     # buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
-    # formSolutionSpace(['\sa-34-0.3', '\ss-134-1'], set_new_space = False)
+    # formSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-1'],set_new_space = False)
+    # reasonSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-1'], set_new_space = False, plot_space_pairwise = True)
+
+    # formSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1'], set_new_space = False)
+    # reasonSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1'], set_new_space = False, plot_space_pairwise = True)
     
     #-================================#
     # ITERATION_VALUES = 2
@@ -55,9 +76,28 @@ if __name__ == "__main__":
     #     lhs_optimization='lloyd',
     #     set_dup_rvt = True,
     #     set_new_space = True)
-    buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
-    formSolutionSpace(['\sa-34-0.3', '\ss-134-1', '\ss-134-2'], set_new_space = False)
+    # buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
+
+    # formSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-2'],set_new_space = False)
+    # reasonSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-2'], set_new_space = False, plot_space_pairwise = True)
+
+    # formSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'], set_new_space = False)
+    reasonSolutionSpace(
+        ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
+        set_new_space = False,
+        transfer_space = False,
+        plot_space_pairwise = False,
+        plot_space_svm = True)
     
+    # reasonSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
+    #     set_new_space = False,
+    #     transfer_space = True,
+    #     plot_space_pairwise = False,
+    #     plot_space_svm = True)
     #=================================#
     #                 rs              #
     #=================================#

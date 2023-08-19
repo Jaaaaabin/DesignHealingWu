@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 from sklearn.manifold import TSNE
 
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, Normalizer
+
 # Generate synthetic high-dimensional data
 n_samples = 300
 n_features = 50

@@ -9,22 +9,22 @@ from const_project import SOLUTION_NR, DIRS_DATA
 #=================================#
 ITERATION_VALUES = 2
 
-# 1 explore_space_by_lhs
-# explore_range=0.6,
+# 0 explore_space_by_lhs
+# explore_range=0.3,
 # optimization='random-cd', 
 # num_samples=600,
-# random_seed=2023,
+# random_seed=521,
 # scramble=False
 # - > no compliant options.
 
-# 2 explore_space_by_lhs
+# 1 explore_space_by_lhs
 # explore_range=0.6,
 # optimization='random-cd', 
 # num_samples=1000,
 # random_seed=521,
 # scramble=False
 
-# 3 explore_space_by_lhs
+# 2 explore_space_by_lhs
 # explore_range=by results,
 # optimization='lloyd', 
 # num_samples=500,
