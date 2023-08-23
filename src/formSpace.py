@@ -15,7 +15,7 @@ from const_solus import DIRS_DATA_SS, DIRS_DATA_SS_DUP, DIRS_DATA_SS_RES, FILE_S
 from const_solus import ITERATION_VALUES, FILE_SS_VARY_SKEWNORMAL
 
 from funct_data import save_dict, load_dict, get_problems_from_paths, flatten, create_directory, duplicateRVT
-from funct_svm import displaySVCinPC
+from funct_svm import displaySVCinPC, displaySVCin3PC
 
 from testSensitivity import buildDesigns
 
@@ -102,32 +102,81 @@ def formSolutionSpace(
 
 def reasonSolutionSpace(
     dataset=[],
-    set_new_space=False,
     transfer_space=False,
+    inter_level=0,
     plot_space_pairwise=False,
     plot_space_svm=False,
+    plot_knc=False,
     random_seed=521,
     ):
 
     # load the space
     sourceSpace = '_'.join([data.replace('\\','') for data in dataset])
     file_solutionspace = DIRS_DATA_SS + r'\Space_' + sourceSpace + r'.pickle'
+    
     currentSpace = load_dict(file_solutionspace)
-    
-    # extract X values.
-    constantVariable = currentSpace.data_X_df.columns[currentSpace.data_X_df.nunique() <= 1].tolist()
-    spaceVariable = [v for v in currentSpace.data_X_df.columns.tolist() if v not in constantVariable]
-    X = currentSpace.data_X_df[spaceVariable]
-    
-    if transfer_space:
-        X['U1_OK_d_wl_sn26'] = X['U1_OK_d_wl_sn26'] - X['U1_OK_d_wl_sn10']
-        X['U1_OK_d_wl_sn10'] = X['U1_OK_d_wl_sn10'] - X['U1_OK_d_wl_sn21']
-        X['U1_OK_d_wl_ew35'] = X['U1_OK_d_wl_ew35'] - X['U1_OK_d_wl_ew6']
+    currentSpace.__addini__()
+    currentSpace.remove_constant()
 
+    if transfer_space:
+        currentSpace.transfer_space_new()
+        versionSpace = 'TSpace'
+    else:
+        versionSpace = 'Space'
+
+    # extract X values.
+    X = currentSpace.data_X_df
+    
     # extract Y values.
     compliance_keys = list(currentSpace.data_Y_dict.keys())
     Y = currentSpace.data_Y_dict
+    
+    if plot_space_svm:
+        
+        # X: X_svm -> X_scaled -> X_scaled_reduced. 
+        X_svm = copy.deepcopy(X)
 
+        # pca = PCA(n_components=2)
+        # X_pca = pca.fit_transform(X_svm)
+
+        scaler = RobustScaler()
+        X_scaled = scaler.fit_transform(X_svm)
+        
+        for key in compliance_keys:
+        
+            # Y: y.
+            y = Y[key]
+
+            # split for train and test.
+            X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=random_seed)
+
+            # The standard approach is to use t-SNE to reduce the dimensionality of the data for visualization purposes.
+            # Once you have reduced the data to two dimensions you can easily replicate the visualization in the scikit-learn tutorial
+            # define the meshgrid
+
+            # for svm_kernel in ["linear", "poly", "rbf" ,"sigmoid"]:
+            v_gamma = 1
+
+            # build and fit the svm.
+            svm_classifer = svm.SVC(kernel="linear", C=2, random_state=random_seed)
+            # svm_classifer = svm.SVC(kernel="rbf",gamma=v_gamma,random_state=random_seed)
+            svm_classifer.fit(X_train, y_train)
+
+            y_pred_test = svm_classifer.predict(X_test)
+            accuracy = accuracy_score(y_test, y_pred_test)
+            print ("accuracy for ", key, "= ", accuracy)
+
+            displaySVCinPC(X_scaled, y, path = DIRS_DATA_SS_FIG, rule_label = key)
+
+            # print('w = ',svm_classifer.coef_)
+            # print('b = ',svm_classifer.intercept_)
+            # print('Indices of support vectors = ', svm_classifer.support_)
+            # print('Support vectors = ', svm_classifer.support_vectors_)
+            # print('Number of support vectors for each class = ', svm_classifer.n_support_)
+            # print('Coefficients of the support vector in the decision function = ', np.abs(svm_classifer.dual_coef_))
+            
+            # displaySVCin3PC(X_scaled, y, path = DIRS_DATA_SS_FIG, rule_label = key)
+    
     # plot
     if plot_space_pairwise:
 
@@ -136,31 +185,18 @@ def reasonSolutionSpace(
 
         for label_compliance in list(currentSpace.valid_idx.keys()):
 
-            spaceVariable_label = spaceVariable.copy()
-
-            # add the initial design. (x and y)
-            ini_plot = [currentSpace.ini_parameters[variable] for variable in spaceVariable_label]  # adding a row
-            ini_plot.append('Initial Design')
-
-            # preparet the dataframe for plot.
+            spaceVariable_label = list(X.columns)
             spaceVariable_label.append(label_compliance)
             df_data = currentSpace.data_X_Y[spaceVariable_label]
 
+            # add the initial design. (x and y)
+            # ini_plot = [currentSpace.ini_parameters[variable] for variable in spaceVariable_label]  # adding a row
+            # ini_plot.append('Initial Design')
+
             # add the initial design and its label.
-            df_data.loc[-1] = ini_plot 
-            df_data.index = df_data.index + 1
-            df_data = df_data.sort_index()
-
-            # transfer_space
-            if transfer_space:
-                
-                versionSpace = 'TSpace'
-                df_data['U1_OK_d_wl_sn26'] = df_data['U1_OK_d_wl_sn26'] - df_data['U1_OK_d_wl_sn10']
-                df_data['U1_OK_d_wl_sn10'] = df_data['U1_OK_d_wl_sn10'] - df_data['U1_OK_d_wl_sn21']
-                df_data['U1_OK_d_wl_ew35'] = df_data['U1_OK_d_wl_ew35'] - df_data['U1_OK_d_wl_ew6']
-            else:
-
-                versionSpace = 'Space'
+            # df_data.loc[-1] = ini_plot 
+            # df_data.index = df_data.index + 1
+            # df_data = df_data.sort_index()
 
             # sort the plot orders
             df_data = df_data.replace(True,'Valid')
@@ -176,84 +212,334 @@ def reasonSolutionSpace(
                 sns.color_palette("seismic")[0],        # Valid
                 sns.color_palette("rocket")[0],         # Initial Design
                 ])
-
+    
             g = sns.pairplot(
                 df_plot,
                 hue=label_compliance,
                 markers=["o", "s", "D"],
-                plot_kws={"s": 5},
-                palette=palette_3d)
+                plot_kws=dict(s=4, edgecolor="white", alpha=0.35),
+                palette=palette_3d,
+                corner=False,)
             
+            # sns add new line types only in legend
+            # g.lineplot([],[], palette = 'blue', label="Initial values")
+            # g.lineplot([],[], palette = 'orange', label="Analytical boundaries")
+            # g.lineplot([],[], palette = 'cyan', label="Analytical boundaries (dynamic)")
+
             for ax in g.axes.ravel():
                 
-                param_x = ax.get_xlabel()
-                param_y = ax.get_ylabel()
+                if (ax is None):
 
-                if param_x and param_y:
+                    continue
+                
+                else:
 
-                    param_x_v = df_plot[param_x].iloc[-1]
-                    param_y_v = df_plot[param_y].iloc[-1]
-                    ax.axvline(x=param_x_v, ls='-.', linewidth=0.5, alpha=0.75, c='black')
-                    ax.axhline(y=param_y_v, ls='-.', linewidth=0.5, alpha=0.75, c='black')
-            
-            g.map_lower(sns.kdeplot, levels=2, color=".8", linestyles= 'dashed', alpha=0.75, linewidths=1)
-            
-            sns.move_legend(g, "upper center", bbox_to_anchor=(.45, 1), ncol=3, title=None)
-            
-            plt.savefig(DIRS_DATA_SS_FIG + r'\{}_{}_pairwise_relationship_{}.png'.format(versionSpace, sourceSpace, label_compliance), dpi=300)
+                    param_x = ax.get_xlabel()
+                    param_y = ax.get_ylabel()
+
+                    if param_x and param_y:
+
+                        param_x_v = df_plot[param_x].iloc[-1]
+                        param_y_v = df_plot[param_y].iloc[-1]
+                        ax.axvline(x=param_x_v, ls='-.', linewidth=0.5, alpha=0.80, c='black')
+                        ax.axhline(y=param_y_v, ls='-.', linewidth=0.5, alpha=0.80, c='black')
+
+                        # pad = 0.01
+                        # xmin = X[param_x].min() - pad
+                        # xmax = X[param_x].max() + pad
+                        # ymin = X[param_y].min() - pad
+                        # ymax = X[param_y].max() + pad
+
+                        xmin, xmax = ax.get_xlim()
+                        ymin, ymax = ax.get_ylim()
+
+                        total_line_segs = 50
+                        lseg = int(total_line_segs/2)
+
+                        x = np.linspace(xmin, xmax, total_line_segs)
+                        y = np.linspace(ymin, ymax, total_line_segs)
+
+                        shift = 0.05
 
 
-    if plot_space_svm:
+                        # ---------------------------------
+                        # 1020_2
+                        txt_color = 'navy'
+                        txt_fontsize = 5
+
+                        # txt_bbox = dict(facecolor='none', edgecolor=txt_color, alpha=0.5)
+
+                        if '1020_2' in label_compliance or label_compliance == 'compliance':
+                            
+                            ax_label = '$ {ew}_{6} ≤ {ew}_{35}-6.983 $'
+                            
+                            if param_x == 'U1_OK_d_wl_ew35' and param_y == 'U1_OK_d_wl_ew6':
+                            
+                                y_u = x - 6.983
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_u[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=35,)
+                                # ax.fill_between(x, y_l, y_u, where=y_l<y_u, color='darkorange', alpha=0.5)
+
+                        # ---------------------------------
+                        # 1207_1
+                        if '1207_1' in label_compliance or label_compliance == 'compliance':
+                            
+                            ax_label = '$ {sn}_{26} ≤ 8.861 $'
+
+                            if param_x == 'U1_OK_d_wl_sn26' and (param_y == 'U1_OK_d_wl_ew6' or param_y == 'U1_OK_d_wl_sn21'):
+                                x_l = y * 0 + 8.861
+                                ax.plot(x_l, y, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x_l[lseg] - shift, y[lseg], ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=90,)
+                            if param_y == 'U1_OK_d_wl_sn26' and (param_x == 'U1_OK_d_wl_sn10' or param_x == 'U1_OK_d_wl_ew35'):
+                                y_u = x * 0 + 8.861
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_u[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=0,)
+
+                            ax_label = '$ {sn}_{21} ≥ 2.309 $'
+
+                            if param_y == 'U1_OK_d_wl_sn21' and param_x !='U1_OK_d_wl_ew6':
+                                y_l = x * 0 + 2.309
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_l[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=0,)
+                            if param_x == 'U1_OK_d_wl_sn21' and param_y == 'U1_OK_d_wl_ew6':
+                                x_u = y *0 + + 2.309
+                                ax.plot(x_u, y, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x_u[lseg] - shift, y[lseg], ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=90,)
+
+                            ax_label = '$ {ew}_{6} ≥ 2.309 $'
+                            
+                            if param_y == 'U1_OK_d_wl_ew6':
+                                y_u = x * 0 + 2.309
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_u[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=0,)
+
+                            ax_label = '$ {sn}_{26} ≥ {sn}_{10} + 2.234 $'
+
+                            if param_x == 'U1_OK_d_wl_sn10' and param_y == 'U1_OK_d_wl_sn26':
+                                y_l = x + 2.234
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_l[lseg] - 3*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=30,)
+
+                            ax_label = '$ {sn}_{21} ≤ {sn}_{10} - 2.234 $'
+
+                            if param_x == 'U1_OK_d_wl_sn10' and param_y == 'U1_OK_d_wl_sn21':
+                                y_u = x - 2.234
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_u[lseg] + 3*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=35,)
+
+                        # # ---------------------------------
+                        # 1207_3
+                        if '1207_3' in label_compliance or label_compliance == 'compliance':
+
+                            ax_label = '$ (10.995 - {sn}_{26}) * ({ew}_{6} - 0.175) ≥ 6.5 $'
+
+                            if param_y == 'U1_OK_d_wl_ew6' and param_x == 'U1_OK_d_wl_sn26':
+                                y_l = 6.5 / (10.995-x) + 0.175
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_l[lseg] - 2*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=35,)
+
+                            ax_label = '$ ({sn}_{21} - 0.125) * ({ew}_{6} - 0.175) ≥ 6.5 $'
+
+                            if param_y == 'U1_OK_d_wl_ew6' and param_x == 'U1_OK_d_wl_sn21':
+                                y_l = 6.5 / (x-0.125) + 0.175
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.text(
+                                    x[lseg], y_l[lseg] - shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    rotation=-35,)
+
+                            txt_color = 'darkgreen'
+                            txt_fontsize = 4
+                            # txt_bbox = dict(facecolor='none', edgecolor=txt_color, pad=txt_bbox_pad, alpha=0.5)
+
+                            for ew6 in [2.309, 3]:
+                                
+                                ax_label = '$ ({sn}_{26} - {sn}_{10} - 0.125) * ({ew}_{6} - 0.175) ≥ 6.5, {ew}_{6}= $' + str(ew6)
+
+                                if param_y == 'U1_OK_d_wl_sn26' and param_x == 'U1_OK_d_wl_sn10':
+                                    
+                                    y_l = x + 0.1 + 6.5 /(ew6 - 0.175)
+                                    ax.plot(x, y_l, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label=ax_label)
+                                    ax.text(
+                                        x[lseg], y_l[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
+                                        rotation=0,)
+
+                                ax_label = '$ ({sn}_{10} - {sn}_{21} - 0.125)  * ({ew}_{6} - 0.175) ≥ 6.5, {ew}_{6}= $' + str(ew6)
+
+                                if param_y == 'U1_OK_d_wl_sn21' and param_x == 'U1_OK_d_wl_sn10':
+                                    y_u = x - 0.1 - 6.5 /(ew6 - 0.175)
+                                    ax.plot(x, y_u, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label=ax_label)
+                                    ax.text(
+                                        x[lseg], y_u[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
+                                        rotation=0,)
         
-        comparison_compliance = dict()
+            sns.move_legend(g, "upper center", bbox_to_anchor=(.45, 1), ncol=6, title=None)
+            # g.map_upper(sns.kdeplot, levels=2, color=".8", linestyles= 'dashed', alpha=0.75, linewidths=1)
+            plt.savefig(DIRS_DATA_SS_FIG + r'\{}_{}_pairwise_relationship_{}.png'.format(versionSpace, sourceSpace, label_compliance), dpi=400)
+            break 
 
+    if plot_knc:
+        pca = PCA(n_components=3)
+        X = X.to_numpy()
+        X_pc = pca.fit_transform(X)
+        X = X_pc[:, :2]
+        n_neighbors = 5
+    
         for key in compliance_keys:
             
             y = Y[key]
 
-            # scale
-            scaler = RobustScaler()
-            X_scaled = scaler.fit_transform(X)
-            X_scaled_reduced =  TSNE(n_components=2, random_state=random_seed).fit_transform(X_scaled)
+            # Create color maps 
+            cmap_light = ListedColormap(["orange", "cornflowerblue"])
+            cmap_bold = ["darkorange", "darkblue"]
 
-            # split
-            X_train, X_test, y_train, y_test = train_test_split(X_scaled_reduced, y, test_size=0.3, random_state=random_seed)
+            for weights in ["uniform", "distance"]:
 
-            # reduce
-            # The standard approach is to use t-SNE to reduce the dimensionality of the data for visualization purposes.
-            # Once you have reduced the data to two dimensions you can easily replicate the visualization in the scikit-learn tutorial
-            # define the meshgrid
+                # we create an instance of Neighbours Classifier and fit the data.
+                clf = KNeighborsClassifier(n_neighbors, weights=weights)
+                
+                clf.fit(X, y)
 
-            # svm
-            svm_clf_scaled = svm.SVC(random_state=random_seed)
-            svm_clf_scaled.fit(X_train, y_train)
+                fig = plt.figure(figsize=(14, 10))
+                fig, ax = plt.subplots()
+                DecisionBoundaryDisplay.from_estimator(
+                    clf,
+                    X,
+                    cmap=cmap_light,
+                    ax=ax,
+                    response_method="predict",
+                    plot_method="pcolormesh",
+                    # xlabel=X.feature_names[0],
+                    # ylabel=iris.feature_names[1],
+                    shading="auto",
+                )
 
-            # predict and check accuracy
-            y_pred_test_svm_scaled = svm_clf_scaled.predict(X_test)
-            accuracy_test_svm_scaled = accuracy_score(y_test, y_pred_test_svm_scaled)
-            comparison_compliance.update({key: accuracy_test_svm_scaled})
+                # Plot also the training points
+                sns.scatterplot(
+                    x=X[:, 0],
+                    y=X[:, 1],
+                    hue=y,
+                    palette=cmap_bold,
+                    alpha=1.0,
+                    edgecolor="black",
+                )
+                plt.title(
+                    "3-Class classification (k = %i, weights = '%s')" % (n_neighbors, weights)
+                )
+                plt.savefig(DIRS_DATA_SS_FIG + r'\KNC_neighbors_{}_weight_{}_{}.png'.format(n_neighbors, weights, key), dpi=200)
+
+    # if plot_space_tsne:
+        
+    #     comparison_compliance = dict()
+
+    #     ini_embedding = 'random'
+    #     value_perplexity = 50
+    #     num_step = 1000
             
-            # start here.
-            # check: https://stackoverflow.com/questions/66186272/how-to-plot-the-decision-boundary-of-a-one-class-svm
-            x_min, x_max = X_test_reduced[:, 0].min() - 5, X_test_reduced[:, 0].max() + 5
-            y_min, y_max = X_test_reduced[:, 1].min() - 5, X_test_reduced[:, 1].max() + 5
-            x_ = np.linspace(x_min, x_max, 500)
-            y_ = np.linspace(y_min, y_max, 500)
-            xx, yy = np.meshgrid(x_, y_)
+    #     for key in compliance_keys:
+            
+    #         # X: X_svm -> X_scaled -> X_scaled_reduced. 
+    #         X_svm = copy.deepcopy(X)
+    #         scaler = RobustScaler()
+    #         X_scaled = scaler.fit_transform(X_svm)
+    #         X_scaled_reduced =  TSNE(
+    #             n_components=2,
+    #             init=ini_embedding,
+    #             perplexity=value_perplexity,
+    #             n_iter = num_step,
+    #             random_state=random_seed).fit_transform(X_scaled)
 
-            # # evaluate the decision function on the meshgrid
-            # z = svm_clf_scaled.decision_function(np.c_[xx.ravel(), yy.ravel()])
-            # z = z.reshape(xx.shape)
+    #         # check:
+    #         # https://stackoverflow.com/questions/66186272/how-to-plot-the-decision-boundary-of-a-one-class-svm
+    #         # https://towardsdatascience.com/t-sne-clearly-explained-d84c537f53a
+    #         # https://distill.pub/2016/misread-tsne/
+    #         # [important]: https://github.com/scikit-learn/scikit-learn/issues/5361
 
-            # # plot the decision function and the reduced data
-            # plt.contourf(xx, yy, z, cmap=plt.cm.PuBu)
-            # a = plt.contour(xx, yy, z, levels=[0], linewidths=2, colors='darkred')
-            # b = plt.scatter(X_test_scaled_reduced[y_pred_test_svm_scaled == 1, 0], X_test_scaled_reduced[y_pred_test_svm_scaled == 1, 1], c='white', edgecolors='k')
-            # c = plt.scatter(X_test_scaled_reduced[y_pred_test_svm_scaled == -1, 0], X_test_scaled_reduced[y_pred_test_svm_scaled == -1, 1], c='gold', edgecolors='k')
-            # plt.legend([a.collections[0], b, c], ['learned frontier', 'regular observations', 'abnormal observations'], bbox_to_anchor=(1.05, 1))
-            # plt.axis('tight')
-            # plt.show()
+    #         # parametric t-SNE
+    #         # https://github.com/kylemcdonald/Parametric-t-SNE
+    #         # https://github.com/scikit-learn/scikit-learn/pull/4025
 
+    #         # Y: y.
+    #         y = Y[key]
+
+    #         # split for train and test.
+    #         X_train, X_test, y_train, y_test = train_test_split(X_scaled_reduced, y, test_size=0.3, random_state=random_seed)
+
+    #         # The standard approach is to use t-SNE to reduce the dimensionality of the data for visualization purposes.
+    #         # Once you have reduced the data to two dimensions you can easily replicate the visualization in the scikit-learn tutorial
+    #         # define the meshgrid
+
+    #         # build and fit the svm.
+    #         # svm_classifer = svm.SVC(kernel='linear',random_state=random_seed)
+    #         svm_classifer = svm.SVC(random_state=random_seed)
+    #         svm_classifer.fit(X_train, y_train)
+
+    #         # predict and check accuracy
+    #         # y_pred = svm_classifer.predict(X_scaled_reduced)
+
+    #         y_pred_train = svm_classifer.predict(X_train)
+    #         y_pred_test = svm_classifer.predict(X_test)
+
+    #         accuracy = accuracy_score(y_test, y_pred_test)
+    #         print ("accuracy for ", key, ": ", accuracy)
+    #         # comparison_compliance.update({key: accuracy})
+            
+    #         # plot the decision function and the reduced data
+    #         # x_min, x_max = X_scaled_reduced[:, 0].min() - 5, X_scaled_reduced[:, 0].max() + 5
+    #         # y_min, y_max = X_scaled_reduced[:, 1].min() - 5, X_scaled_reduced[:, 1].max() + 5
+
+    #         x_min, x_max = X_train[:, 0].min() - 5, X_train[:, 0].max() + 5
+    #         y_min, y_max = X_train[:, 1].min() - 5, X_train[:, 1].max() + 5
+    #         x_ = np.linspace(x_min, x_max, 500)
+    #         y_ = np.linspace(y_min, y_max, 500)
+    #         xx, yy = np.meshgrid(x_, y_)
+
+    #         # create the decision function on the meshgrid.
+    #         z = svm_classifer.decision_function(np.c_[xx.ravel(), yy.ravel()])
+    #         z = z.reshape(xx.shape)
+            
+    #         # data plot.
+    #         fig = plt.figure(figsize=(12, 12))
+    #         plt.contourf(xx, yy, z, cmap=plt.cm.PuBu)
+    #         a = plt.contour(
+    #             xx, yy, z, levels=[0], linewidths=2, colors='darkred')
+    #         b = plt.scatter(
+    #             X_train[y_train == 1, 0], X_train[y_train == 1, 1], c="white", edgecolors='k') # Valid-train
+    #         c = plt.scatter(
+    #             X_train[y_train == 0, 0], X_train[y_train == 0, 1], c="gold", edgecolors='k') # Invalid-train
+            
+    #         # d = plt.scatter(
+    #         #     X_test[y_pred_test == 1, 0], X_test[y_pred_test == 1, 1], c=sns.color_palette("seismic")[0], edgecolors='k') # Valid-test
+    #         # e = plt.scatter(
+    #         #     X_test[y_pred_test == 0, 0], X_test[y_pred_test == 0, 1], c=sns.color_palette("seismic")[-1], edgecolors='k') # Invalid-test
+            
+    #         plt.legend(
+    #             [a.collections[0], b, c], #, d, e],
+    #             ['learned frontier', 'Valid-train', 'Invalid-train'], #, 'Valid-test', 'Invalid-test'],
+    #             bbox_to_anchor=(0.75, 0.996),
+    #             ncol=5)
+            
+    #         plt.axis('tight')
+    #         plt.savefig(DIRS_DATA_SS_FIG + r'\DecisionboundarySVM_{}_compliance_{}_init_{}_perplexity_{}_numstep_{}.png'.format(
+    #             sourceSpace, key, ini_embedding, value_perplexity, num_step), dpi=200)
+            
             # # = = = = = = = = = = = = = = = = = = = = = = = = =
             # # for scaler testing
             # # not scaled
@@ -284,14 +570,9 @@ def reasonSolutionSpace(
             # })
             # # = = = = = = = = = = = = = = = = = = = = = = = = =
 
-        with open(DIRS_DATA_SS + r"\scalers.json", "w") as outfile:
-            json.dump(comparison_compliance, outfile)
+        # with open(DIRS_DATA_SS + r"\scalers.json", "w") as outfile:
+        #     json.dump(comparison_compliance, outfile)
         
-            # displaySVCinPC(
-            #     X, y, path = DIRS_DATA_SS_FIG, rule_label = key)
-
-
-
             # - - - - -  
             # scaler = StandardScaler()
             # This class standardizes the features by subtracting the mean and dividing by the standard deviation,

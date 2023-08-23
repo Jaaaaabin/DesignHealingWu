@@ -144,3 +144,55 @@ def displaySVCinPC(X, y, path, rule_label, svckernel="linear", nu_nu=0.05):
     plot_name = path + '\\' + plot_name + '_{}.png'.format(rule_label)
 
     plt.savefig(plot_name, dpi=200)
+
+
+def displaySVCin3PC(X, Y, path, rule_label):
+
+    pca = PCA(n_components=3)
+    X_pc = pca.fit_transform(X)
+    print("explained variance ratio (first three components): %s" %
+          str(pca.explained_variance_ratio_))
+
+    model = svm.SVC(kernel='linear')
+    model.fit(X_pc, Y)
+
+    z = lambda x,y: (-model.intercept_[0]-model.coef_[0][0]*x-model.coef_[0][1]*y) / model.coef_[0][2]
+
+    xm, xM = X_pc[:,0].min(), X_pc[:, 0].max()
+    ym, yM = X_pc[:,1].min(), X_pc[:, 1].max()
+    x = np.linspace(xm, xM, 100)
+    y = np.linspace(ym, yM, 100)
+    x, y =np.meshgrid(x, y)
+
+    my_colorscale= [[0, 'rgb(230,230,230)'], [1, 'rgb(230,230,230)']]
+    fig = go.Figure()
+    fig.add_surface(x=x, y=y, z=z(x,y), colorscale=my_colorscale, showscale=False, opacity=0.9)
+    fig.add_scatter3d(x=X_pc[Y==0,0], y=X_pc[Y==0,1], z=X_pc[Y==0,2], mode='markers', marker={'color': 'blue'})
+    fig.add_scatter3d(x=X_pc[Y==1,0], y=X_pc[Y==1,1], z=X_pc[Y==1,2], mode='markers', marker={'color': 'red'})
+    fig.update_layout(width=800, height=800)
+    fig.show()
+
+
+    # fig, ax = plt.subplots(figsize=(10, 6))
+    # # set-up grid for plotting.
+    # X0, X1 = X_pc[:, 0], X_pc[:, 1]
+    # xx, yy = make_meshgrid(X0, X1)
+
+    # # plot the contours between classifications
+    # plot_contours(ax, clf, xx, yy, cmap=plt.cm.coolwarm, alpha=0.8)
+
+    # # plot scatters
+    # ax.scatter(X0, X1, c=y, cmap=plt.cm.coolwarm, s=20, edgecolors='k')
+    # ax.set_ylabel('PC2')
+    # ax.set_xlabel('PC1')
+
+    # xticks = np.linspace(-1.0, 1.0, num=9)
+    # yticks = np.linspace(-1.0, 1.0, num=9)
+    # plt.xticks(xticks)
+    # plt.yticks(yticks)
+    # ax.set_title(
+    #     f'Decision surface of SVC with the first two principal components')
+    
+    # plot_name = path + '\\' + plot_name + '_{}.png'.format(rule_label)
+
+    # plt.savefig(plot_name, dpi=200)

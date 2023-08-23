@@ -59,6 +59,12 @@ class SolutionSpace():
           Initial Results: {self.ini_results}
       """  
     
+    # def __calc__(self, input, df):
+
+    #     if isinstance(input, list):
+    #         a = input[0]
+    #         b = input[1]
+        
     def _calculate_cosine_distance(self, a, b):
         cosine_distance = float(spatial.distance.cosine(list(a), list(b)))
         return cosine_distance
@@ -251,7 +257,7 @@ class SolutionSpace():
 
         # to rearrange---
         self.data_X_df = self.data_X_Y[list(self.ini_parameters.keys())]
-        self.data_X_np = self.data_X_Y[list(self.ini_parameters.keys())].to_numpy()
+        # self.data_X_np = self.data_X_Y[list(self.ini_parameters.keys())].to_numpy()
 
         self.data_Y_dict = dict()
         self.data_Y_dict.update({
@@ -294,8 +300,109 @@ class SolutionSpace():
                 valid_subset.to_csv(dir + r'\valid_subset_{}.csv'.format(cl), header=True)
 
 
+    def __addini__(self):
 
+        # add the initial design. (x and y)
+        ini_X = [self.ini_parameters[variable] for variable in self.ini_parameters.keys()]  # adding a row
+        ini_Y = ['Initial Design']*len(self.data_Y_dict.keys())
+        ini_X_Y = ini_X + ini_Y
 
+        # add to data_X_df
+        self.data_X_df.loc[-1] = ini_X
+        self.data_X_df.index = self.data_X_df.index + 1
+        self.data_X_df = self.data_X_df.sort_index()
+
+        # add to data_X_Y
+        self.data_X_Y.loc[-1] = ini_X_Y 
+        self.data_X_Y.index = self.data_X_Y.index + 1
+        self.data_X_Y = self.data_X_Y.sort_index()
+
+        # add to data_Y_dict
+        for key in self.data_Y_dict.keys():
+            lst =  list(self.data_Y_dict[key])
+            lst.insert(0,0)
+            self.data_Y_dict.update({
+                key: lst
+            })
+
+        # need to also do for self.valid_idx, and valid_set_x.
+
+    def remove_constant(self):
+        
+        constantVariable = self.data_X_df.columns[self.data_X_df.nunique() <= 1].tolist()
+        # nonconstantVariable = [v for v in self.data_X_df.columns.tolist() if v not in constantVariable]
+
+        for v in constantVariable:
+            self.ini_parameters.pop(v)
+            self.data_X_df = self.data_X_df.drop(columns = v) 
+            self.data_X_Y = self.data_X_Y.drop(columns = v)
+
+    def transfer_space_new(self):
+
+        all_data = pd.DataFrame()
+        
+        all_data['sn1'] = self.data_X_df['U1_OK_d_wl_sn21']
+        all_data['sn2'] = self.data_X_df['U1_OK_d_wl_sn10'] - self.data_X_df['U1_OK_d_wl_sn21']
+        all_data['sn3'] = self.data_X_df['U1_OK_d_wl_sn26'] - self.data_X_df['U1_OK_d_wl_sn10']
+        all_data['sn4'] = 11.095 - self.data_X_df['U1_OK_d_wl_sn26'] 
+
+        all_data['ew1'] = self.data_X_df['U1_OK_d_wl_ew6']
+        all_data['ew2'] = self.data_X_df['U1_OK_d_wl_ew35'] - self.data_X_df['U1_OK_d_wl_ew6']
+
+        # all_data['sn-all'] =  all_data['sn1'] + all_data['sn2'] + all_data['sn3']
+        # all_data['ew-all'] =  all_data['ew1'] + all_data['ew2']
+        
+        # all_data['all'] =  all_data['ew1'] * all_data['sn-all']
+        
+        self.data_X_df = all_data
+    
+        for cl in list(all_data.columns):
+            self.data_X_Y[cl] = all_data[cl] 
+        
+    
+    def transfer_space(self, inter_level=0):
+
+        all_data = copy.deepcopy(self.data_X_df)
+        level = 0
+        l1 = []
+
+        while level < inter_level:
+            
+            l2 = list(self.data_X_df.columns) # l2 always from the initial design.
+            if not l1: # l1 is updated round by round
+                l1=l2
+            inter_pairs = [list(v) for v in product(l1, l2)]
+
+            for (c1,c2) in inter_pairs:
+                
+                # full combination.
+                # if ('sn' in c1 and 'sn' in c2) or ('ew' in c1 and 'ew' in c2):
+                #     all_data[c1+'-'+c2] = all_data[c1] - self.data_X_df[c2]
+                # elif ('sn' in c1 and 'ew' in c2) or ('ew' in c1 and 'sn' in c2):
+                    # all_data[c1+'*'+c2] = all_data[c1] * self.data_X_df[c2]
+                
+                # full purpose-based.
+                if ('sn' in c1 and 'sn' in c2) or ('ew' in c1 and 'ew' in c2):
+                    if self.ini_parameters[c1]>=self.ini_parameters[c2]:
+                        all_data[c1+'-'+c2] = all_data[c1] - self.data_X_df[c2]
+                    else:
+                        all_data[c2+'-'+c1] = all_data[c2] - self.data_X_df[c1]
+
+            # clean the columns with constant values
+            for v in all_data.columns[all_data.nunique() <= 1].tolist():
+                all_data = all_data.drop(columns = v)
+
+            # clean columns containing same values with another column
+            all_data = all_data.T.drop_duplicates().T
+            l1 = list(all_data.columns)
+            level += 1
+            
+        self.data_X_df = all_data
+    
+        for cl in list(all_data.columns):
+            self.data_X_Y[cl] = all_data[cl] 
+        
+    
 #---------------------------------------------sweeping
 
     # def _sweeping_from_initotargets(self, sweep_density, ext_pad):

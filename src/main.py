@@ -77,32 +77,23 @@ if __name__ == "__main__":
     #     set_dup_rvt = True,
     #     set_new_space = True)
     # buildDesignInSpace(file_variation=FILE_SS_VARY_LHS)
-
-    # formSolutionSpace(
-    #     ['\sa-34-0.3', '\ss-134-2'],set_new_space = False)
-    # reasonSolutionSpace(
-    #     ['\sa-34-0.3', '\ss-134-2'], set_new_space = False, plot_space_pairwise = True)
-
     # formSolutionSpace(
     #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'], set_new_space = False)
+    
     reasonSolutionSpace(
         ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
-        set_new_space = False,
         transfer_space = False,
-        plot_space_pairwise = False,
-        plot_space_svm = True)
+        # inter_level = 1,
+        plot_space_pairwise = True,
+        plot_space_svm = False)
     
-    # reasonSolutionSpace(
-    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
-    #     set_new_space = False,
-    #     transfer_space = True,
-    #     plot_space_pairwise = False,
-    #     plot_space_svm = True)
     #=================================#
     #                 rs              #
     #=================================#
-
-
+    # increase the solution space.
+    # https://stats.stackexchange.com/questions/609933/what-are-the-methods-to-increase-the-dimension-of-a-feature-space
+    # plot 3D SVM.
+    # https://community.plotly.com/t/how-to-plot-3-d-boundary-for-any-kernel-svm/20906
 
 # https://gsa-module.readthedocs.io/en/stable/implementation/morris_screening_method.html
 # for levels in Morris: From Screening to Quantitative Sensitivity Analysis. A Unified Approach

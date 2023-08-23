@@ -6,9 +6,10 @@ here you put all utilised external packages.
 # import packages
 
 from datetime import datetime
-from itertools import product, combinations, chain
+from itertools import product, combinations, permutations
 from matplotlib import colors
 from matplotlib.patches import FancyArrowPatch
+from matplotlib.colors import ListedColormap
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, MaxNLocator
 from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
@@ -32,7 +33,8 @@ from sklearn.metrics import silhouette_samples, silhouette_score, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, Normalizer
 from sklearn.manifold import TSNE
-
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.inspection import DecisionBoundaryDisplay
 from collections import namedtuple
 from scipy.stats import skewnorm, truncnorm, qmc
 from scipy import spatial
