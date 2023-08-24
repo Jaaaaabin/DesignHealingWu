@@ -220,11 +220,6 @@ def reasonSolutionSpace(
                 plot_kws=dict(s=4, edgecolor="white", alpha=0.35),
                 palette=palette_3d,
                 corner=False,)
-            
-            # sns add new line types only in legend
-            # g.lineplot([],[], palette = 'blue', label="Initial values")
-            # g.lineplot([],[], palette = 'orange', label="Analytical boundaries")
-            # g.lineplot([],[], palette = 'cyan', label="Analytical boundaries (dynamic)")
 
             for ax in g.axes.ravel():
                 
@@ -242,7 +237,8 @@ def reasonSolutionSpace(
                         param_x_v = df_plot[param_x].iloc[-1]
                         param_y_v = df_plot[param_y].iloc[-1]
                         ax.axvline(x=param_x_v, ls='-.', linewidth=0.5, alpha=0.80, c='black')
-                        ax.axhline(y=param_y_v, ls='-.', linewidth=0.5, alpha=0.80, c='black')
+                        ax.axhline(y=param_y_v, ls='-.', linewidth=0.5, alpha=0.80, c='black', label='Initial Values')
+                        g._update_legend_data(ax)
 
                         # pad = 0.01
                         # xmin = X[param_x].min() - pad
@@ -265,7 +261,7 @@ def reasonSolutionSpace(
                         # ---------------------------------
                         # 1020_2
                         txt_color = 'navy'
-                        txt_fontsize = 5
+                        txt_fontsize = 6
 
                         # txt_bbox = dict(facecolor='none', edgecolor=txt_color, alpha=0.5)
 
@@ -276,11 +272,14 @@ def reasonSolutionSpace(
                             if param_x == 'U1_OK_d_wl_ew35' and param_y == 'U1_OK_d_wl_ew6':
                             
                                 y_u = x - 6.983
-                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_u[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
-                                    rotation=35,)
+                                    rotation=35)
+                                
                                 # ax.fill_between(x, y_l, y_u, where=y_l<y_u, color='darkorange', alpha=0.5)
+                                # legend for "Analytical boundaries"
+                                g._update_legend_data(ax)
 
                         # ---------------------------------
                         # 1207_1
@@ -290,13 +289,13 @@ def reasonSolutionSpace(
 
                             if param_x == 'U1_OK_d_wl_sn26' and (param_y == 'U1_OK_d_wl_ew6' or param_y == 'U1_OK_d_wl_sn21'):
                                 x_l = y * 0 + 8.861
-                                ax.plot(x_l, y, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x_l, y, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x_l[lseg] - shift, y[lseg], ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=90,)
                             if param_y == 'U1_OK_d_wl_sn26' and (param_x == 'U1_OK_d_wl_sn10' or param_x == 'U1_OK_d_wl_ew35'):
                                 y_u = x * 0 + 8.861
-                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_u[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=0,)
@@ -305,13 +304,13 @@ def reasonSolutionSpace(
 
                             if param_y == 'U1_OK_d_wl_sn21' and param_x !='U1_OK_d_wl_ew6':
                                 y_l = x * 0 + 2.309
-                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_l[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=0,)
                             if param_x == 'U1_OK_d_wl_sn21' and param_y == 'U1_OK_d_wl_ew6':
                                 x_u = y *0 + + 2.309
-                                ax.plot(x_u, y, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x_u, y, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x_u[lseg] - shift, y[lseg], ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=90,)
@@ -320,7 +319,7 @@ def reasonSolutionSpace(
                             
                             if param_y == 'U1_OK_d_wl_ew6':
                                 y_u = x * 0 + 2.309
-                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_u[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=0,)
@@ -329,7 +328,7 @@ def reasonSolutionSpace(
 
                             if param_x == 'U1_OK_d_wl_sn10' and param_y == 'U1_OK_d_wl_sn26':
                                 y_l = x + 2.234
-                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_l[lseg] - 3*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=30,)
@@ -338,10 +337,13 @@ def reasonSolutionSpace(
 
                             if param_x == 'U1_OK_d_wl_sn10' and param_y == 'U1_OK_d_wl_sn21':
                                 y_u = x - 2.234
-                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_u[lseg] + 3*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=35,)
+                                
+                                # legend for "Analytical Boundaries"
+                                g._update_legend_data(ax)
 
                         # # ---------------------------------
                         # 1207_3
@@ -351,7 +353,7 @@ def reasonSolutionSpace(
 
                             if param_y == 'U1_OK_d_wl_ew6' and param_x == 'U1_OK_d_wl_sn26':
                                 y_l = 6.5 / (10.995-x) + 0.175
-                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_l[lseg] - 2*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=35,)
@@ -360,14 +362,16 @@ def reasonSolutionSpace(
 
                             if param_y == 'U1_OK_d_wl_ew6' and param_x == 'U1_OK_d_wl_sn21':
                                 y_l = 6.5 / (x-0.125) + 0.175
-                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label=ax_label)
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_l[lseg] - shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=-35,)
+                                
+                                # legend for "Analytical Boundaries"
+                                g._update_legend_data(ax)
 
                             txt_color = 'darkgreen'
-                            txt_fontsize = 4
-                            # txt_bbox = dict(facecolor='none', edgecolor=txt_color, pad=txt_bbox_pad, alpha=0.5)
+                            txt_fontsize = 5
 
                             for ew6 in [2.309, 3]:
                                 
@@ -376,7 +380,7 @@ def reasonSolutionSpace(
                                 if param_y == 'U1_OK_d_wl_sn26' and param_x == 'U1_OK_d_wl_sn10':
                                     
                                     y_l = x + 0.1 + 6.5 /(ew6 - 0.175)
-                                    ax.plot(x, y_l, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label=ax_label)
+                                    ax.plot(x, y_l, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label="Analytical Boundaries (dynamic)")
                                     ax.text(
                                         x[lseg], y_l[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
                                         rotation=0,)
@@ -385,15 +389,25 @@ def reasonSolutionSpace(
 
                                 if param_y == 'U1_OK_d_wl_sn21' and param_x == 'U1_OK_d_wl_sn10':
                                     y_u = x - 0.1 - 6.5 /(ew6 - 0.175)
-                                    ax.plot(x, y_u, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label=ax_label)
+                                    ax.plot(x, y_u, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label="Analytical Boundaries (dynamic)")
                                     ax.text(
                                         x[lseg], y_u[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
                                         rotation=0,)
-        
-            sns.move_legend(g, "upper center", bbox_to_anchor=(.45, 1), ncol=6, title=None)
-            # g.map_upper(sns.kdeplot, levels=2, color=".8", linestyles= 'dashed', alpha=0.75, linewidths=1)
+                                    
+                                    # legend for "Analytical boundaries (dynamic)"
+                                    g._update_legend_data(ax)
+
+            # legend arrangement.
+            g._legend.remove()
+            g.add_legend(label_order=g._legend_data.keys(), title=None)                        
+            sns.move_legend(g, "upper center", bbox_to_anchor=(.45, 1.005), ncol=len(g._legend_data.keys()), title=None)
+
+            # https://programtalk.com/vs4/python/icaros-usc/dqd-rl/external/seaborn/seaborn/axisgrid.py/
+
+            # g.map_lower(sns.kdeplot, levels=2, color=".8", linestyles= 'dashed', alpha=0.75, linewidths=1)
+
             plt.savefig(DIRS_DATA_SS_FIG + r'\{}_{}_pairwise_relationship_{}.png'.format(versionSpace, sourceSpace, label_compliance), dpi=400)
-            break 
+            
 
     if plot_knc:
         pca = PCA(n_components=3)
