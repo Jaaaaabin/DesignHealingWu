@@ -395,7 +395,7 @@ def morris_sa_plot(
     # see API: https://salib.readthedocs.io/en/latest/_modules/SALib/plotting/morris.html
     
     # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output # plot_morris.horizontal_bar_plot(ax, Si)
-    fig = plt.figure(figsize=(10,5))  # unit of inch
+    fig = plt.figure(figsize=(15,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_horizontal_bar_plot(ax, Si, plotmu='mu')
     plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_horbar_beta_{}.png'.format(rl, str(beta)), dpi=200)
@@ -403,7 +403,7 @@ def morris_sa_plot(
     # covariance_plot(ax, Si, opts=None, unit=''): 
     
     # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
-    fig = plt.figure(figsize=(10,5))  # unit of inch
+    fig = plt.figure(figsize=(15,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_covariance_plot(ax, Si, plotmu='mu')
     plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_convar_beta_{}.png'.format(rl, str(beta)), dpi=200)

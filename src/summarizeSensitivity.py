@@ -109,7 +109,7 @@ def summarizeSensi():
         
         for rl, ys in zip(BUILDING_RULES_ALL, Ys):
             
-            fig = plt.figure(figsize=(10,5))  # unit of inch
+            fig = plt.figure(figsize=(15,8))  # unit of inch
             ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
             sa_indices = dict()
 
@@ -138,7 +138,7 @@ def summarizeSensi():
                 bar.set_label(r'$\beta = {}$'.format(beta))
                 plt.legend(loc='lower right')
                 plt.savefig(DIRS_DATA_SA_FIG + r'\{nr}_{sort}_{failure}.png'.format(
-                    nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=200)
+                    nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=400)
             
             sa_indices_type.update({rl: sa_indices})
             save_dict(sa_indices_type, DIRS_DATA_SA + r'\sa_morris_indices_' + str(plot_mu) + '.pickle')
