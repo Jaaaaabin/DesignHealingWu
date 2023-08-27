@@ -107,6 +107,7 @@ def reasonSolutionSpace(
     plot_space_pairwise=False,
     plot_space_svm=False,
     plot_knc=False,
+    calc_valid_distance=False,
     random_seed=521,
     ):
 
@@ -131,6 +132,89 @@ def reasonSolutionSpace(
     compliance_keys = list(currentSpace.data_Y_dict.keys())
     Y = currentSpace.data_Y_dict
     
+    if calc_valid_distance:
+
+        currentSpace.calculate_distance()
+
+        compliant_data = currentSpace.distance_X_Y_sorted.values.tolist()
+        compliant_data.pop(0)
+        compliant_data = np.array(compliant_data).T
+
+        compliant_data_labels = list(currentSpace.distance_X_Y_sorted.keys())
+        subdistances = compliant_data[:5]
+        x_distance = compliant_data[5]
+        y_compliant_amount = compliant_data[6:]
+
+        y_compliant_amount_sum = np.cumsum(y_compliant_amount, axis=1)
+
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 8), sharex=True)
+    
+        c_j = ['#86BE3C','#E4B645','#C33734','#748EC4','#000000']
+        for jj in range(len(compliant_data_labels[:5])):
+
+            # plot the line 
+            ax1.plot(
+                x_distance, 
+                subdistances[jj,:],
+                linewidth=0.3, 
+                alpha=0.5, 
+                c = c_j[jj],
+                )
+            
+            ax1.scatter(
+                x_distance[y_compliant_amount[-1]==1],
+                subdistances[jj,y_compliant_amount[-1]==1],
+                s=10, 
+                alpha=0.5, 
+                c = c_j[jj],
+                edgecolors="k",
+                linewidth=0.5,
+                label='$\mathbf{D}$ on '+ compliant_data_labels[jj])
+
+        ax1.axvline(
+            x = x_distance[y_compliant_amount[-1]==1][0],
+            ls = '--',
+            linewidth=0.5,
+            color='black')
+        ax1.axvline(
+            x = x_distance[y_compliant_amount[-1]==1][-1],
+            ls = '--',
+            linewidth=0.5,
+            color='black')
+            
+        ax1.legend(loc=4)
+        ax1.set_yscale("log")
+        ax1.set_ylabel("The Euclidean Distance on single design variables", color="black", fontsize=10)
+        
+        c_i = ['#86BE3C','#E4B645','#C33734','#748EC4','#000000']
+        for ii in range(len(compliant_data_labels[6:])):
+            ax2.plot(
+                x_distance,
+                y_compliant_amount_sum[ii,:],
+                label=compliant_data_labels[6+ii],
+                linewidth=2,
+                c = c_i[ii],
+                )
+        
+        ax2.axvline(
+            x = x_distance[y_compliant_amount[-1]==1][0],
+            ls = '--',
+            linewidth=0.5,
+            color='black')
+        ax2.axvline(
+            x = x_distance[y_compliant_amount[-1]==1][-1],
+            ls = '--',
+            linewidth=0.5,
+            color='black')
+                
+        ax2.legend(loc=2)
+        ax2.set_ylabel("The amount of valid designs", color="black", fontsize=10)
+        ax2.set_xlabel("The weighted Euclidean Distance $\mathbf{D}$", color="black", fontsize=10)
+        
+        fig.tight_layout()
+        plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship.png', dpi=400)
+        
+
     if plot_space_svm:
         
         # X: X_svm -> X_scaled -> X_scaled_reduced. 
@@ -138,35 +222,58 @@ def reasonSolutionSpace(
 
         # pca = PCA(n_components=2)
         # X_pca = pca.fit_transform(X_svm)
+        # scaler = RobustScaler()
+        # X_scaled = scaler.fit_transform(X_svm)
 
-        scaler = RobustScaler()
-        X_scaled = scaler.fit_transform(X_svm)
-        
+        svm_res = dict()
+
         for key in compliance_keys:
         
             # Y: y.
             y = Y[key]
 
             # split for train and test.
-            X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=random_seed)
-
-            # The standard approach is to use t-SNE to reduce the dimensionality of the data for visualization purposes.
-            # Once you have reduced the data to two dimensions you can easily replicate the visualization in the scikit-learn tutorial
-            # define the meshgrid
-
-            # for svm_kernel in ["linear", "poly", "rbf" ,"sigmoid"]:
-            v_gamma = 1
-
-            # build and fit the svm.
-            svm_classifer = svm.SVC(kernel="linear", C=2, random_state=random_seed)
+            # 
+            # v_gamma = 1
             # svm_classifer = svm.SVC(kernel="rbf",gamma=v_gamma,random_state=random_seed)
-            svm_classifer.fit(X_train, y_train)
+            
+            svm_res_perrule = dict()
+            v_svm_C_items = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e+2, 1e+3, 1e+4, 1e+5, 1e+6]
 
-            y_pred_test = svm_classifer.predict(X_test)
-            accuracy = accuracy_score(y_test, y_pred_test)
-            print ("accuracy for ", key, "= ", accuracy)
+            for v_svm_C in v_svm_C_items:
+                
+                # calculate the decision boundary.
+                svm_classifer = svm.SVC(kernel="linear", C=v_svm_C, random_state=random_seed)
+                svm_classifer.fit(X_svm, y)
 
-            displaySVCinPC(X_scaled, y, path = DIRS_DATA_SS_FIG, rule_label = key)
+                svm_cofs = np.concatenate((svm_classifer.coef_, [svm_classifer.intercept_]),axis=1).tolist()
+                svm_cofs = flatten(svm_cofs)
+                
+                # [tempo] calculate the accuracy.
+                X_train, X_test, y_train, y_test = train_test_split(X_svm, y, test_size=0.3, random_state=random_seed)
+                svm_classifer = svm.SVC(kernel="linear", C=v_svm_C, random_state=random_seed)
+                svm_classifer.fit(X_train, y_train)
+                y_pred_test = svm_classifer.predict(X_test)
+                svm_75_accuracy = accuracy_score(y_test, y_pred_test)
+                # [tempo] end
+                
+                svm_cofs.append(svm_75_accuracy)
+
+                svm_ftrs = list(svm_classifer.feature_names_in_)
+                svm_ftrs.append('b')
+                svm_ftrs.append('accuracy')
+
+                dict_svm_res_perrule = {f: c for (f,c) in zip(svm_ftrs, svm_cofs)}
+                svm_res_perrule.update({v_svm_C: dict_svm_res_perrule})
+
+
+            svm_res.update({key: svm_res_perrule})
+
+        with open(DIRS_DATA_SS + r"\svm_results.json", "w") as outfile:
+            json.dump(svm_res, outfile)
+
+
+            # displaySVCinPC(X_scaled, y, path = DIRS_DATA_SS_FIG, rule_label = key)
 
             # print('w = ',svm_classifer.coef_)
             # print('b = ',svm_classifer.intercept_)
@@ -177,6 +284,7 @@ def reasonSolutionSpace(
             
             # displaySVCin3PC(X_scaled, y, path = DIRS_DATA_SS_FIG, rule_label = key)
     
+
     # plot
     if plot_space_pairwise:
 
@@ -189,21 +297,16 @@ def reasonSolutionSpace(
             spaceVariable_label.append(label_compliance)
             df_data = currentSpace.data_X_Y[spaceVariable_label]
 
-            # add the initial design. (x and y)
-            # ini_plot = [currentSpace.ini_parameters[variable] for variable in spaceVariable_label]  # adding a row
-            # ini_plot.append('Initial Design')
-
-            # add the initial design and its label.
-            # df_data.loc[-1] = ini_plot 
-            # df_data.index = df_data.index + 1
-            # df_data = df_data.sort_index()
-
             # sort the plot orders
             df_data = df_data.replace(True,'Valid')
             df_data = df_data.replace(False,'Invalid')
             df_data['sort'] = df_data[label_compliance].apply(lambda x: {'Initial Design': 2, 'Valid':1, 'Invalid':0}[x])
             df_sort = df_data.sort_values(by=['sort'])
             df_plot = df_sort.loc[:, df_sort.columns != 'sort']
+
+            # print (df_plot[list(df_plot.columns)].mean())
+            # print (df_plot[list(df_plot.columns)].max())
+            # print (df_plot[list(df_plot.columns)].min())
 
             # plot
             fig = plt.figure(figsize=(10, 10))
@@ -248,22 +351,34 @@ def reasonSolutionSpace(
 
                         xmin, xmax = ax.get_xlim()
                         ymin, ymax = ax.get_ylim()
-
                         total_line_segs = 50
                         lseg = int(total_line_segs/2)
 
                         x = np.linspace(xmin, xmax, total_line_segs)
                         y = np.linspace(ymin, ymax, total_line_segs)
 
+
+                        # txt_color = 'cyan'
+
+                        # for keys, vs in zip(bdry_keys, bdry_couples.values()):
+                            
+                        #     if param_y == keys[0] and param_x == keys[1]:
+
+                        #         x_svm = x
+                        #         y_svm = - x_svm * vs[param_x] / vs[param_y] - vs['b'] / vs[param_y]
+                        #         ax.plot(x_svm, y_svm, ls=':', linewidth=1.0, alpha=0.95, c = txt_color, label="Boundaries by SVM")
+
+                        #         break
+
+                        #     else:
+                        #         continue
+
                         shift = 0.05
-
-
-                        # ---------------------------------
-                        # 1020_2
                         txt_color = 'navy'
                         txt_fontsize = 6
 
-                        # txt_bbox = dict(facecolor='none', edgecolor=txt_color, alpha=0.5)
+                        # ---------------------------------
+                        # 1020_2
 
                         if '1020_2' in label_compliance or label_compliance == 'compliance':
                             
@@ -321,7 +436,7 @@ def reasonSolutionSpace(
                                 y_u = x * 0 + 2.309
                                 ax.plot(x, y_u, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
-                                    x[lseg], y_u[lseg] + shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
+                                    x[lseg], y_u[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=0,)
 
                             ax_label = '$ {sn}_{26} ≥ {sn}_{10} + 2.234 $'
@@ -358,10 +473,10 @@ def reasonSolutionSpace(
                                     x[lseg], y_l[lseg] - 2*shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
                                     rotation=35,)
 
-                            ax_label = '$ ({sn}_{21} - 0.125) * ({ew}_{6} - 0.175) ≥ 6.5 $'
+                            ax_label = '$ ({sn}_{21} - 0.175) * ({ew}_{6} - 0.175) ≥ 6.5 $'
 
                             if param_y == 'U1_OK_d_wl_ew6' and param_x == 'U1_OK_d_wl_sn21':
-                                y_l = 6.5 / (x-0.125) + 0.175
+                                y_l = 6.5 / (x-0.175) + 0.175
                                 ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = txt_color, label="Analytical Boundaries")
                                 ax.text(
                                     x[lseg], y_l[lseg] - shift, ax_label, fontsize=txt_fontsize, c = txt_color, ha='center', va='center',
@@ -375,27 +490,45 @@ def reasonSolutionSpace(
 
                             for ew6 in [2.309, 3]:
                                 
-                                ax_label = '$ ({sn}_{26} - {sn}_{10} - 0.125) * ({ew}_{6} - 0.175) ≥ 6.5, {ew}_{6}= $' + str(ew6)
+                                ax_label = '$ ({sn}_{26} - {sn}_{10} - 0.1) * ({ew}_{6} - 0.175) ≥ 6.5, {ew}_{6}= $' + str(ew6)
 
                                 if param_y == 'U1_OK_d_wl_sn26' and param_x == 'U1_OK_d_wl_sn10':
                                     
                                     y_l = x + 0.1 + 6.5 /(ew6 - 0.175)
                                     ax.plot(x, y_l, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label="Analytical Boundaries (dynamic)")
                                     ax.text(
-                                        x[lseg], y_l[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
+                                        x[lseg], y_l[lseg] + shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
                                         rotation=0,)
 
-                                ax_label = '$ ({sn}_{10} - {sn}_{21} - 0.125)  * ({ew}_{6} - 0.175) ≥ 6.5, {ew}_{6}= $' + str(ew6)
+                                ax_label = '$ ({sn}_{10} - {sn}_{21} - 0.1)  * ({ew}_{6} - 0.175) ≥ 6.5, {ew}_{6}= $' + str(ew6)
 
                                 if param_y == 'U1_OK_d_wl_sn21' and param_x == 'U1_OK_d_wl_sn10':
                                     y_u = x - 0.1 - 6.5 /(ew6 - 0.175)
                                     ax.plot(x, y_u, ls='--', linewidth=0.5, alpha=0.75, c=txt_color, label="Analytical Boundaries (dynamic)")
                                     ax.text(
-                                        x[lseg], y_u[lseg] + 2*shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
+                                        x[lseg], y_u[lseg] + shift, ax_label, fontsize=txt_fontsize, c=txt_color, ha='center', va='center',
                                         rotation=0,)
                                     
                                     # legend for "Analytical boundaries (dynamic)"
                                     g._update_legend_data(ax)
+
+                        # if '1020_2' in label_compliance or label_compliance == 'compliance':
+                            
+                        if '1020_2' in label_compliance:
+                        
+                            ax_label = '$ {ew}_{6} ≤ 0.992 {ew}_{35}-6.908 $'
+
+                            if param_y == 'U1_OK_d_wl_ew6' and param_x == 'U1_OK_d_wl_ew35':
+                                
+                                y_l = 0.992 * x - 6.908
+                                ax.plot(x, y_l, ls='-', linewidth=1.0, alpha=0.95, c = 'cyan', label="Boundaries by SVM")
+                                ax.text(
+                                    x[lseg], y_l[lseg] - shift, ax_label, fontsize=txt_fontsize, c = 'cyan', ha='center', va='center',
+                                    rotation=35,)
+                                
+                        #         # legend for "Analytical Boundaries"
+                        #         # g._update_legend_data(ax)
+                            
 
             # legend arrangement.
             g._legend.remove()

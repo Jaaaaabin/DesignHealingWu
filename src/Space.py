@@ -26,6 +26,7 @@ class SolutionSpace():
         self.rule = problem                             # rule.
         self.ini_parameters = dict()                    # initial parameters and their values.
         self.ini_results = []                           # initial checking results.
+        
         self.data_X_Y = pd.DataFrame()                  # major database.
         self.valid_idx = dict()                         # indices of the valid designs.
         self.sensitivity = dict()
@@ -33,6 +34,8 @@ class SolutionSpace():
         self.samples_by_skewnormal = pd.DataFrame()
         self.samples_by_lhs = pd.DataFrame()
         self.valid_set_x = dict()
+
+        self.distance_X_Y = pd.DataFrame()
 
     def ___setcenter__(self, iniDesign):
 
@@ -299,7 +302,6 @@ class SolutionSpace():
                 
                 valid_subset.to_csv(dir + r'\valid_subset_{}.csv'.format(cl), header=True)
 
-
     def __addini__(self):
 
         # add the initial design. (x and y)
@@ -403,6 +405,24 @@ class SolutionSpace():
             self.data_X_Y[cl] = all_data[cl] 
         
     
+    def calculate_distance(self,):
+
+        for param in self.ini_parameters.keys():
+            self.distance_X_Y[param] = (self.data_X_Y[param] - self.ini_parameters[param]) / self.ini_parameters[param]
+            self.distance_X_Y[param] = self.distance_X_Y[param] ** 2 
+
+        self.distance_X_Y['euc-distance'] = self.distance_X_Y[list(self.distance_X_Y.columns)].sum(axis=1)
+        self.distance_X_Y['euc-distance'] = self.distance_X_Y['euc-distance'] ** 0.5
+        
+        for param in self.ini_parameters.keys():
+            self.distance_X_Y[param] = self.distance_X_Y[param] ** 0.5
+        
+        for key in list(self.data_X_Y.columns):
+            if key not in self.ini_parameters.keys():
+                self.distance_X_Y[key] = self.data_X_Y[key]
+
+        self.distance_X_Y_sorted = self.distance_X_Y.sort_values('euc-distance', axis=0)
+        
 #---------------------------------------------sweeping
 
     # def _sweeping_from_initotargets(self, sweep_density, ext_pad):

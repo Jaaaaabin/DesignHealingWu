@@ -1,26 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import make_blobs
-from sklearn.manifold import TSNE
+from scipy.spatial import distance_matrix
 
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, Normalizer
+# Generate random data points
+np.random.seed(0)
+num_points = 10
+data = np.random.rand(num_points, 2)
 
-# Generate synthetic high-dimensional data
-n_samples = 300
-n_features = 50
-n_clusters = 3
+# Calculate pairwise Euclidean distances
+distances = distance_matrix(data, data)
 
-X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=n_clusters, random_state=42)
-
-# Apply t-SNE for dimensionality reduction
-tsne = TSNE(n_components=2, perplexity=30, random_state=42)
-X_tsne = tsne.fit_transform(X)
-
-# Create a scatter plot to visualize the reduced data
+# Create a heatmap of Euclidean distances
 plt.figure(figsize=(8, 6))
-plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap='viridis', marker='o', s=50)
-plt.title("t-SNE Visualization of High-Dimensional Data")
-plt.xlabel("t-SNE Component 1")
-plt.ylabel("t-SNE Component 2")
-plt.colorbar(label='Cluster')
+plt.imshow(distances, cmap='viridis', interpolation='nearest')
+plt.colorbar(label='Euclidean Distance')
+plt.title('Euclidean Distance Heatmap')
+plt.xticks(range(num_points), [f'Point {i+1}' for i in range(num_points)], rotation=45)
+plt.yticks(range(num_points), [f'Point {i+1}' for i in range(num_points)])
+plt.tight_layout()
 plt.show()

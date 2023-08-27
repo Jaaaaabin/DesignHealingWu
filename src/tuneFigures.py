@@ -7,7 +7,7 @@ import cv2
 
 FOLDER_PAPER_FIGURES = r'C:\dev\phd\ModelHealer\paper-figures'
 FOLDER_PAPER_FIGURES_NEW = r'C:\dev\phd\ModelHealer\paper-figures\new'
-figure_name = r'\View_2d_eg.png'
+figure_name = r'\Space_sa-34-0.3_ss-134-0_ss-134-1_ss-134-2_pairwise_relationship_compliance.png'
 figure_file = FOLDER_PAPER_FIGURES + figure_name
 figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
 
@@ -161,7 +161,7 @@ im = cv2.imread(figure_file)
 # im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
 
 # for XY pairplots.
-# im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
+im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
 
 # for SA mu plots.
 # im = crop_img(im, c_t = 280, c_b = 150, c_l = 330, c_r = 200,)
@@ -169,7 +169,7 @@ im = cv2.imread(figure_file)
 # for SA mu convar.
 # im = crop_img(im, c_t = 120, c_b = 60, c_l = 320, c_r = 100,)
 
-im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+# im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 
 cv2.imwrite(figure_file_new, im)
 
