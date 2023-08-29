@@ -133,83 +133,135 @@ def reasonSolutionSpace(
     Y = currentSpace.data_Y_dict
     
     if calc_valid_distance:
+        
+        # after manual selection, some of the valid designs are selected for visualization.
+        res_plot_nr = [0, 1282, 1439, 1522, 1718, 669]
+        res_plot_idx = [0, 362-1, 378-1, 403-1, 837-1, 1720-1]
 
         currentSpace.calculate_distance()
-
         compliant_data = currentSpace.distance_X_Y_sorted.values.tolist()
-        compliant_data.pop(0)
+        
+        # drop the initial design
+        compliant_data.pop(0) 
         compliant_data = np.array(compliant_data).T
 
         compliant_data_labels = list(currentSpace.distance_X_Y_sorted.keys())
         subdistances = compliant_data[:5]
         x_distance = compliant_data[5]
-        y_compliant_amount = compliant_data[6:]
-
+        y_compliant_amount = compliant_data[11:]
         y_compliant_amount_sum = np.cumsum(y_compliant_amount, axis=1)
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 8), sharex=True)
+        # find the lower limit(index) of 97.5% values   
+        subdistances_flatten = subdistances.flatten()
+        subdistances_flatten_sorted = np.argsort(subdistances_flatten)[:int(subdistances_flatten.shape[0]*(1-0.975))]
+
+        # calculate the subdistance value 
+        tol_subdistance = subdistances_flatten[subdistances_flatten_sorted[-1]]
+
+        # mark the subdistance values smaller than the limited value.
+        control_minor = []
+        control_valid = list(y_compliant_amount[-1]==1)
+        for id in range(subdistances.shape[1]):
+            valid_dist = (subdistances.T)[id]
+            if (valid_dist < tol_subdistance).sum() >= 1:
+                control_minor.append(True)
+            else:
+                control_minor.append(False)
+        
+        control_minor_valid = [all([v1,v2]) for v1,v2 in zip(control_minor,control_valid)]
+        
+        # output the potential alternatives.
+        ouput_df = copy.deepcopy(currentSpace.distance_X_Y_sorted)
+        ouput_df['designnumber'] = ouput_df.index
+        ouput_df = ouput_df.reset_index(drop=True)
+        
+        # type1: via distance.
+        ouput_df_valid_via_distance = copy.deepcopy(ouput_df)
+        ouput_df_valid_via_distance = ouput_df_valid_via_distance[ouput_df_valid_via_distance['compliance'] == True]
+        ouput_df_valid_via_distance.to_csv(DIRS_DATA_SS+ r'\valid_via_distance.csv', header=True)
+
+        # type2: via minor change.
+        ouput_df_valid_via_minor = copy.deepcopy(ouput_df)
+        control_minor_valid_withorigin = copy.deepcopy(control_minor_valid)
+        control_minor_valid_withorigin.insert(0,False)
+        ouput_df_valid_via_minor = ouput_df_valid_via_minor.loc[ouput_df_valid_via_minor.index[control_minor_valid_withorigin]]
+        ouput_df_valid_via_minor.to_csv(DIRS_DATA_SS+ r'\valid_via_minor.csv', header=True)
+
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 6), sharex=True, gridspec_kw={'height_ratios': [1, 3]})
     
-        c_j = ['#86BE3C','#E4B645','#C33734','#748EC4','#000000']
+        c_j = ['#86BE3C','#E4B645','#C33734','#748EC4','#808080']
         for jj in range(len(compliant_data_labels[:5])):
 
-            # plot the line 
-            ax1.plot(
+            # plot the background line 
+            ax2.plot(
                 x_distance, 
                 subdistances[jj,:],
                 linewidth=0.3, 
                 alpha=0.5, 
                 c = c_j[jj],
+                zorder=1,
                 )
             
-            ax1.scatter(
+            # plot the background scatters
+            ax2.scatter(
                 x_distance[y_compliant_amount[-1]==1],
                 subdistances[jj,y_compliant_amount[-1]==1],
                 s=10, 
                 alpha=0.5, 
                 c = c_j[jj],
                 edgecolors="k",
-                linewidth=0.5,
-                label='$\mathbf{D}$ on '+ compliant_data_labels[jj])
-
-        ax1.axvline(
-            x = x_distance[y_compliant_amount[-1]==1][0],
-            ls = '--',
-            linewidth=0.5,
-            color='black')
-        ax1.axvline(
-            x = x_distance[y_compliant_amount[-1]==1][-1],
-            ls = '--',
-            linewidth=0.5,
-            color='black')
+                linewidth=0.25,
+                label='$\mathbf{D}$ on '+ compliant_data_labels[jj],
+                zorder=5,)
             
-        ax1.legend(loc=4)
-        ax1.set_yscale("log")
-        ax1.set_ylabel("The Euclidean Distance on single design variables", color="black", fontsize=10)
+            # plot the minor scatters.
+            ax2.scatter(
+                x_distance[control_minor_valid],
+                subdistances[jj,control_minor_valid],
+                s=10, 
+                alpha=0.5, 
+                c = c_j[jj],
+                edgecolors="k",
+                linewidth=1,
+                zorder=10,)
         
-        c_i = ['#86BE3C','#E4B645','#C33734','#748EC4','#000000']
-        for ii in range(len(compliant_data_labels[6:])):
-            ax2.plot(
+        ax2.axhline(
+            y = tol_subdistance,
+            ls = '--',
+            linewidth=0.50,
+            color='#808080')
+
+        for id in res_plot_idx[1:]:
+            x_v = x_distance[id]
+            ax2.axvline(
+                x = x_v,
+                ls = '--',
+                linewidth=0.35,
+                color='#808080')
+        ax2.set_xticks(x_distance[res_plot_idx[1:]])
+        label_x_v = [round(x_v, 3) for x_v in x_distance[res_plot_idx[1:]]]
+        ax2.set_xticklabels(label_x_v)
+        for label in ax2.get_xmajorticklabels():
+             label.set_rotation(90)
+        ax2.tick_params(axis='x', direction='in', pad=-35)
+            
+        ax2.legend(loc=3)
+        ax2.set_yscale("log")
+        ax2.set_ylabel("The Euclidean Distance on single design variables", color="black", fontsize=10)
+        ax2.set_xlabel("The Euclidean Distance $\mathbf{D}$", color="black", fontsize=10)
+
+        c_i = ['#86BE3C','#E4B645','#C33734','#748EC4','#808080']
+        for ii in range(len(compliant_data_labels[11:])):
+            ax1.plot(
                 x_distance,
                 y_compliant_amount_sum[ii,:],
-                label=compliant_data_labels[6+ii],
+                label=compliant_data_labels[11+ii],
                 linewidth=2,
                 c = c_i[ii],
                 )
-        
-        ax2.axvline(
-            x = x_distance[y_compliant_amount[-1]==1][0],
-            ls = '--',
-            linewidth=0.5,
-            color='black')
-        ax2.axvline(
-            x = x_distance[y_compliant_amount[-1]==1][-1],
-            ls = '--',
-            linewidth=0.5,
-            color='black')
-                
-        ax2.legend(loc=2)
-        ax2.set_ylabel("The amount of valid designs", color="black", fontsize=10)
-        ax2.set_xlabel("The weighted Euclidean Distance $\mathbf{D}$", color="black", fontsize=10)
+
+        ax1.legend(loc=2)
+        ax1.set_ylabel("Valid amount", color="black", fontsize=10)
         
         fig.tight_layout()
         plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship.png', dpi=400)

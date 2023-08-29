@@ -7,9 +7,6 @@ import cv2
 
 FOLDER_PAPER_FIGURES = r'C:\dev\phd\ModelHealer\paper-figures'
 FOLDER_PAPER_FIGURES_NEW = r'C:\dev\phd\ModelHealer\paper-figures\new'
-figure_name = r'\Space_sa-34-0.3_ss-134-0_ss-134-1_ss-134-2_pairwise_relationship_compliance.png'
-figure_file = FOLDER_PAPER_FIGURES + figure_name
-figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
 
 def set_parameter_texts():
 
@@ -138,6 +135,73 @@ def draw_parameter_texts(im, text_dict):
     return im
 
 
+def set_line_parameters():
+
+    line_dict = dict()
+
+    #-
+    label_name = 'sn21'
+    new_dict = {
+        'x0': 493,
+        'y0': 345,
+        'x1': 493,
+        'y1': 541,
+        }
+    line_dict.update({label_name: new_dict})
+    
+    label_name = 'sn10'
+    new_dict = {
+        'x0': 649,
+        'y0': 345,
+        'x1': 649,
+        'y1': 541,
+        }
+    line_dict.update({label_name: new_dict})
+    
+    label_name = 'sn26'
+    new_dict = {
+        'x0': 840,
+        'y0': 345,
+        'x1': 840,
+        'y1': 541,
+        }
+    line_dict.update({label_name: new_dict})
+    
+    label_name = 'ew35'
+    new_dict = {
+        'x0': 295,
+        'y0': 541,
+        'x1': 1090,
+        'y1': 541,
+        }
+    line_dict.update({label_name: new_dict})
+    
+    label_name = 'ew6'
+    new_dict = {
+        'x0': 295,
+        'y0': 1026,
+        'x1': 610,
+        'y1': 1026,
+        }
+    line_dict.update({label_name: new_dict})
+
+    return line_dict
+
+def draw_line(im, line_dict):
+    
+    color = (0, 0, 255)
+    thickness = 2
+    
+    for key in line_dict.keys():
+
+        start_point = (line_dict[key]['x0'], line_dict[key]['y0'])
+        end_point = (line_dict[key]['x1'], line_dict[key]['y1'])
+        im = cv2.line(im, start_point, end_point, color, thickness)
+
+    return im
+  
+# Displaying the image 
+
 def crop_img(
     img,
     c_t = 0,
@@ -153,25 +217,37 @@ def crop_img(
     return crop_im
 
 
-im = cv2.imread(figure_file)
+figure_names = [r'\0.png',r'\669.png',r'\1282.png',r'\1439.png',r'\1522.png',r'\1718.png']
 
-# for floor plans.
-# parameter_labels = set_parameter_texts()
-# im = draw_parameter_texts(im, parameter_labels)
-# im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
+for figure_name in figure_names:
 
-# for XY pairplots.
-im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
+    figure_file = FOLDER_PAPER_FIGURES + figure_name
+    figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
 
-# for SA mu plots.
-# im = crop_img(im, c_t = 280, c_b = 150, c_l = 330, c_r = 200,)
+    im = cv2.imread(figure_file)
 
-# for SA mu convar.
-# im = crop_img(im, c_t = 120, c_b = 60, c_l = 320, c_r = 100,)
+    # for floor plans.
+    # parameter_labels = set_parameter_texts()
+    # im = draw_parameter_texts(im, parameter_labels)
+    # im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
 
-# im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    # for XY pairplots.
+    # im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
 
-cv2.imwrite(figure_file_new, im)
+    # for SA mu plots.
+    # im = crop_img(im, c_t = 280, c_b = 150, c_l = 330, c_r = 200,)
+
+    # for SA mu convar.
+    # im = crop_img(im, c_t = 120, c_b = 60, c_l = 320, c_r = 100,)
+
+    # im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+
+    # for final region output.
+    line_labels = set_line_parameters()
+    im = draw_line(im,line_labels)
+    im = crop_img(im, c_t = 330, c_b = 2250, c_l = 280, c_r = 280,)
+
+    cv2.imwrite(figure_file_new, im)
 
 # FONT_HERSHEY_SIMPLEX = 0,
 # FONT_HERSHEY_PLAIN = 1,

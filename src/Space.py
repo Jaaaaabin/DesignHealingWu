@@ -408,19 +408,21 @@ class SolutionSpace():
     def calculate_distance(self,):
 
         for param in self.ini_parameters.keys():
-            self.distance_X_Y[param] = (self.data_X_Y[param] - self.ini_parameters[param]) / self.ini_parameters[param]
+            self.distance_X_Y[param] = (self.data_X_Y[param] - self.ini_parameters[param]) #/ self.ini_parameters[param]
             self.distance_X_Y[param] = self.distance_X_Y[param] ** 2 
 
         self.distance_X_Y['euc-distance'] = self.distance_X_Y[list(self.distance_X_Y.columns)].sum(axis=1)
         self.distance_X_Y['euc-distance'] = self.distance_X_Y['euc-distance'] ** 0.5
-        
+
         for param in self.ini_parameters.keys():
             self.distance_X_Y[param] = self.distance_X_Y[param] ** 0.5
         
         for key in list(self.data_X_Y.columns):
             if key not in self.ini_parameters.keys():
                 self.distance_X_Y[key] = self.data_X_Y[key]
-
+            if key in self.ini_parameters.keys():
+                self.distance_X_Y['v-'+key] = self.data_X_Y[key]
+        
         self.distance_X_Y_sorted = self.distance_X_Y.sort_values('euc-distance', axis=0)
         
 #---------------------------------------------sweeping

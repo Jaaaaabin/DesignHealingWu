@@ -820,8 +820,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 846.11529504228656,
-        "Y": -645.403446764037
+        "X": 875.49678496367869,
+        "Y": -641.16588350803636
       },
       {
         "ShowGeometry": true,
@@ -830,8 +830,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 530.47350399751053,
-        "Y": -619.403446764037
+        "X": 559.85499391890266,
+        "Y": -615.16588350803636
       },
       {
         "ShowGeometry": true,
@@ -890,8 +890,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 128.019757622583,
-        "Y": 145.178931437796
+        "X": -603.88366753193543,
+        "Y": 169.17576504941951
       },
       {
         "ShowGeometry": true,
@@ -900,8 +900,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 870.67860285384825,
-        "Y": -253.09687397590363
+        "X": 963.38101734562144,
+        "Y": -243.29181090465846
       },
       {
         "ShowGeometry": true,
@@ -960,8 +960,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 557.198559050636,
-        "Y": 808.63114824182912
+        "X": 558.08992842074917,
+        "Y": 830.02401312454606
       },
       {
         "ShowGeometry": true,
@@ -970,8 +970,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 557.198559050636,
-        "Y": 908.63114824182912
+        "X": 558.08992842074917,
+        "Y": 930.02401312454606
       },
       {
         "ShowGeometry": true,
@@ -980,8 +980,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 557.198559050636,
-        "Y": 992.63114824182912
+        "X": 558.08992842074917,
+        "Y": 1014.0240131245461
       },
       {
         "ShowGeometry": true,
@@ -990,8 +990,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 557.198559050636,
-        "Y": 1076.6311482418291
+        "X": 558.08992842074917,
+        "Y": 1098.0240131245459
       },
       {
         "ShowGeometry": true,
@@ -1000,8 +1000,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 872.12393218496436,
-        "Y": 881.63114824182912
+        "X": 873.01530155507749,
+        "Y": 903.02401312454606
       },
       {
         "ShowGeometry": true,
@@ -1010,8 +1010,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": true,
-        "X": 144.58427157105109,
-        "Y": 279.76212237573668
+        "X": -605.8621613742672,
+        "Y": 292.85130434571317
       },
       {
         "ShowGeometry": true,
@@ -1030,8 +1030,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": true,
-        "X": 122.74952458116172,
-        "Y": -57.229339459167591
+        "X": -601.51854442420381,
+        "Y": 68.208654419773666
       },
       {
         "ShowGeometry": true,
@@ -1047,7 +1047,7 @@
     "Annotations": [
       {
         "Id": "6bd7f7f32afb4ff5b045edc36774cfae",
-        "Title": "<Click here to edit the group title>",
+        "Title": "object extraction\r\n(including building elements and spaces)",
         "Nodes": [
           "c21db13a77854c36a61a41daf010835d",
           "6c68d7fbca4647f1a4e010b46b899f18",
@@ -1058,35 +1058,35 @@
           "ab1e23d48901442981328ab5c2609f27"
         ],
         "Left": 542.88755807772884,
-        "Top": -425.08194860276933,
-        "Width": 588.53731343283573,
-        "Height": 556.044776119403,
+        "Top": -468.78344114008274,
+        "Width": 681.23972792460893,
+        "Height": 599.74626865671644,
         "FontSize": 36.0,
         "InitialTop": -372.09687397590363,
         "InitialHeight": 565.0,
-        "TextblockHeight": 42.985074626865675,
+        "TextblockHeight": 86.68656716417911,
         "Background": "#FFB5B5B5"
       },
       {
         "Id": "ba19a231f5b341f1a23c0833c11796c5",
-        "Title": "<Click here to edit the group title>",
+        "Title": "topology objects vs. parameters",
         "Nodes": [
           "48cd49d3ebbe48a7ab24926109c69652",
           "70fe747d2c474f30a1c9765244bd4d09"
         ],
-        "Left": 520.47350399751053,
-        "Top": -698.38852139090261,
+        "Left": 549.85499391890266,
+        "Top": -694.150958134902,
         "Width": 586.38805970149247,
         "Height": 171.86567164179098,
         "FontSize": 36.0,
-        "InitialTop": -645.403446764037,
+        "InitialTop": -641.16588350803636,
         "InitialHeight": 171.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
       },
       {
         "Id": "61c82faf85ed4d3bbbce2789750e3d65",
-        "Title": "<Click here to edit the group title>",
+        "Title": "topology among objects.",
         "Nodes": [
           "44666a9691b3485fb9f77c4d53900021",
           "4bde87fbc22d4d018423f6a81927bdad",
@@ -1107,7 +1107,7 @@
       },
       {
         "Id": "5e8f4b07affa40a6b4a6f1ec3d2671f7",
-        "Title": "<Click here to edit the group title>",
+        "Title": "topology extraction",
         "Nodes": [
           "12aa4a347aef44e286e8732fcd879db5",
           "7a08a39f02a14b399d8ea38e2d3222b9",
@@ -1115,19 +1115,19 @@
           "ac529fb88ff0497ab9564f05bdda2e66",
           "4d6c96d094a14cecb56567f89221e0c2"
         ],
-        "Left": 547.198559050636,
-        "Top": 755.64607361496348,
-        "Width": 646.56716417910457,
-        "Height": 388.99999999999989,
+        "Left": 548.08992842074917,
+        "Top": 777.03893849768042,
+        "Width": 646.56716417910434,
+        "Height": 388.99999999999977,
         "FontSize": 36.0,
-        "InitialTop": 808.63114824182912,
+        "InitialTop": 830.02401312454606,
         "InitialHeight": 413.0,
         "TextblockHeight": 42.985074626865675,
         "Background": "#FFB5B5B5"
       }
     ],
-    "X": -346.01971810952,
-    "Y": -236.31193058082175,
-    "Zoom": 1.3112150876393751
+    "X": 176.25020745526393,
+    "Y": 64.816610491560738,
+    "Zoom": 0.385037498738024
   }
 }
