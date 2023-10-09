@@ -85,7 +85,7 @@ def set_parameter_texts():
     label_dict.update({label_name: new_dict})
 
     #-
-    label_name = 'sn19'
+    label_name = 'sn1'
     new_dict = {
         'im_text': label_name,
         'im_x': 2650,
@@ -93,7 +93,6 @@ def set_parameter_texts():
         }
     label_dict.update({label_name: new_dict})
 
-    #----------------------------------------
     label_name = 'sn9'
     new_dict = {
         'im_text': label_name,
@@ -111,6 +110,101 @@ def set_parameter_texts():
         }
     label_dict.update({label_name: new_dict})
     
+    #---------------------------------------- fixed
+    label_name = 'sn0'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1510,
+        'im_y': 600,
+        }
+    label_dict.update({label_name: new_dict})
+
+    #-
+    label_name = 'sn18'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1500,
+        'im_y': 670,
+        }
+    label_dict.update({label_name: new_dict})
+
+    #-
+    label_name = 'sn24'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1500,
+        'im_y': 1000,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'sn19'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1500,
+        'im_y': 1105,
+        }
+    label_dict.update({label_name: new_dict})
+
+
+    #-
+    label_name = 'ew2'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 2180,
+        'im_y': 900,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'ew3'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 2050,
+        'im_y': 900,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'ew4'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1950,
+        'im_y': 900,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'ew5'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1530,
+        'im_y': 900,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'ew18'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 1440,
+        'im_y': 900,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'ew33'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 850,
+        'im_y': 900,
+        }
+    label_dict.update({label_name: new_dict})
+    #-
+    label_name = 'ew28'
+    new_dict = {
+        'im_text': label_name,
+        'im_x': 650,
+        'im_y': 900,
+        }
+    
+    label_dict.update({label_name: new_dict})
+
+
     return label_dict
 
 
@@ -217,37 +311,48 @@ def crop_img(
     return crop_im
 
 
-figure_names = [r'\0.png',r'\669.png',r'\1282.png',r'\1439.png',r'\1522.png',r'\1718.png']
+figure_name = r'\U1_OK_RES_IBC1207_3_neighbor_3.png'
+figure_file = FOLDER_PAPER_FIGURES + figure_name
+figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
 
-for figure_name in figure_names:
+im = cv2.imread(figure_file)
 
-    figure_file = FOLDER_PAPER_FIGURES + figure_name
-    figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
+parameter_labels = set_parameter_texts()
+im = draw_parameter_texts(im, parameter_labels)
 
-    im = cv2.imread(figure_file)
+im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
+cv2.imwrite(figure_file_new, im)
 
-    # for floor plans.
-    # parameter_labels = set_parameter_texts()
-    # im = draw_parameter_texts(im, parameter_labels)
-    # im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
+# for floor plans.
+# im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
 
-    # for XY pairplots.
-    # im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
+# for XY pairplots.
+# im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
 
-    # for SA mu plots.
-    # im = crop_img(im, c_t = 280, c_b = 150, c_l = 330, c_r = 200,)
+# for SA mu plots.
+# im = crop_img(im, c_t = 280, c_b = 150, c_l = 330, c_r = 200,)
 
-    # for SA mu convar.
-    # im = crop_img(im, c_t = 120, c_b = 60, c_l = 320, c_r = 100,)
+# for SA mu convar.
+# im = crop_img(im, c_t = 120, c_b = 60, c_l = 320, c_r = 100,)
 
-    # im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+# im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 
-    # for final region output.
-    line_labels = set_line_parameters()
-    im = draw_line(im,line_labels)
-    im = crop_img(im, c_t = 330, c_b = 2250, c_l = 280, c_r = 280,)
 
-    cv2.imwrite(figure_file_new, im)
+# figure_names = [r'\0.png',r'\669.png',r'\1282.png',r'\1439.png',r'\1522.png',r'\1718.png']
+
+# for figure_name in figure_names:
+
+#     figure_file = FOLDER_PAPER_FIGURES + figure_name
+#     figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
+
+#     im = cv2.imread(figure_file)
+#     # for final region output.
+#     line_labels = set_line_parameters()
+#     im = draw_line(im,line_labels)
+#     im = crop_img(im, c_t = 330, c_b = 2250, c_l = 280, c_r = 280,)
+
+#     cv2.imwrite(figure_file_new, im)
+
 
 # FONT_HERSHEY_SIMPLEX = 0,
 # FONT_HERSHEY_PLAIN = 1,
