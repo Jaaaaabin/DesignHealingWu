@@ -26,8 +26,12 @@ FILE_INIT_RVT = DIRS_INIT + r'\model\ini_param.rvt'
 FILE_INIT_SKL_RVT = DIRS_INIT + r'\model\ini_param_skeleton.rvt'
 FILE_INIT_RES = DIRS_INIT + r'\res\0.h5'
 
-# DIRS_DATA_TOPO = r'C:\dev\phd\enrichgraph\data\ini\res'
-DIRS_DATA_TOPO = DIRS_INIT + r'\topo'
+# DIRS_DATA_TOPO = DIRS_INIT + r'\topo' # journal paper experiments.
+# DIRS_DATA_TOPO = DIRS_INIT + r'\topo_simplified' # journal paper figure maker.
+
+# EC3 paper with Tanya.
+DIRS_DATA_TOPO = r'C:\jwuphd\04-papers\08-EC3\cowork_with_Tanya\data\model_Hod_HaSharon'
+
 FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_parameter.csv'
 
 FILE_RELATED_FL_PERRULE = DIRS_DATA_TOPO + r'\res_ini_perrule_failure.csv'
@@ -42,7 +46,8 @@ FILE_INI_GRAPH = DIRS_DATA_TOPO + r'\res_graph.txt'
 FILE_CONSTRAINTS = DIRS_DATA_TOPO + r'\res_ini_constraints.json'
 FILE_CONSTRAINTS_APPLY = DIRS_DATA_TOPO + r'\res_ini_constraints_applied.json'
 
-NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter','separationline']
+# NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','parameter','separationline']
+NAME_TOPO_INSTANCES = ['door','window','wall','slab','space','separationline']
 NAME_INSTANCE_COLLECTION = r'\collected_instances_'
 
 NAME_TOPO_OBJECT = r'\collected_topology_wall_'

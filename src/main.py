@@ -8,6 +8,7 @@ from const_solus import FILE_SS_VARY_LHS
 from topoCollection import topoCollect
 from graphCreation import graphCreate
 from graphEnricher import graphEnrich
+from graphEnrich_withoutchecking import graphEnrich_withoutchecking
 from prepareVariation import prepareSAVariants
 from testSensitivity import testSensi_morris_weighted
 from summarizeSensitivity import summarizeSensi
@@ -16,10 +17,11 @@ from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reason
 if __name__ == "__main__":
 
     #=================================#
-    #                ini              #
+    #                ini               #
     #=================================#
-    # topoCollect()
-    # graphCreate()
+    topoCollect()
+    graphCreate()
+    graphEnrich_withoutchecking(plot_graph=True)
     # graphEnrich(plot_graph=False)
     
     #=================================#
@@ -80,13 +82,15 @@ if __name__ == "__main__":
     # formSolutionSpace(
     #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'], set_new_space = False)
     
-    reasonSolutionSpace(
-        ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
-        transfer_space = False,
-        # inter_level = 1,
-        plot_space_pairwise = False,
-        plot_space_svm = False,
-        calc_valid_distance = True)
+    # formSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'], set_new_space = False)
+    # reasonSolutionSpace(
+    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
+    #     transfer_space = False,
+    #     # inter_level = 1,
+    #     plot_space_pairwise = False,
+    #     plot_space_svm = False,
+    #     calc_valid_distance = True)
     
     #=================================#
     #                 rs              #

@@ -74,15 +74,18 @@ def morris_horizontal_bar_plot(
                   **opts)
     
     if plotmu == 'mu_star':
-        ax.set_xlabel(r'$\mu^\star$' + unit)
+        ax.set_xlabel(r'$\mu^\star$' + unit, fontsize=20)
         ax.set_xlim(0.0,x_max_abs)
     elif plotmu == 'mu':
-        ax.set_xlabel(r'$\mu$' + unit)
+        ax.set_xlabel(r'$\mu$' + unit, fontsize=20)
         ax.set_xlim(-x_max_abs,x_max_abs)
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(plot_names)
     ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
+
+    ax.tick_params(axis='y', which='major', labelsize=18)
+    ax.tick_params(axis='x', which='major', labelsize=18)
 
     return out
 
@@ -109,7 +112,7 @@ def summarizeSensi():
         
         for rl, ys in zip(BUILDING_RULES_ALL, Ys):
             
-            fig = plt.figure(figsize=(15,8))  # unit of inch
+            fig = plt.figure(figsize=(16,8))  # unit of inch
             ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
             sa_indices = dict()
 

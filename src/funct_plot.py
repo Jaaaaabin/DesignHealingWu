@@ -313,7 +313,9 @@ def morris_horizontal_bar_plot(
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(plot_names)
-    ax.set_xlabel(r'$\mu$' + unit)
+    ax.tick_params(axis='y', which='major', labelsize=16)
+    ax.tick_params(axis='x', which='major', labelsize=16)
+    ax.set_xlabel(r'$\mu$' + unit, fontsize=18)
 
     ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
 
@@ -324,7 +326,7 @@ def morris_covariance_plot(
     ax,
     Si,
     plotmu,
-    annotate_size=8,
+    annotate_size=14,
     opts=None,
     unit=''):
 
@@ -352,7 +354,7 @@ def morris_covariance_plot(
                 xytext=(Si[plotmu][i]*0.85, y[i]*0.85),
                 fontsize=annotate_size)
 
-        ax.set_ylabel(r'$\sigma$')
+        ax.set_ylabel(r'$\sigma$', fontsize=16)
 
         ax.set_xlim(-1.0,1.0)
         ax.set_ylim(0.0,)
@@ -377,7 +379,7 @@ def morris_covariance_plot(
                          **opts)
         ax.set_ylabel(r'$95\% CI$')
     
-    ax.set_xlabel(r'${}$ '.format(mu_type) + unit)
+    ax.set_xlabel(r'${}$ '.format(mu_type) + unit, fontsize=16)
     ax.set_ylim(0-(0.01 * np.array(ax.get_ylim()[1])),)
 
     return out
@@ -395,7 +397,7 @@ def morris_sa_plot(
     # see API: https://salib.readthedocs.io/en/latest/_modules/SALib/plotting/morris.html
     
     # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output # plot_morris.horizontal_bar_plot(ax, Si)
-    fig = plt.figure(figsize=(15,8))  # unit of inch
+    fig = plt.figure(figsize=(16,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_horizontal_bar_plot(ax, Si, plotmu='mu')
     plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_horbar_beta_{}.png'.format(rl, str(beta)), dpi=200)
@@ -403,7 +405,7 @@ def morris_sa_plot(
     # covariance_plot(ax, Si, opts=None, unit=''): 
     
     # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
-    fig = plt.figure(figsize=(15,8))  # unit of inch
+    fig = plt.figure(figsize=(16,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_covariance_plot(ax, Si, plotmu='mu')
     plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_convar_beta_{}.png'.format(rl, str(beta)), dpi=200)

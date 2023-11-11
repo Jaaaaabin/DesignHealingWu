@@ -56,17 +56,17 @@ def graphCreate():
             guid_space_separationlines.append(line.rstrip())
     guid_space_separationlines.append('') # due to the ISSUE:miss the last line for guid_wall_inserts
 
-    # parameter-based
-    FILE_PARAMETER_HOST = DIRS_DATA_TOPO + NAME_TOPO_PARAMETER + 'host.txt'
-    FILE_PARAMETER_OBJECTS = DIRS_DATA_TOPO + NAME_TOPO_PARAMETER + 'objects.txt'
+    # # parameter-based
+    # FILE_PARAMETER_HOST = DIRS_DATA_TOPO + NAME_TOPO_PARAMETER + 'host.txt'
+    # FILE_PARAMETER_OBJECTS = DIRS_DATA_TOPO + NAME_TOPO_PARAMETER + 'objects.txt'
 
-    guid_parameter_host, guid_parameter_objects = [],[]
-    with open(FILE_PARAMETER_HOST) as file:
-        for line in file:
-            guid_parameter_host.append(line.rstrip())
-    with open(FILE_PARAMETER_OBJECTS) as file:
-        for line in file:
-            guid_parameter_objects.append(line.rstrip())
+    # guid_parameter_host, guid_parameter_objects = [],[]
+    # with open(FILE_PARAMETER_HOST) as file:
+    #     for line in file:
+    #         guid_parameter_host.append(line.rstrip())
+    # with open(FILE_PARAMETER_OBJECTS) as file:
+    #     for line in file:
+    #         guid_parameter_objects.append(line.rstrip())
 
     # Build networkx edges 
     # wall-based edges.
@@ -100,19 +100,20 @@ def graphCreate():
     df_edges_space_h_windows = pd.DataFrame.from_records(edges_space_h_windows, columns = ['host','target'])
     df_edges_space_h_separationlines = pd.DataFrame.from_records(edges_space_h_separationlines, columns = ['host','target'])
 
-    # parameter-based edges.
-    guid_parameter_host_indi = split_guids(guid_parameter_host)
-    guid_parameter_objects_indi = split_guids(guid_parameter_objects)
+    # # parameter-based edges.
+    # guid_parameter_host_indi = split_guids(guid_parameter_host)
+    # guid_parameter_objects_indi = split_guids(guid_parameter_objects)
 
-    edges_parameter_h_objects = build_guid_edges(guid_parameter_host_indi, guid_parameter_objects_indi, set_sort=False)
-    df_edges_parameter_h_objects = pd.DataFrame.from_records(edges_parameter_h_objects, columns = ['host','target'])
+    # edges_parameter_h_objects = build_guid_edges(guid_parameter_host_indi, guid_parameter_objects_indi, set_sort=False)
+    # df_edges_parameter_h_objects = pd.DataFrame.from_records(edges_parameter_h_objects, columns = ['host','target'])
 
     # Build networkx attributes
     # object attributes
-    df_doorinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_door.csv', index_col ='ifcguid')
-    df_windowinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_window.csv', index_col ='ifcguid')
-    df_wallinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_wall.csv', index_col ='ifcguid')
-    df_slabinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_slab.csv', index_col ='ifcguid')
+    index_col_name = 'id'
+    df_doorinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_door.csv', index_col =index_col_name, dtype={'id':str})
+    df_windowinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_window.csv', index_col =index_col_name, dtype={'id':str})
+    df_wallinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_wall.csv', index_col =index_col_name, dtype={'id':str})
+    df_slabinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_slab.csv', index_col =index_col_name, dtype={'id':str})
 
     attrs_door = df_doorinstances.to_dict(orient = 'index')
     attrs_window = df_windowinstances.to_dict(orient = 'index')
@@ -120,30 +121,44 @@ def graphCreate():
     attrs_slab = df_slabinstances.to_dict(orient = 'index')
     
     # space attributes
-    df_spaceinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_space.csv', index_col ='ifcguid')
+    df_spaceinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_space.csv', index_col =index_col_name, dtype={'id':str})
     attrs_space = df_spaceinstances.to_dict(orient = 'index')
-    for sp in attrs_space:
-        tempo_xyz = (attrs_space[sp]['xyz'].strip('][').split(', '))
-        attrs_space[sp]['xyz'] = [round(float(v),3) for v in tempo_xyz]
+
+    # for sp in attrs_space:
+    #     tempo_xyz = (attrs_space[sp]['xyz'].strip('][').split(', '))
+    #     attrs_space[sp]['xyz'] = [round(float(v),3) for v in tempo_xyz]
         
     # ini_list.strip('][').split(', ')
 
     # separation line attributes.
-    df_separationlineinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_separationline.csv', index_col ='id', dtype={'id':str})
+    df_separationlineinstances = pd.read_csv(DIRS_DATA_TOPO+'\df_separationline.csv', index_col = index_col_name, dtype={'id':str})
     attrs_separationline = df_separationlineinstances.to_dict(orient = 'index')
 
-    # parameter-based attibutes
-    df_gp_instances = pd.read_csv(DIRS_DATA_TOPO+'\df_parameter.csv', index_col ='name')
-    attrs_gp = df_gp_instances.to_dict(orient = 'index')
+    # # parameter-based attibutes
+    # df_gp_instances = pd.read_csv(DIRS_DATA_TOPO+'\df_parameter.csv', index_col ='name')
+    # attrs_gp = df_gp_instances.to_dict(orient = 'index')
+    
+    # ## =================================journal
+    # # include edges selectively.
+    # all_df_edges_object = [df_edges_wall_h_walls, df_edges_wall_h_slabs, df_edges_wall_h_inserts]                # no doors/windows: (including doors and windows.)
+    # all_df_edges_space = [df_edges_space_h_walls, df_edges_space_h_separationlines]     # no doors/windwos df_edges_space_h_doors, df_edges_space_h_windows
 
-    # include edges selectively.
-    all_df_edges_object = [df_edges_wall_h_walls, df_edges_wall_h_slabs]                # no doors/windows: df_edges_wall_h_inserts (including doors and windows.)
-    all_df_edges_space = [df_edges_space_h_walls, df_edges_space_h_separationlines]     # no doors/windwos df_edges_space_h_doors, df_edges_space_h_windows
-    all_df_edges_parameter = [df_edges_parameter_h_objects]
-    all_df_edges = all_df_edges_object + all_df_edges_space + all_df_edges_parameter
+    # # all_df_edges_parameter = [df_edges_parameter_h_objects]
+    # all_df_edges = all_df_edges_object + all_df_edges_space # + all_df_edges_parameter
+
+    # # all attributes selectively.
+    # # all_dict_attrs = [attrs_door, attrs_window, attrs_wall, attrs_slab, attrs_space, attrs_separationline, attrs_gp]
+    # all_dict_attrs = [attrs_door, attrs_window, attrs_wall, attrs_slab, attrs_space, attrs_separationline]
+    # G_all = build_networkx_graph(all_df_edges, all_dict_attrs)
+    # ## =================================
+
+    ## =================================EC3.
+    all_df_edges = [df_edges_space_h_separationlines, df_edges_space_h_doors] # + all_df_edges_parameter
 
     # all attributes selectively.
-    all_dict_attrs = [attrs_door, attrs_window, attrs_wall, attrs_slab, attrs_space, attrs_separationline, attrs_gp] 
+    # all_dict_attrs = [attrs_door, attrs_window, attrs_wall, attrs_slab, attrs_space, attrs_separationline, attrs_gp]
+    all_dict_attrs = [attrs_door, attrs_space, attrs_separationline]
     G_all = build_networkx_graph(all_df_edges, all_dict_attrs)
+    ## =================================
 
     pickle.dump(G_all, open(FILE_INI_GRAPH, 'wb'))

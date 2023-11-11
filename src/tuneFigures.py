@@ -311,17 +311,17 @@ def crop_img(
     return crop_im
 
 
-figure_name = r'\U1_OK_RES_IBC1207_3_neighbor_3.png'
+figure_name = r'\SA_mu_IBC1020_2_morris_Si_indices_convar_beta_0.png'
 figure_file = FOLDER_PAPER_FIGURES + figure_name
 figure_file_new  = FOLDER_PAPER_FIGURES_NEW + figure_name
 
 im = cv2.imread(figure_file)
+# parameter_labels = set_parameter_texts()
+# im = draw_parameter_texts(im, parameter_labels)
 
-parameter_labels = set_parameter_texts()
-im = draw_parameter_texts(im, parameter_labels)
-
-im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
+im = crop_img(im, c_t = 130, c_b = 60, c_l = 330, c_r = 100,)
 cv2.imwrite(figure_file_new, im)
+
 
 # for floor plans.
 # im = crop_img(im, c_t = 130, c_b = 260, c_l = 350, c_r = 250,)
@@ -330,7 +330,7 @@ cv2.imwrite(figure_file_new, im)
 # im = crop_img(im, c_t = 0, c_b = 50, c_l = 130, c_r = 800,)
 
 # for SA mu plots.
-# im = crop_img(im, c_t = 280, c_b = 150, c_l = 330, c_r = 200,)
+# im = crop_img(im, c_t = 280, c_b = 50, c_l = 0, c_r = 200,)
 
 # for SA mu convar.
 # im = crop_img(im, c_t = 120, c_b = 60, c_l = 320, c_r = 100,)

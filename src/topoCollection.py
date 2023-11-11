@@ -44,5 +44,6 @@ def topoCollect():
             
         else:
             # instances: non-parameter building elements/spaces.
-            df_instances = build_instance_df(cls_objs_instances, topo_inst, final_index_name='ifcguid')
+            # df_instances = build_instance_df(cls_objs_instances, topo_inst, final_index_name='ifcguid')
+            df_instances = build_instance_df(cls_objs_instances, topo_inst, final_index_name='id')
             df_instances.to_csv(DIRS_DATA_TOPO+'\df_'+ topo_inst +'.csv')

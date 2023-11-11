@@ -84,6 +84,7 @@ def convert_clsobjs_into_df(cls_objs):
 def build_instance_df(
         cls_objs_instance, instance_type=[], final_index_name='ifcguid'):
     """
+    final_index_name: id / ifcguid.
     """
 
     df_instances = convert_clsobjs_into_df(cls_objs_instance)
@@ -187,10 +188,11 @@ def get_tempo_data(
 
 def plot_networkx_per_rule(
         path,
-        rule,
         G,
         nodesize_map,
-        nodecolor_map):
+        nodecolor_map,
+        rule='',
+        pos_layout_scale= 0.75):
     """
     plot the networkx graph with specified maps for node size and node color.
     """
@@ -205,13 +207,15 @@ def plot_networkx_per_rule(
 
     nx.draw_networkx(
         G,
-        pos=nx.kamada_kawai_layout(G, scale=0.75),
+        pos=nx.kamada_kawai_layout(G, scale=pos_layout_scale),
+        # pos = nx.spiral_layout(G, scale=pos_layout_scale),
+        arrows=True,
         with_labels=False,
         node_size=G_nodes_sizes,
         node_shape="o",
         node_color=G_nodes_colors,
         linewidths=0.1,
-        width=0.5,
+        width=2,
         alpha=0.80,
         edge_color='black')
     ax.title.set_position([.5, 0.975])
@@ -219,7 +223,7 @@ def plot_networkx_per_rule(
     for kk in list(nodecolor_map.keys()):
         plt.scatter([], [], c=nodecolor_map[kk], label=kk)
 
-    plt.legend()
+    plt.legend(fontsize="xx-large", ncol=4, loc=(0.35,0.05))
     plt.savefig(path + '\\res_G_' + str(rule) + '.png', dpi=200)
 
 

@@ -16,7 +16,7 @@ class GraphNeighbor():
     """
 
 
-    def __init__(self, graph, rule):
+    def __init__(self, graph, rule=''):
         
         self.graph = graph                              # the whole graph.
         self.rule = rule                                # rule.

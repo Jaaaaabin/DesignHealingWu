@@ -132,6 +132,8 @@ def reasonSolutionSpace(
     compliance_keys = list(currentSpace.data_Y_dict.keys())
     Y = currentSpace.data_Y_dict
     
+    currentSpace.data_X_Y.to_csv(DIRS_DATA_SS+ r'\all_data.csv', header=True)
+    
     if calc_valid_distance:
         
         # after manual selection, some of the valid designs are selected for visualization.
@@ -187,7 +189,7 @@ def reasonSolutionSpace(
         ouput_df_valid_via_minor = ouput_df_valid_via_minor.loc[ouput_df_valid_via_minor.index[control_minor_valid_withorigin]]
         ouput_df_valid_via_minor.to_csv(DIRS_DATA_SS+ r'\valid_via_minor.csv', header=True)
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 6), sharex=True, gridspec_kw={'height_ratios': [1, 3]})
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6), sharex=True, gridspec_kw={'height_ratios': [1, 3]})
     
         c_j = ['#86BE3C','#E4B645','#C33734','#748EC4','#808080']
         for jj in range(len(compliant_data_labels[:5])):
@@ -211,7 +213,8 @@ def reasonSolutionSpace(
                 c = c_j[jj],
                 edgecolors="k",
                 linewidth=0.25,
-                label='$\mathbf{D}$ on '+ compliant_data_labels[jj],
+                label='$\mathbf{D}_{j,i}$ (i=' + compliant_data_labels[jj] + ')',
+                # label='$\mathbf{D}$' + '$i=' + compliant_data_labels[jj],
                 zorder=5,)
             
             # plot the minor scatters.
@@ -225,18 +228,20 @@ def reasonSolutionSpace(
                 linewidth=1,
                 zorder=10,)
         
+        # the tol.
         ax2.axhline(
             y = tol_subdistance,
             ls = '--',
-            linewidth=0.50,
+            linewidth=0.75,
             color='#808080')
+        ax2.text(1.05, tol_subdistance*1.05,'$\mathbf{D}_{j,i} = 0.01 * max(\mathbf{D}_{j})$')
 
         for id in res_plot_idx[1:]:
             x_v = x_distance[id]
             ax2.axvline(
                 x = x_v,
                 ls = '--',
-                linewidth=0.35,
+                linewidth=0.50,
                 color='#808080')
         ax2.set_xticks(x_distance[res_plot_idx[1:]])
         label_x_v = [round(x_v, 3) for x_v in x_distance[res_plot_idx[1:]]]
@@ -247,21 +252,23 @@ def reasonSolutionSpace(
             
         ax2.legend(loc=3)
         ax2.set_yscale("log")
-        ax2.set_ylabel("The Euclidean Distance on single design variables", color="black", fontsize=10)
-        ax2.set_xlabel("The Euclidean Distance $\mathbf{D}$", color="black", fontsize=10)
+        ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{D}_{j,i}$", color="black", fontsize=14)
+        ax2.set_xlabel("The total Euclidean Distance $\mathbf{D}_{j}$", color="black", fontsize=14)
 
-        c_i = ['#86BE3C','#E4B645','#C33734','#748EC4','#808080']
+        c_i = ['#938888','#938888','#938888','#000000']
+        l_styles = ['dotted','dashed','dashdot','solid']
         for ii in range(len(compliant_data_labels[11:])):
             ax1.plot(
                 x_distance,
                 y_compliant_amount_sum[ii,:],
-                label=compliant_data_labels[11+ii],
-                linewidth=2,
+                label="$N_{valid}$ (" + compliant_data_labels[11+ii] + ")",
+                linewidth=1,
+                linestyle = l_styles[ii],
                 c = c_i[ii],
                 )
 
         ax1.legend(loc=2)
-        ax1.set_ylabel("Valid amount", color="black", fontsize=10)
+        ax1.set_ylabel("$N_{valid}$", color="black", fontsize=14)
         
         fig.tight_layout()
         plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship.png', dpi=400)
