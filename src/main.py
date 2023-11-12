@@ -14,6 +14,8 @@ from testSensitivity import testSensi_morris_weighted
 from summarizeSensitivity import summarizeSensi
 from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reasonSolutionSpace
 
+from pairRooms import getRoomPairs
+
 if __name__ == "__main__":
 
     #=================================#
@@ -21,7 +23,10 @@ if __name__ == "__main__":
     #=================================#
     topoCollect()
     graphCreate()
+
     graphEnrich_withoutchecking(plot_graph=True)
+    getRoomPairs()
+
     # graphEnrich(plot_graph=False)
     
     #=================================#

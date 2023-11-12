@@ -52,15 +52,17 @@ separationlines_file = filepath + r'\collected_topology_space_separationlines.tx
 output_file_by_door = filepath + r'\space_pairs_by_doors.txt'
 output_file_by_separationline = filepath + r'\space_pairs_by_separationlines.txt'
 
-# Use the function to get space pairs and write them to a file
-get_space_pairs_via_connections(
-    spaces_file,
-    doors_file,
-    output_file_by_door,
-    pair_connection_type='Door')
+def getRoomPairs():
+    
+    # Use the function to get space pairs and write them to a file
+    get_space_pairs_via_connections(
+        spaces_file,
+        doors_file,
+        output_file_by_door,
+        pair_connection_type='Door')
 
-get_space_pairs_via_connections(
-    spaces_file,
-    separationlines_file,
-    output_file_by_separationline,
-    pair_connection_type='SeparationLine')
+    get_space_pairs_via_connections(
+        spaces_file,
+        separationlines_file,
+        output_file_by_separationline,
+        pair_connection_type='SeparationLine')
