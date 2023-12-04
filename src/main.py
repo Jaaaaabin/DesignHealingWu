@@ -21,10 +21,10 @@ if __name__ == "__main__":
     #=================================#
     #                ini               #
     #=================================#
-    topoCollect()
-    graphCreate()
+    # topoCollect()
+    # graphCreate()
 
-    graphEnrich_withoutchecking(plot_graph=True)
+    # graphEnrich_withoutchecking(plot_graph=True)
     getRoomPairs()
 
     # graphEnrich(plot_graph=False)

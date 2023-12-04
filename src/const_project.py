@@ -30,7 +30,7 @@ FILE_INIT_RES = DIRS_INIT + r'\res\0.h5'
 # DIRS_DATA_TOPO = DIRS_INIT + r'\topo_simplified' # journal paper figure maker.
 
 # EC3 paper with Tanya.
-DIRS_DATA_TOPO = r'C:\jwuphd\04-papers\08-EC3\cowork_with_Tanya\data\model_CA_A_buildings_2018'
+DIRS_DATA_TOPO = r'C:\dev\phd\enrichgraph\ec3_2024\data\Bld type3_detached_Tanya'
 
 FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_parameter.csv'
 

@@ -50,14 +50,29 @@ def graphEnrich_withoutchecking(plot_graph=False):
     
     # search neighbor.
     
-    # plot the networkx.
-    if plot_graph:
-        plot_networkx_per_rule(
-            DIRS_DATA_TOPO,
-            G,
-            nodesize_map_by_object_type,
-            nodecolor_map_by_object_type,
-            )
+    # # plot the whole networkx.
+    # if plot_graph:
+    #     plot_networkx_per_rule(
+    #         DIRS_DATA_TOPO,
+    #         G,
+    #         nodesize_map_by_object_type,
+    #         nodecolor_map_by_object_type,
+    #         )
+    
+    # split the graph to subgraphs
+    node_classification = nx.get_node_attributes(G,'classification')
+    node_level = nx.get_node_attributes(G,'level')
+    node_name = nx.get_node_attributes(G,'name')
+
+    space_levels = [node_level[key] for key in node_classification.keys() if node_classification[key] == 'space']
+    space_levels = list(set(space_levels))
+
+    # for l in space_levels:
+    #     nodes = (
+    #         node for node, data in G.nodes(data=True) if data.get("level") == l
+    #     )
+    #     subgraph = G.subgraph(nodes)
+    # subgraph.nodes  # NodeView((1, 2, 3))
 
     # # - - - - - - - - - - - - - -
     # # import Global Parameter related data (to improve.)

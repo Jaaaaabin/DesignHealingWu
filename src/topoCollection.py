@@ -15,7 +15,7 @@ def topoCollect():
         js_file_instance =  DIRS_DATA_TOPO + NAME_INSTANCE_COLLECTION + topo_inst + '.json'
 
         # load the dict from Revit
-        with open(js_file_instance) as json_file:
+        with open(js_file_instance, encoding="utf-8-sig") as json_file: # encoding = 'utf-8-sig' for special characters.
             revit_instances = json.load(json_file)
         
         # create class objects for each dict.
@@ -46,4 +46,4 @@ def topoCollect():
             # instances: non-parameter building elements/spaces.
             # df_instances = build_instance_df(cls_objs_instances, topo_inst, final_index_name='ifcguid')
             df_instances = build_instance_df(cls_objs_instances, topo_inst, final_index_name='id')
-            df_instances.to_csv(DIRS_DATA_TOPO+'\df_'+ topo_inst +'.csv')
+            df_instances.to_csv(DIRS_DATA_TOPO+'\df_'+ topo_inst +'.csv', encoding = 'utf-8-sig') # encoding = 'utf-8-sig' for special characters.
