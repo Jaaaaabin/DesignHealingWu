@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # graphCreate()
 
     # graphEnrich_withoutchecking(plot_graph=True)
-    getRoomPairs()
+    # getRoomPairs()
 
     # graphEnrich(plot_graph=False)
     
@@ -89,13 +89,13 @@ if __name__ == "__main__":
     
     # formSolutionSpace(
     #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'], set_new_space = False)
-    # reasonSolutionSpace(
-    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
-    #     transfer_space = False,
-    #     # inter_level = 1,
-    #     plot_space_pairwise = False,
-    #     plot_space_svm = False,
-    #     calc_valid_distance = True)
+    reasonSolutionSpace(
+        ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
+        transfer_space = False,
+        # inter_level = 1,
+        plot_space_pairwise = False,
+        plot_space_svm = False,
+        calc_valid_distance = True)
     
     #=================================#
     #                 rs              #

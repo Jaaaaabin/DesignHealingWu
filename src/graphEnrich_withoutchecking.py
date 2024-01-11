@@ -50,14 +50,14 @@ def graphEnrich_withoutchecking(plot_graph=False):
     
     # search neighbor.
     
-    # # plot the whole networkx.
-    # if plot_graph:
-    #     plot_networkx_per_rule(
-    #         DIRS_DATA_TOPO,
-    #         G,
-    #         nodesize_map_by_object_type,
-    #         nodecolor_map_by_object_type,
-    #         )
+    # plot the whole networkx.
+    if plot_graph:
+        plot_networkx_per_rule(
+            DIRS_DATA_TOPO,
+            G,
+            nodesize_map_by_object_type,
+            nodecolor_map_by_object_type,
+            )
     
     # split the graph to subgraphs
     node_classification = nx.get_node_attributes(G,'classification')

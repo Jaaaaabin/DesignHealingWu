@@ -1,5 +1,5 @@
 from const_project import DIRS_DATA_TOPO
-import pandas as pd
+from base_external_packages import *
 
 def read_txt_file(file_path):
     with open(file_path, 'r') as file:

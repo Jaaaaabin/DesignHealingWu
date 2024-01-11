@@ -213,8 +213,8 @@ def reasonSolutionSpace(
                 c = c_j[jj],
                 edgecolors="k",
                 linewidth=0.25,
-                label='$\mathbf{D}_{j,i}$ (i=' + compliant_data_labels[jj] + ')',
-                # label='$\mathbf{D}$' + '$i=' + compliant_data_labels[jj],
+                label='$\mathbf{H}_{j,i}$ (i=' + compliant_data_labels[jj] + ')',
+                # label='$\mathbf{H}$' + '$i=' + compliant_data_labels[jj],
                 zorder=5,)
             
             # plot the minor scatters.
@@ -234,7 +234,7 @@ def reasonSolutionSpace(
             ls = '--',
             linewidth=0.75,
             color='#808080')
-        ax2.text(1.05, tol_subdistance*1.05,'$\mathbf{D}_{j,i} = 0.01 * max(\mathbf{D}_{j})$')
+        ax2.text(1.05, tol_subdistance*1.05,'$\mathbf{H}_{j,i} = 0.01 * max(\mathbf{H}_{j})$')
 
         for id in res_plot_idx[1:]:
             x_v = x_distance[id]
@@ -252,8 +252,8 @@ def reasonSolutionSpace(
             
         ax2.legend(loc=3)
         ax2.set_yscale("log")
-        ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{D}_{j,i}$", color="black", fontsize=14)
-        ax2.set_xlabel("The total Euclidean Distance $\mathbf{D}_{j}$", color="black", fontsize=14)
+        ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=14)
+        ax2.set_xlabel("The total Eucliean Distance $\mathbf{H}_{j}$", color="black", fontsize=14)
 
         c_i = ['#938888','#938888','#938888','#000000']
         l_styles = ['dotted','dashed','dashdot','solid']

@@ -26,11 +26,11 @@ FILE_INIT_RVT = DIRS_INIT + r'\model\ini_param.rvt'
 FILE_INIT_SKL_RVT = DIRS_INIT + r'\model\ini_param_skeleton.rvt'
 FILE_INIT_RES = DIRS_INIT + r'\res\0.h5'
 
-# DIRS_DATA_TOPO = DIRS_INIT + r'\topo' # journal paper experiments.
+DIRS_DATA_TOPO = DIRS_INIT + r'\topo' # journal paper experiments.
 # DIRS_DATA_TOPO = DIRS_INIT + r'\topo_simplified' # journal paper figure maker.
 
 # EC3 paper with Tanya.
-DIRS_DATA_TOPO = r'C:\dev\phd\enrichgraph\ec3_2024\data\Bld type3_detached_Tanya'
+# DIRS_DATA_TOPO = r'C:\dev\phd\enrichgraph\ec3_2024\data\Bld type3_detached_Tanya'
 
 FILE_LIST_GP = DIRS_DATA_TOPO + r'\df_parameter.csv'
 
