@@ -73,32 +73,32 @@ class SolutionSpace():
         return cosine_distance
 
 
-    def _skewnormal_sampling(self, param_name, delta_loc, alpha, random_seed, num_samples=100, plot_sampling=False, plot_dirs=[]):
+    # def _skewnormal_sampling(self, param_name, delta_loc, alpha, random_seed, num_samples=100, plot_sampling=False, plot_dirs=[]):
         
-        np.random.seed(random_seed)
-        loc = self.ini_parameters[param_name]
-        samples = skewnorm.rvs(alpha, loc=loc, scale=delta_loc/3, size=num_samples, random_state=random_seed)
+    #     np.random.seed(random_seed)
+    #     loc = self.ini_parameters[param_name]
+    #     samples = skewnorm.rvs(alpha, loc=loc, scale=delta_loc/3, size=num_samples, random_state=random_seed)
 
-        if plot_sampling:
+    #     if plot_sampling:
 
-            # # Plot a histogram of the generated samples
-            fig = plt.figure(figsize=(10,5))  # unit of inch
-            ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
+    #         # # Plot a histogram of the generated samples
+    #         fig = plt.figure(figsize=(10,5))  # unit of inch
+    #         ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
 
-            plt.hist(samples, bins=25, density=True, color='g', label='Sampled Data')
-            x = np.linspace(min(samples), max(samples), 100)
-            pdf = skewnorm.pdf(x, alpha, loc=loc, scale=delta_loc/3)
-            plt.plot(x, pdf, 'r', label='Skew Normal PDF')
-            plt.axvline(x=loc-delta_loc,c='black')
-            plt.axvline(x=loc+delta_loc,c='black')
-            plt.axvline(x=loc,c='blue')
-            plt.xlabel(str(param_name) + 'values')
-            plt.ylabel('Probability Density')
-            plt.title('Sampling from Skew Normal Distribution')
-            plt.legend()
-            plt.savefig(plot_dirs + '/sampling_skewnormal_delta_{}_alpha_{}_param_{}.png'.format(delta_loc, alpha, param_name), dpi=200)
+    #         plt.hist(samples, bins=25, density=True, color='g', label='Sampled Data')
+    #         x = np.linspace(min(samples), max(samples), 100)
+    #         pdf = skewnorm.pdf(x, alpha, loc=loc, scale=delta_loc/3)
+    #         plt.plot(x, pdf, 'r', label='Skew Normal PDF')
+    #         plt.axvline(x=loc-delta_loc,c='black')
+    #         plt.axvline(x=loc+delta_loc,c='black')
+    #         plt.axvline(x=loc,c='blue')
+    #         plt.xlabel(str(param_name) + 'values')
+    #         plt.ylabel('Probability Density')
+    #         plt.title('Sampling from Skew Normal Distribution')
+    #         plt.legend()
+    #         plt.savefig(plot_dirs + '/sampling_skewnormal_delta_{}_alpha_{}_param_{}.png'.format(delta_loc, alpha, param_name), dpi=200)
     
-        return samples
+    #     return samples
 
 
     def enrich_sensitivity(self, indicesSA=dict(), key_sign_rule=[], val_tol = 1e-3):
@@ -124,31 +124,31 @@ class SolutionSpace():
                 self.sensitivity_sign.update({k: sensi_sign})
 
 
-    def explore_space_by_skewnormal(self, alpha_ratio=3, explore_range=0.3, num_samples=200, random_seed=1996, plot_dirs=[]):
+    # def explore_space_by_skewnormal(self, alpha_ratio=3, explore_range=0.3, num_samples=200, random_seed=1996, plot_dirs=[]):
 
-        k_list , v_list= [],[]
+    #     k_list , v_list= [],[]
 
-        for k,v in self.sensitivity_sign.items():
+    #     for k,v in self.sensitivity_sign.items():
 
-            k_list.append(k)
-            v_alpha = v*alpha_ratio
+    #         k_list.append(k)
+    #         v_alpha = v*alpha_ratio
 
-            np.random.seed(random_seed)
-            new_v = self._skewnormal_sampling(
-                param_name=k,
-                delta_loc=explore_range,
-                alpha=v_alpha,
-                random_seed=random_seed,
-                num_samples=num_samples,
-                plot_sampling=True,
-                plot_dirs=plot_dirs)
+    #         np.random.seed(random_seed)
+    #         new_v = self._skewnormal_sampling(
+    #             param_name=k,
+    #             delta_loc=explore_range,
+    #             alpha=v_alpha,
+    #             random_seed=random_seed,
+    #             num_samples=num_samples,
+    #             plot_sampling=True,
+    #             plot_dirs=plot_dirs)
             
-            np.random.shuffle(new_v)
+    #         np.random.shuffle(new_v)
             
-            random_seed+=1
-            v_list.append(new_v)
+    #         random_seed+=1
+    #         v_list.append(new_v)
 
-        self.samples_by_skewnormal = pd.DataFrame(np.array(v_list).T,columns=k_list).T
+    #     self.samples_by_skewnormal = pd.DataFrame(np.array(v_list).T,columns=k_list).T
 
 
     def explore_space_by_lhs(self, explore_range, lhs_optimization, num_samples, random_seed=1996, plot_dirs=[]):
@@ -404,7 +404,6 @@ class SolutionSpace():
         for cl in list(all_data.columns):
             self.data_X_Y[cl] = all_data[cl] 
         
-    
     def calculate_distance(self,):
 
         for param in self.ini_parameters.keys():
@@ -424,6 +423,36 @@ class SolutionSpace():
                 self.distance_X_Y['v-'+key] = self.data_X_Y[key]
         
         self.distance_X_Y_sorted = self.distance_X_Y.sort_values('euc-distance', axis=0)
+
+    def calculate_weighted_distance(self,):
+        
+        # for weighted_distance
+        map_connections_param = {
+            'U1_OK_d_wl_ew6': 5,
+            'U1_OK_d_wl_sn21': 2,
+            'U1_OK_d_wl_sn26': 2,
+            'U1_OK_d_wl_sn10': 2,
+            'U1_OK_d_wl_ew35': 3,
+        }
+        weight_per_param = {k: v / max(map_connections_param.values()) for k, v in map_connections_param.items()}
+
+        for param in self.ini_parameters.keys():
+            self.distance_X_Y[param] = (self.data_X_Y[param] - self.ini_parameters[param]) #/ self.ini_parameters[param]
+            self.distance_X_Y[param] = weight_per_param[param] * self.distance_X_Y[param] ** 2 
+
+        self.distance_X_Y['w-euc-distance'] = self.distance_X_Y[list(self.distance_X_Y.columns)].sum(axis=1)
+        self.distance_X_Y['w-euc-distance'] = self.distance_X_Y['w-euc-distance'] ** 0.5
+
+        for param in self.ini_parameters.keys():
+            self.distance_X_Y[param] = self.distance_X_Y[param] ** 0.5
+        
+        for key in list(self.data_X_Y.columns):
+            if key not in self.ini_parameters.keys():
+                self.distance_X_Y[key] = self.data_X_Y[key]
+            if key in self.ini_parameters.keys():
+                self.distance_X_Y['v-'+key] = self.data_X_Y[key]
+        
+        self.distance_X_Y_sorted = self.distance_X_Y.sort_values('w-euc-distance', axis=0)
         
 #---------------------------------------------sweeping
 

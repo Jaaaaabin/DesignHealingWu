@@ -140,7 +140,8 @@ def reasonSolutionSpace(
         res_plot_nr = [0, 1282, 1439, 1522, 1718, 669]
         res_plot_idx = [0, 362-1, 378-1, 403-1, 837-1, 1720-1]
 
-        currentSpace.calculate_distance()
+        # currentSpace.calculate_distance()
+        currentSpace.calculate_weighted_distance()
         compliant_data = currentSpace.distance_X_Y_sorted.values.tolist()
         
         # drop the initial design
@@ -176,18 +177,30 @@ def reasonSolutionSpace(
         ouput_df = copy.deepcopy(currentSpace.distance_X_Y_sorted)
         ouput_df['designnumber'] = ouput_df.index
         ouput_df = ouput_df.reset_index(drop=True)
-        
+
+        # # type1: via distance.
+        # ouput_df_valid_via_distance = copy.deepcopy(ouput_df)
+        # ouput_df_valid_via_distance = ouput_df_valid_via_distance[ouput_df_valid_via_distance['compliance'] == True]
+        # ouput_df_valid_via_distance.to_csv(DIRS_DATA_SS+ r'\valid_via_distance.csv', header=True)
+
+        # # type2: via minor change.
+        # ouput_df_valid_via_minor = copy.deepcopy(ouput_df)
+        # control_minor_valid_withorigin = copy.deepcopy(control_minor_valid)
+        # control_minor_valid_withorigin.insert(0,False)
+        # ouput_df_valid_via_minor = ouput_df_valid_via_minor.loc[ouput_df_valid_via_minor.index[control_minor_valid_withorigin]]
+        # ouput_df_valid_via_minor.to_csv(DIRS_DATA_SS+ r'\valid_via_minor.csv', header=True)
+
         # type1: via distance.
         ouput_df_valid_via_distance = copy.deepcopy(ouput_df)
         ouput_df_valid_via_distance = ouput_df_valid_via_distance[ouput_df_valid_via_distance['compliance'] == True]
-        ouput_df_valid_via_distance.to_csv(DIRS_DATA_SS+ r'\valid_via_distance.csv', header=True)
+        ouput_df_valid_via_distance.to_csv(DIRS_DATA_SS+ r'\valid_via_weighted_distance.csv', header=True)
 
         # type2: via minor change.
         ouput_df_valid_via_minor = copy.deepcopy(ouput_df)
         control_minor_valid_withorigin = copy.deepcopy(control_minor_valid)
         control_minor_valid_withorigin.insert(0,False)
         ouput_df_valid_via_minor = ouput_df_valid_via_minor.loc[ouput_df_valid_via_minor.index[control_minor_valid_withorigin]]
-        ouput_df_valid_via_minor.to_csv(DIRS_DATA_SS+ r'\valid_via_minor.csv', header=True)
+        ouput_df_valid_via_minor.to_csv(DIRS_DATA_SS+ r'\valid_via_weighted_minor.csv', header=True)
 
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6), sharex=True, gridspec_kw={'height_ratios': [1, 3]})
     
@@ -250,10 +263,10 @@ def reasonSolutionSpace(
              label.set_rotation(90)
         ax2.tick_params(axis='x', direction='in', pad=-35)
             
-        ax2.legend(loc=3)
+        ax2.legend(loc=3, prop={'size': 14}) # lower
         ax2.set_yscale("log")
-        ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=14)
-        ax2.set_xlabel("The total Eucliean Distance $\mathbf{H}_{j}$", color="black", fontsize=14)
+        ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=16)
+        ax2.set_xlabel("The total Eucliean Distance $\mathbf{H}_{j}$", color="black", fontsize=16)
 
         c_i = ['#938888','#938888','#938888','#000000']
         l_styles = ['dotted','dashed','dashdot','solid']
@@ -267,8 +280,8 @@ def reasonSolutionSpace(
                 c = c_i[ii],
                 )
 
-        ax1.legend(loc=2)
-        ax1.set_ylabel("$N_{valid}$", color="black", fontsize=14)
+        ax1.legend(loc=2,prop={'size': 11}) # upper
+        ax1.set_ylabel("$N_{valid}$", color="black", fontsize=16)
         
         fig.tight_layout()
         plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship.png', dpi=400)
@@ -363,9 +376,6 @@ def reasonSolutionSpace(
             df_sort = df_data.sort_values(by=['sort'])
             df_plot = df_sort.loc[:, df_sort.columns != 'sort']
 
-            # print (df_plot[list(df_plot.columns)].mean())
-            # print (df_plot[list(df_plot.columns)].max())
-            # print (df_plot[list(df_plot.columns)].min())
 
             # plot
             fig = plt.figure(figsize=(10, 10))
@@ -402,12 +412,6 @@ def reasonSolutionSpace(
                         ax.axhline(y=param_y_v, ls='-.', linewidth=0.5, alpha=0.80, c='black', label='Initial Values')
                         g._update_legend_data(ax)
 
-                        # pad = 0.01
-                        # xmin = X[param_x].min() - pad
-                        # xmax = X[param_x].max() + pad
-                        # ymin = X[param_y].min() - pad
-                        # ymax = X[param_y].max() + pad
-
                         xmin, xmax = ax.get_xlim()
                         ymin, ymax = ax.get_ylim()
                         total_line_segs = 50
@@ -415,22 +419,6 @@ def reasonSolutionSpace(
 
                         x = np.linspace(xmin, xmax, total_line_segs)
                         y = np.linspace(ymin, ymax, total_line_segs)
-
-
-                        # txt_color = 'cyan'
-
-                        # for keys, vs in zip(bdry_keys, bdry_couples.values()):
-                            
-                        #     if param_y == keys[0] and param_x == keys[1]:
-
-                        #         x_svm = x
-                        #         y_svm = - x_svm * vs[param_x] / vs[param_y] - vs['b'] / vs[param_y]
-                        #         ax.plot(x_svm, y_svm, ls=':', linewidth=1.0, alpha=0.95, c = txt_color, label="Boundaries by SVM")
-
-                        #         break
-
-                        #     else:
-                        #         continue
 
                         shift = 0.05
                         txt_color = 'navy'

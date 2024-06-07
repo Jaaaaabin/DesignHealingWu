@@ -125,6 +125,9 @@ def summarizeSensi():
                 # calculate Si
                 Si = analyze_morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=False, num_levels=N_LEVEL_MORRIS)
 
+                # shorten the Si names.
+                Si['names'] =  [name.replace("U1_OK_d_wl_","") for name in Si['names']]
+
                 # default plot
                 bar = morris_horizontal_bar_plot(
                     ax,
@@ -139,10 +142,11 @@ def summarizeSensi():
                 sa_indices.update({beta: Si})
 
                 bar.set_label(r'$\beta = {}$'.format(beta))
-                plt.legend(loc='lower right')
+                plt.legend(loc='lower right', prop={'size': 18})
                 plt.savefig(DIRS_DATA_SA_FIG + r'\{nr}_{sort}_{failure}.png'.format(
-                    nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=400)
-            
+                    nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=400, bbox_inches='tight', pad_inches=0.05)
+                # here to do. axis label size and also the other figure.
+
             sa_indices_type.update({rl: sa_indices})
             save_dict(sa_indices_type, DIRS_DATA_SA + r'\sa_morris_indices_' + str(plot_mu) + '.pickle')
 
