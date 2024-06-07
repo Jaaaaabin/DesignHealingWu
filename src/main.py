@@ -34,9 +34,9 @@ if __name__ == "__main__":
     #=================================#
     # EXECUTION_NR = 34
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = False)
-    # for beta in [1, 0.5, 0]: # final figures are for the last element.
-    #     testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta)
-    summarizeSensi()
+    for beta in [1, 0.5, 0]: # final figures are for the last element.
+        testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta) # plot for convar bar figures.
+    summarizeSensi() # plot for all rules mu and mu-star figures.
     
     #=================================#
     #                 ss              #

@@ -313,8 +313,8 @@ def morris_horizontal_bar_plot(
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(plot_names)
-    ax.tick_params(axis='y', which='major', labelsize=16)
-    ax.tick_params(axis='x', which='major', labelsize=16)
+    ax.tick_params(axis='y', which='major', labelsize=22)
+    ax.tick_params(axis='x', which='major', labelsize=22)
     ax.set_xlabel(r'$\mu$' + unit, fontsize=18)
 
     ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
@@ -326,7 +326,7 @@ def morris_covariance_plot(
     ax,
     Si,
     plotmu,
-    annotate_size=14,
+    annotate_size=24,
     opts=None,
     unit=''):
 
@@ -351,27 +351,30 @@ def morris_covariance_plot(
             ax.annotate(
                 txt,
                 (Si[plotmu][i], y[i]),
-                xytext=(Si[plotmu][i]*0.85, y[i]*0.85),
+                xytext=(Si[plotmu][i]*0.85, y[i]*0.90),
                 fontsize=annotate_size)
 
-        ax.set_ylabel(r'$\sigma$', fontsize=16)
+        ax.set_ylabel(r'$\sigma$', fontsize=22)
 
         ax.set_xlim(-1.0,1.0)
         ax.set_ylim(0.0,)
+        
+        ax.tick_params(axis='y', which='major', labelsize=22)
+        ax.tick_params(axis='x', which='major', labelsize=22)
 
         x_axis_bounds = np.array(ax.get_xlim())
 
         line1_p, = ax.plot(x_axis_bounds, x_axis_bounds, 'k-', c='maroon')
         line1_n, = ax.plot(x_axis_bounds, -x_axis_bounds, 'k-', c='maroon')
-        line2_p, = ax.plot(x_axis_bounds, 0.5 * x_axis_bounds, 'k--', c='maroon')
-        line2_n, = ax.plot(x_axis_bounds, -0.5 * x_axis_bounds, 'k--', c='maroon')
+        line2_p, = ax.plot(x_axis_bounds, 0.50 * x_axis_bounds, 'k--', c='maroon')
+        line2_n, = ax.plot(x_axis_bounds, -0.50 * x_axis_bounds, 'k--', c='maroon')
         line3_p, = ax.plot(x_axis_bounds, 0.1 * x_axis_bounds, 'k-.', c='maroon')
         line3_n, = ax.plot(x_axis_bounds, -0.1 * x_axis_bounds, 'k-.', c='maroon')
 
         ax.legend((line1_p, line2_p, line3_p), (r'$\sigma / {} = \pm 1.0$'.format(mu_type),
                                           r'$\sigma / {} = \pm 0.5$'.format(mu_type),
                                           r'$\sigma / {} = \pm 0.1$'.format(mu_type)),
-                  loc='lower right')
+                  loc='lower right', prop={'size': 24})
 
     else:
         y = Si['mu_star_conf']
@@ -379,7 +382,7 @@ def morris_covariance_plot(
                          **opts)
         ax.set_ylabel(r'$95\% CI$')
     
-    ax.set_xlabel(r'${}$ '.format(mu_type) + unit, fontsize=16)
+    ax.set_xlabel(r'${}$ '.format(mu_type) + unit, fontsize=24)
     ax.set_ylim(0-(0.01 * np.array(ax.get_ylim()[1])),)
 
     return out
@@ -397,18 +400,22 @@ def morris_sa_plot(
     # see API: https://salib.readthedocs.io/en/latest/_modules/SALib/plotting/morris.html
     
     # horizontal_bar_plot: https://jsbin.com/pucadowa/8/edit?html,js,output # plot_morris.horizontal_bar_plot(ax, Si)
-    fig = plt.figure(figsize=(16,8))  # unit of inch
+    fig = plt.figure(figsize=(14,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
+
+    # remove the additional name substring.
+    Si['names'] =  [name.replace("U1_OK_d_wl_","") for name in Si['names']]
+
     morris_horizontal_bar_plot(ax, Si, plotmu='mu')
-    plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_horbar_beta_{}.png'.format(rl, str(beta)), dpi=200)
+    plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_horbar_beta_{}.png'.format(rl, str(beta)), dpi=200, bbox_inches='tight', pad_inches=0.05)
 
     # covariance_plot(ax, Si, opts=None, unit=''): 
     
     # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
-    fig = plt.figure(figsize=(16,8))  # unit of inch
+    fig = plt.figure(figsize=(14,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
     morris_covariance_plot(ax, Si, plotmu='mu')
-    plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_convar_beta_{}.png'.format(rl, str(beta)), dpi=200)
+    plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_convar_beta_{}.png'.format(rl, str(beta)), dpi=200, bbox_inches='tight', pad_inches=0.05)
 
     # sample_histograms:
     # fig = plt.figure(figsize=(8,5))  # unit of inch

@@ -15,10 +15,8 @@ from const_ibcrule import BUILDING_RULES, BUILDING_RULES_ALL
 # pd_X_stnl, X_α_β = stnd_nrml(pd_X)
 # X_stnl = pd_X_stnl.to_numpy()
 
-
 def _sort_Si(Si, key, sortby='mu_star'):
     return np.array([Si[key][x] for x in np.argsort(Si[sortby])])
-
 
 def morris_horizontal_bar_plot(
     ax,
@@ -74,21 +72,20 @@ def morris_horizontal_bar_plot(
                   **opts)
     
     if plotmu == 'mu_star':
-        ax.set_xlabel(r'$\mu^\star$' + unit, fontsize=20)
+        ax.set_xlabel(r'$\mu^\star$' + unit, fontsize=24)
         ax.set_xlim(0.0,x_max_abs)
     elif plotmu == 'mu':
-        ax.set_xlabel(r'$\mu$' + unit, fontsize=20)
+        ax.set_xlabel(r'$\mu$' + unit, fontsize=24)
         ax.set_xlim(-x_max_abs,x_max_abs)
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(plot_names)
     ax.set_ylim(min(y_pos)-1, max(y_pos)+1)
 
-    ax.tick_params(axis='y', which='major', labelsize=18)
-    ax.tick_params(axis='x', which='major', labelsize=18)
+    ax.tick_params(axis='y', which='major', labelsize=22)
+    ax.tick_params(axis='x', which='major', labelsize=22)
 
     return out
-
 
 # calculation.
 def summarizeSensi():
@@ -112,7 +109,7 @@ def summarizeSensi():
         
         for rl, ys in zip(BUILDING_RULES_ALL, Ys):
             
-            fig = plt.figure(figsize=(16,8))  # unit of inch
+            fig = plt.figure(figsize=(14,8))  # unit of inch
             ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
             sa_indices = dict()
 
@@ -142,7 +139,7 @@ def summarizeSensi():
                 sa_indices.update({beta: Si})
 
                 bar.set_label(r'$\beta = {}$'.format(beta))
-                plt.legend(loc='lower right', prop={'size': 18})
+                plt.legend(loc='lower right', prop={'size': 22})
                 plt.savefig(DIRS_DATA_SA_FIG + r'\{nr}_{sort}_{failure}.png'.format(
                     nr=EXECUTION_NR,sort=plot_mu,failure=rl), dpi=400, bbox_inches='tight', pad_inches=0.05)
                 # here to do. axis label size and also the other figure.
