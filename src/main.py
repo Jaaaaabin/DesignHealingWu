@@ -12,7 +12,7 @@ from graphEnrich_withoutchecking import graphEnrich_withoutchecking
 from prepareVariation import prepareSAVariants
 from testSensitivity import testSensi_morris_weighted
 from summarizeSensitivity import summarizeSensi
-from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reasonSolutionSpace
+from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reasonSolutionSpace, reasonSolutionSpaceWeighted
 
 from pairRooms import getRoomPairs
 
@@ -34,10 +34,13 @@ if __name__ == "__main__":
     #=================================#
     # EXECUTION_NR = 34
     # prepareSAVariants(sa_type = 'morris', set_dup_rvt = False)
-    for beta in [1, 0.5, 0]: # final figures are for the last element.
-        testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta) # plot for convar bar figures.
-    summarizeSensi() # plot for all rules mu and mu-star figures.
-    
+
+    # # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    # for beta in [1, 0.5, 0]: # final figures are for the last element.
+    #     testSensi_morris_weighted(build_design=False, calc_index=True, plot_index=True, beta_coef_reduction=beta) # plot for convar bar figures.
+    # summarizeSensi() # plot for all rules mu and mu-star figures.
+    # # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
     #=================================#
     #                 ss              #
     #=================================#
@@ -89,13 +92,9 @@ if __name__ == "__main__":
     
     # formSolutionSpace(
     #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'], set_new_space = False)
-    # reasonSolutionSpace(
-    #     ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
-    #     transfer_space = False,
-    #     # inter_level = 1,
-    #     plot_space_pairwise = False,
-    #     plot_space_svm = False,
-    #     calc_valid_distance = True)
+    reasonSolutionSpaceWeighted(
+        ['\sa-34-0.3', '\ss-134-0', '\ss-134-1', '\ss-134-2'],
+        calc_valid_distance = True)
     
     #=================================#
     #                 rs              #

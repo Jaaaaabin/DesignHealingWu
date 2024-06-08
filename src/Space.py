@@ -437,15 +437,14 @@ class SolutionSpace():
         weight_per_param = {k: v / max(map_connections_param.values()) for k, v in map_connections_param.items()}
 
         for param in self.ini_parameters.keys():
-            self.distance_X_Y[param] = (self.data_X_Y[param] - self.ini_parameters[param]) #/ self.ini_parameters[param]
-            self.distance_X_Y[param] = weight_per_param[param] * self.distance_X_Y[param] ** 2 
+            self.distance_X_Y[param] = abs(self.data_X_Y[param] - self.ini_parameters[param])
 
-        self.distance_X_Y['w-euc-distance'] = self.distance_X_Y[list(self.distance_X_Y.columns)].sum(axis=1)
-        self.distance_X_Y['w-euc-distance'] = self.distance_X_Y['w-euc-distance'] ** 0.5
+        # Apply the weights and square the differences during the summation
+        weighted_sum = sum(weight_per_param[param] * (self.distance_X_Y[param] ** 2) for param in self.ini_parameters.keys())
 
-        for param in self.ini_parameters.keys():
-            self.distance_X_Y[param] = self.distance_X_Y[param] ** 0.5
-        
+        # Add the weighted Euclidean distance to the DataFrame
+        self.distance_X_Y['w-euc-distance'] = weighted_sum ** 0.5
+                
         for key in list(self.data_X_Y.columns):
             if key not in self.ini_parameters.keys():
                 self.distance_X_Y[key] = self.data_X_Y[key]
