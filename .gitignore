@@ -2,6 +2,8 @@
 dyns/**
 data-v0/**
 paper-figures/**
+tempo/**
+src/tempo/*
 
 # Raw data
 *.h5
