@@ -15,7 +15,7 @@ from const_solus import DIRS_DATA_SS, DIRS_DATA_SS_DUP, DIRS_DATA_SS_RES, FILE_S
 from const_solus import ITERATION_VALUES, FILE_SS_VARY_SKEWNORMAL
 
 from funct_data import save_dict, load_dict, get_problems_from_paths, flatten, create_directory, duplicateRVT
-from funct_svm import displaySVCinPC, displaySVCin3PC
+from src.tempo.funct_svm import displaySVCinPC, displaySVCin3PC
 
 from testSensitivity import buildDesigns
 
@@ -96,33 +96,33 @@ def formSolutionSpace(
     sourceSpace = '_'.join([data.replace('\\','') for data in dataset])
     save_dict(initialSpace, DIRS_DATA_SS + r'\Space_' + sourceSpace + r'.pickle')
 
-def plot_weighted_euclidean_distance(
-    compliant_data, compliant_data_labels, x_distance, 
-    subdistances, y_compliant_amount, y_compliant_amount_sum, 
-    control_minor_valid, tol_subdistance, res_plot_idx, DIRS_DATA_SS_FIG):
+def plot_percentage_weighted_euclidean_distance(
+    compliant_data_labels, x_distance, subdistances, y_compliant_amount, y_compliant_amount_sum, res_plot_idx, DIRS_DATA_SS_FIG):
         
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6), sharex=True, gridspec_kw={'height_ratios': [1, 3]})
-    
     c_j = ['#D9BC62','#D96273','#62D979','#6275D9','#67846D']
-    
+    m_j = ['o', 's', 'D', '^', 'v']
+
     for jj in range(len(compliant_data_labels[:5])):
-        # plot the background line 
+
+        # plot the background secondary line 
         ax2.plot(
             x_distance, 
             subdistances[jj,:],
             linewidth=0.3, 
             alpha=0.5, 
-            c = c_j[jj],
+            c=c_j[jj],
             zorder=1,
         )
         
-        # plot the background scatters
+        # plot the background secondary scatters
         ax2.scatter(
             x_distance[y_compliant_amount[-1]==1],
             subdistances[jj,y_compliant_amount[-1]==1],
             s=10, 
-            alpha=0.5, 
-            c = c_j[jj],
+            alpha=0.30,
+            marker=m_j[jj], 
+            c=c_j[jj],
             edgecolors="k",
             linewidth=0.25,
             label='$\mathbf{H}_{j,i}$ (i=' + compliant_data_labels[jj].replace("U1_OK_d_wl_","") + ')',
@@ -135,7 +135,8 @@ def plot_weighted_euclidean_distance(
             subdistances[jj,res_plot_idx[1:]],
             s=15, 
             alpha=0.8, 
-            c = c_j[jj],
+            marker=m_j[jj],
+            c=c_j[jj],
             edgecolors="k",
             linewidth=1,
             zorder=10,
@@ -151,18 +152,16 @@ def plot_weighted_euclidean_distance(
         )
     
     original_ticks = x_distance[res_plot_idx[1:]]
-    additional_ticks = np.arange(0, max(x_distance) + 0.25, 0.25)
-    combined_ticks = np.unique(np.concatenate((original_ticks, additional_ticks)))
-    combined_ticks = [round(x_v, 3) for x_v in combined_ticks]
-    ax2.set_xticks(combined_ticks)
+    original_ticks = [round(x_v, 4) for x_v in original_ticks]
+    ax2.set_xticks(original_ticks)
     for label in ax2.get_xticklabels():
         label.set_rotation(90)
-    ax2.tick_params(axis='x', direction='in', pad=-42, labelsize=13)  
+    ax2.tick_params(axis='x', direction='in', pad=-45, labelsize=11)  
         
     ax2.legend(loc=3, prop={'size': 14}) # lower
     ax2.set_yscale("log")
-    ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=18)
-    ax2.set_xlabel("The weighted Eucliean Distance $\mathbf{H}_{j}$", color="black", fontsize=18)
+    ax2.set_ylabel("Percentage-based factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=13)
+    ax2.set_xlabel("Percentage-based weighted Euclidean Distance $\mathbf{H}_{j}$", color="black", fontsize=17)
 
     c_i = ['#938888','#938888','#938888','#000000']
     l_styles = ['dotted','dashed','dashdot','solid']
@@ -177,14 +176,102 @@ def plot_weighted_euclidean_distance(
         )
 
     ax1.legend(loc=2, prop={'size': 10}) # upper
-    ax1.set_ylabel("$N_{valid}$", color="black", fontsize=18)
+    ax1.set_ylabel("$N_{valid}$", color="black", fontsize=13)
     
     fig.tight_layout()
-    plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship.png', dpi=400)
+    plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship_p_w.png', dpi=400)
+
+
+# SAVE
+# def plot_weighted_euclidean_distance(
+#     compliant_data, compliant_data_labels, x_distance, 
+#     subdistances, y_compliant_amount, y_compliant_amount_sum, 
+#     control_minor_valid, tol_subdistance, res_plot_idx, DIRS_DATA_SS_FIG):
+        
+#     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6), sharex=True, gridspec_kw={'height_ratios': [1, 3]})
+    
+#     c_j = ['#D9BC62','#D96273','#62D979','#6275D9','#67846D']
+    
+#     for jj in range(len(compliant_data_labels[:5])):
+#         # plot the background line 
+#         ax2.plot(
+#             x_distance, 
+#             subdistances[jj,:],
+#             linewidth=0.3, 
+#             alpha=0.5, 
+#             c = c_j[jj],
+#             zorder=1,
+#         )
+        
+#         # plot the background scatters
+#         ax2.scatter(
+#             x_distance[y_compliant_amount[-1]==1],
+#             subdistances[jj,y_compliant_amount[-1]==1],
+#             s=10, 
+#             alpha=0.5, 
+#             c = c_j[jj],
+#             edgecolors="k",
+#             linewidth=0.25,
+#             label='$\mathbf{H}_{j,i}$ (i=' + compliant_data_labels[jj].replace("U1_OK_d_wl_","") + ')',
+#             zorder=5,
+#         )
+        
+#         # plot the minor scatters.
+#         ax2.scatter(
+#             x_distance[res_plot_idx[1:]],
+#             subdistances[jj,res_plot_idx[1:]],
+#             s=15, 
+#             alpha=0.8, 
+#             c = c_j[jj],
+#             edgecolors="k",
+#             linewidth=1,
+#             zorder=10,
+#         )
+
+#     for id in res_plot_idx[1:]:
+#         x_v = x_distance[id]
+#         ax2.axvline(
+#             x = x_v,
+#             ls = '--',
+#             linewidth=0.50,
+#             color='#808080'
+#         )
+    
+#     original_ticks = x_distance[res_plot_idx[1:]]
+#     additional_ticks = np.arange(0, max(x_distance) + 0.25, 0.25)
+#     combined_ticks = np.unique(np.concatenate((original_ticks, additional_ticks)))
+#     combined_ticks = [round(x_v, 3) for x_v in combined_ticks]
+#     ax2.set_xticks(combined_ticks)
+#     for label in ax2.get_xticklabels():
+#         label.set_rotation(90)
+#     ax2.tick_params(axis='x', direction='in', pad=-42, labelsize=13)  
+        
+#     ax2.legend(loc=3, prop={'size': 14}) # lower
+#     ax2.set_yscale("log")
+#     ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=18)
+#     ax2.set_xlabel("The weighted Euclidean Distance $\mathbf{H}_{j}$", color="black", fontsize=18)
+
+#     c_i = ['#938888','#938888','#938888','#000000']
+#     l_styles = ['dotted','dashed','dashdot','solid']
+#     for ii in range(len(compliant_data_labels[11:])):
+#         ax1.plot(
+#             x_distance,
+#             y_compliant_amount_sum[ii,:],
+#             label="$N_{valid}$ (" + compliant_data_labels[11+ii] + ")",
+#             linewidth=1,
+#             linestyle = l_styles[ii],
+#             c = c_i[ii],
+#         )
+
+#     ax1.legend(loc=2, prop={'size': 10}) # upper
+#     ax1.set_ylabel("$N_{valid}$", color="black", fontsize=18)
+    
+#     fig.tight_layout()
+#     plt.savefig(DIRS_DATA_SS_FIG + r'\Distance_compliance_relationship.png', dpi=400)
     
 def reasonSolutionSpaceWeighted(
     dataset=[],
-    calc_valid_distance=False,
+    calc_distance=False,
     ):
     # load the space
     sourceSpace = '_'.join([data.replace('\\','') for data in dataset])
@@ -195,19 +282,34 @@ def reasonSolutionSpaceWeighted(
     currentSpace.remove_constant()
     currentSpace.data_X_Y.to_csv(DIRS_DATA_SS+ r'\all_data.csv', header=True)
     
-    if calc_valid_distance:
+    if calc_distance:
         
-        # after manual selection, some of the valid designs are selected for visualization.
-        # weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        # # weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         # # 1282 381-1 smallest distance. w-euc = 0.419
-        # # 1439 451-1 smallest distance. w-euc = 0.445
         # # 1522: 482-1 two values very small. w-euc = 0.454
-        res_plot_nr = [0, 1282, 1439, 1522] # choose and add
-        res_plot_idx = [0, 381-1, 451-1, 482-1] # choose and add
+        # # 1718: 1079-1 two values very small. w-euc = 0.577
+        # # res_plot_nr = [0, 1282, 1522, 1718] # choose and add
+        # # res_plot_idx = [0, 381-1, 482-1, 1079-1] # choose and add
         # weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-        # currentSpace.calculate_distance()
-        currentSpace.calculate_weighted_distance()
+        # # percentage-based weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        # find from the sorted results in 'valid_via_percentage_weighted_distance.csv'
+        # after manual selection, some of the valid designs are selected for visualization.
+        # designnumber (nr)     sample index (idx)  p-w-euc value 
+        # 1488                  207                 0.07588
+        # 1519                  267                 0.08087
+        # 1249                  302                 0.08514
+        # 1522                  331                 0.08758
+        # 1749                  415                 0.09338
+        # 669                   1166                0.14338
+        # 1271                  1296                0.15728
+        res_plot_nr = [0, 1488, 1519, 1249, 1522, 1749, 669, 1271] # designnumber
+        res_plot_idx = [0, 207-1, 267-1, 302-1, 331-1, 415-1, 1166-1, 1296-1] # choose and add
+        # # percentage-based weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+        # currentSpace.calculate_distance() # Option1: not weighted distance.
+        # currentSpace.calculate_weighted_distance() # Option2: weighted distance.
+        currentSpace.calculate_percentage_weighted_distance() # Option3: percentage-based weighted distance.
         compliant_data = currentSpace.distance_X_Y_sorted.values.tolist()
         
         # drop the initial design
@@ -247,20 +349,14 @@ def reasonSolutionSpaceWeighted(
         # type1: via distance.
         ouput_df_valid_via_distance = copy.deepcopy(ouput_df)
         ouput_df_valid_via_distance = ouput_df_valid_via_distance[ouput_df_valid_via_distance['compliance'] == True]
-        ouput_df_valid_via_distance.to_csv(DIRS_DATA_SS+ r'\valid_via_weighted_distance.csv', header=True)
+        ouput_df_valid_via_distance.to_csv(DIRS_DATA_SS+ r'\valid_via_percentage_weighted_distance.csv', header=True)
 
         # type2: via minor change.
-        ouput_df_valid_via_minor = copy.deepcopy(ouput_df)
-        control_minor_valid_withorigin = copy.deepcopy(control_minor_valid)
-        control_minor_valid_withorigin.insert(0,False)
-        ouput_df_valid_via_minor = ouput_df_valid_via_minor.loc[ouput_df_valid_via_minor.index[control_minor_valid_withorigin]]
-        ouput_df_valid_via_minor.to_csv(DIRS_DATA_SS+ r'\valid_via_weighted_minor.csv', header=True)
+        # please see the same part in function "reasonSolutionSpace" if needed.
+        # type2: via minor change.
 
-        plot_weighted_euclidean_distance(
-            compliant_data, compliant_data_labels, x_distance, 
-            subdistances, y_compliant_amount, y_compliant_amount_sum, 
-            control_minor_valid, tol_subdistance, res_plot_idx, DIRS_DATA_SS_FIG
-        )
+        plot_percentage_weighted_euclidean_distance(
+            compliant_data_labels, x_distance, subdistances, y_compliant_amount, y_compliant_amount_sum, res_plot_idx, DIRS_DATA_SS_FIG)
 
 def reasonSolutionSpace(
     dataset=[],
@@ -269,7 +365,7 @@ def reasonSolutionSpace(
     plot_space_pairwise=False,
     plot_space_svm=False,
     plot_knc=False,
-    calc_valid_distance=False,
+    calc_distance=False,
     random_seed=521,
     ):
 
@@ -296,7 +392,7 @@ def reasonSolutionSpace(
     
     currentSpace.data_X_Y.to_csv(DIRS_DATA_SS+ r'\all_data.csv', header=True)
     
-    if calc_valid_distance:
+    if calc_distance:
         
         # after manual selection, some of the valid designs are selected for visualization.
 
@@ -305,7 +401,8 @@ def reasonSolutionSpace(
         # res_plot_idx = [0, 362-1, 378-1, 403-1, 837-1, 1720-1]
         # # non-weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         # here. todo.
-        # weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+        # # weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         # # 1282 381-1 smallest distance. w-euc = 0.419
         # # 1522: 482-1 two values very small. w-euc = 0.454
         # # 1718: 1079-1 two values very small. w-euc = 0.577
@@ -313,9 +410,9 @@ def reasonSolutionSpace(
         res_plot_idx = [0, 381-1, 482-1, 1079-1] # choose and add
         # weighted * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-
-        # currentSpace.calculate_distance()
-        currentSpace.calculate_weighted_distance()
+        # currentSpace.calculate_distance() # Option1: not weighted distance.
+        currentSpace.calculate_weighted_distance() # Option2: weighted distance.
+        # currentSpace.calculate_percentage_weighted_distance() # Option3: percentage-based weighted distance.
         compliant_data = currentSpace.distance_X_Y_sorted.values.tolist()
         
         # drop the initial design
@@ -440,7 +537,7 @@ def reasonSolutionSpace(
         ax2.legend(loc=3, prop={'size': 14}) # lower
         ax2.set_yscale("log")
         ax2.set_ylabel("The factorial Euclidean Distance $\mathbf{H}_{j,i}$", color="black", fontsize=16)
-        ax2.set_xlabel("The total Eucliean Distance $\mathbf{H}_{j}$", color="black", fontsize=16)
+        ax2.set_xlabel("The total Euclidean Distance $\mathbf{H}_{j}$", color="black", fontsize=16)
 
         c_i = ['#938888','#938888','#938888','#000000']
         l_styles = ['dotted','dashed','dashdot','solid']

@@ -1,3 +1,8 @@
+# Inter folders
+dyns/
+data-v0/
+paper-figures/
+
 # Raw data
 *.h5
 

@@ -388,6 +388,92 @@ def morris_covariance_plot(
     return out
 
 
+def morris_covariance_plot_adjusted(
+    ax,
+    Si,
+    plotmu,
+    annotate_size=24,
+    opts=None,
+    unit=''):
+
+    '''
+    Plots mu*/mu against sigma or the 95% confidence interval
+
+    '''
+
+    mu_type = '\mu^{\star}' if plotmu =='mu_star' else '\mu'
+
+    if opts is None:
+        opts = {}
+
+    if Si['sigma'] is not None:
+
+        # sigma is not present if using morris groups
+        y = Si['sigma']
+        out = ax.scatter(Si[plotmu], y, c='navy', marker=u'o',
+                         **opts)
+        
+        # Add annotation positions to list and annotate plot
+        all_annotation_locations = []
+        for i, txt in enumerate(Si['names']):
+            x, y_coord = Si[plotmu][i], y[i]
+            annotation_location = (x * 0.85, y_coord * 0.90)
+            all_annotation_locations.append(annotation_location)
+        
+        shift_pad = 0.125
+        shift_pattern = [(0.0, 0.0), (-shift_pad, 0), (shift_pad, 0), (-shift_pad*2.3, 0), (shift_pad*2.3, 0), (-shift_pad*3.4, 0)]
+        count_zeros = all_annotation_locations.count((0.0, 0.0))
+        if count_zeros > 1:
+            # Adjust the first `count_zeros` elements that are (0.0, 0.0) to follow the shift pattern
+            zero_indices = [i for i, loc in enumerate(all_annotation_locations) if loc == (0.0, 0.0)]
+            for j, index in enumerate(zero_indices[:min(count_zeros, len(shift_pattern))]):
+                all_annotation_locations[index] = shift_pattern[j]
+
+        # Print all annotation locations
+        print("Annotation Locations:", all_annotation_locations)
+
+        for i, txt in enumerate(Si['names']):
+            x, y_coord = Si[plotmu][i], y[i]
+            ax.annotate(
+                txt,
+                (x, y_coord),
+                xytext=all_annotation_locations[i],
+                fontsize=annotate_size
+            )
+
+        ax.set_ylabel(r'$\sigma$', fontsize=22)
+
+        ax.set_xlim(-1.0,1.0)
+        ax.set_ylim(0.0,)
+        
+        ax.tick_params(axis='y', which='major', labelsize=22)
+        ax.tick_params(axis='x', which='major', labelsize=22)
+
+        x_axis_bounds = np.array(ax.get_xlim())
+
+        line1_p, = ax.plot(x_axis_bounds, x_axis_bounds, 'k-', c='maroon')
+        line1_n, = ax.plot(x_axis_bounds, -x_axis_bounds, 'k-', c='maroon')
+        line2_p, = ax.plot(x_axis_bounds, 0.50 * x_axis_bounds, 'k--', c='maroon')
+        line2_n, = ax.plot(x_axis_bounds, -0.50 * x_axis_bounds, 'k--', c='maroon')
+        line3_p, = ax.plot(x_axis_bounds, 0.1 * x_axis_bounds, 'k-.', c='maroon')
+        line3_n, = ax.plot(x_axis_bounds, -0.1 * x_axis_bounds, 'k-.', c='maroon')
+
+        ax.legend((line1_p, line2_p, line3_p), (r'$\sigma / {} = \pm 1.0$'.format(mu_type),
+                                          r'$\sigma / {} = \pm 0.5$'.format(mu_type),
+                                          r'$\sigma / {} = \pm 0.1$'.format(mu_type)),
+                  loc='lower right', prop={'size': 24})
+
+    else:
+        y = Si['mu_star_conf']
+        out = ax.scatter(Si['mu_star'], y, c=u'k', marker=u'o',
+                         **opts)
+        ax.set_ylabel(r'$95\% CI$')
+    
+    ax.set_xlabel(r'${}$ '.format(mu_type) + unit, fontsize=24)
+    ax.set_ylim(0-(0.01 * np.array(ax.get_ylim()[1])),)
+
+    return out
+
 def morris_sa_plot(
     dirs_fig,
     rl,
@@ -414,7 +500,7 @@ def morris_sa_plot(
     # covariance_plot: http://a.web.umkc.edu/andersonbri/Variance.html
     fig = plt.figure(figsize=(14,8))  # unit of inch
     ax = plt.axes((0.15, 0.10, 0.80, 0.80))  # in range (0,1)
-    morris_covariance_plot(ax, Si, plotmu='mu')
+    morris_covariance_plot_adjusted(ax, Si, plotmu='mu')
     plt.savefig(dirs_fig + '/SA_mu_{}_morris_Si_indices_convar_beta_{}.png'.format(rl, str(beta)), dpi=200, bbox_inches='tight', pad_inches=0.05)
 
     # sample_histograms:
