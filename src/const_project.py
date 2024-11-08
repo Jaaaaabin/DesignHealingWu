@@ -59,3 +59,6 @@ DIRS_SCRIPT_EXT = DIRS_ZERO + r'\src'
 
 # directory: data
 DIRS_DATA = DIRS_ZERO + r'\data'
+
+# directory: output results
+DIRS_OUT_RES = DIRS_ZERO + r'\res'
