@@ -403,57 +403,8 @@ class SolutionSpace():
     
         for cl in list(all_data.columns):
             self.data_X_Y[cl] = all_data[cl] 
-        
-    # def calculate_distance(self,):
-
-    #     for param in self.ini_parameters.keys():
-    #         self.distance_X_Y[param] = (self.data_X_Y[param] - self.ini_parameters[param]) #/ self.ini_parameters[param]
-    #         self.distance_X_Y[param] = self.distance_X_Y[param] ** 2 
-
-    #     self.distance_X_Y['euc-distance'] = self.distance_X_Y[list(self.distance_X_Y.columns)].sum(axis=1)
-    #     self.distance_X_Y['euc-distance'] = self.distance_X_Y['euc-distance'] ** 0.5
-
-    #     for param in self.ini_parameters.keys():
-    #         self.distance_X_Y[param] = self.distance_X_Y[param] ** 0.5
-        
-    #     for key in list(self.data_X_Y.columns):
-    #         if key not in self.ini_parameters.keys():
-    #             self.distance_X_Y[key] = self.data_X_Y[key]
-    #         if key in self.ini_parameters.keys():
-    #             self.distance_X_Y['v-'+key] = self.data_X_Y[key]
-        
-    #     self.distance_X_Y_sorted = self.distance_X_Y.sort_values('euc-distance', axis=0)
-
-    # def calculate_weighted_distance(self,):
-        
-    #     # for weighted_distance
-    #     map_connections_param = {
-    #         'U1_OK_d_wl_ew6': 5, # 1
-    #         'U1_OK_d_wl_sn21': 2, # 0.4
-    #         'U1_OK_d_wl_sn26': 2, # 0.4
-    #         'U1_OK_d_wl_sn10': 2, # 0.4
-    #         'U1_OK_d_wl_ew35': 3, # 0.6
-    #     }
-    #     weight_per_param = {k: v / max(map_connections_param.values()) for k, v in map_connections_param.items()}
-
-    #     for param in self.ini_parameters.keys():
-    #         self.distance_X_Y[param] = abs(self.data_X_Y[param] - self.ini_parameters[param])
-
-    #     # Apply the weights and square the differences during the summation
-    #     weighted_sum = sum(weight_per_param[param] * (self.distance_X_Y[param] ** 2) for param in self.ini_parameters.keys())
-
-    #     # Add the weighted Euclidean distance to the DataFrame
-    #     self.distance_X_Y['w-euc-distance'] = weighted_sum ** 0.5
-                
-    #     for key in list(self.data_X_Y.columns):
-    #         if key not in self.ini_parameters.keys():
-    #             self.distance_X_Y[key] = self.data_X_Y[key]
-    #         if key in self.ini_parameters.keys():
-    #             self.distance_X_Y['v-'+key] = self.data_X_Y[key]
-        
-    #     self.distance_X_Y_sorted = self.distance_X_Y.sort_values('w-euc-distance', axis=0)
     
-    def calculate_percentage_weighted_distance(self,):
+    def calculate_weighted_distance(self,):
         
         # for weighted_distance (manually counted from the graph and added here.)
         map_connections_param = {
@@ -466,15 +417,15 @@ class SolutionSpace():
         weight_per_param = {k: v / max(map_connections_param.values()) for k, v in map_connections_param.items()}
 
         for param in self.ini_parameters.keys():
-            # /***percentage-based factorial Euclidean Distance***/
-            self.distance_X_Y[param] = abs((self.data_X_Y[param] - self.ini_parameters[param])/self.ini_parameters[param])
+            # /***factorial Euclidean Distance***/
+            self.distance_X_Y[param] = abs(self.data_X_Y[param] - self.ini_parameters[param])
 
         # Apply the weights and square the differences during the summation
-        percentage_weighted_sum = sum(weight_per_param[param] * (self.distance_X_Y[param] ** 2) for param in self.ini_parameters.keys())
+        weighted_sum = sum(weight_per_param[param] * (self.distance_X_Y[param] ** 2) for param in self.ini_parameters.keys())
 
         # Add the weighted Euclidean distance to the DataFrame
         # /***percentage-based weighted Euclidean Distance***/
-        self.distance_X_Y['p-w-euc-distance'] = percentage_weighted_sum ** 0.5
+        self.distance_X_Y['weighted-euc-distance'] = weighted_sum ** 0.5
                 
         for key in list(self.data_X_Y.columns):
             if key not in self.ini_parameters.keys():
@@ -482,7 +433,7 @@ class SolutionSpace():
             if key in self.ini_parameters.keys():
                 self.distance_X_Y['v-'+key] = self.data_X_Y[key]
         
-        self.distance_X_Y_sorted = self.distance_X_Y.sort_values('p-w-euc-distance', axis=0)
+        self.distance_X_Y_sorted = self.distance_X_Y.sort_values('weighted-euc-distance', axis=0)
         
 #---------------------------------------------sweeping
 

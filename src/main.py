@@ -12,7 +12,7 @@ from graphEnrich_withoutchecking import graphEnrich_withoutchecking
 from prepareVariation import prepareSAVariants
 from testSensitivity import testSensi_morris_weighted
 from summarizeSensitivity import summarizeSensi
-from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reasonSolutionSpace, reasonSolutionSpaceWeighted
+from formSpace import exploreLHS,  buildDesignInSpace, formSolutionSpace, reasonSolutionSpaceWeighted
 
 from pairRooms import getRoomPairs
 

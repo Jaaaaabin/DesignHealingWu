@@ -1,12 +1,13 @@
 {
     "designnumber": 1522,
-    "U1_OK_d_wl_ew6": 2.956,
-    "U1_OK_d_wl_sn21": 2.721,
-    "U1_OK_d_wl_sn26": 7.602,
-    "U1_OK_d_wl_sn10": 5.164,
-    "U1_OK_d_wl_ew35": 10.032,
-    "compliance-IBC1020_2": "True",
-    "compliance-IBC1207_1": "True",
-    "compliance-IBC1207_3": "True",
-    "compliance": "True"
+    "weighted-euc-distance": 0.454,
+    "v-U1_OK_d_wl_ew6": 2.956,
+    "v-U1_OK_d_wl_sn21": 2.721,
+    "v-U1_OK_d_wl_sn26": 7.602,
+    "v-U1_OK_d_wl_sn10": 5.164,
+    "v-U1_OK_d_wl_ew35": 10.032,
+    "compliance-IBC1020_2": true,
+    "compliance-IBC1207_1": true,
+    "compliance-IBC1207_3": true,
+    "compliance": true
 }
