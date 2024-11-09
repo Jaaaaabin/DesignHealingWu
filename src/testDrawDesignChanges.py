@@ -23,6 +23,12 @@ def crop_img(img, c_t=0, c_b=0, c_l=0, c_r=0):
     return crop_im
 
 # U1_OK_d_wl_ew7 = U1_OK_d_wl_ew35 - 5,765 m
+# designnumber (nr)     sample index (idx)      weighted-euc 
+# 1282                  381                     0.419
+# 1522                  482                     0.454
+# 1718                  1079                    0.577
+# 1512                  1559                    0.690
+# 669                   1657                    0.739
 res_plot_nr = [0, 1282, 1522, 1718, 1512, 669]
 
 # # ========================================
