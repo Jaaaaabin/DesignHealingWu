@@ -10,6 +10,7 @@ src/tempo/*
 *.pptx
 
 # test .rvt files
+*.ipynb
 *.rvt
 !*ini*.rvt
 !*control*.rvt
